@@ -1,0 +1,91 @@
+
+> temp_app@0.1.0 lint
+> eslint
+
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\actions\settings.ts
+   43:24  warning  'BackupData' is defined but never used    @typescript-eslint/no-unused-vars
+   65:14  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  103:54  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\actions\works.ts
+  19:10  warning  'ZodError' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\layout.tsx
+   1:8   warning  'Link' is defined but never used                                                                                                                                        @typescript-eslint/no-unused-vars
+   4:10  warning  'Toaster' is defined but never used                                                                                                                                     @typescript-eslint/no-unused-vars
+  49:21  error    Do not use an `<a>` element to navigate to `/admin/works/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages       @next/next/no-html-link-for-pages
+  50:21  error    Do not use an `<a>` element to navigate to `/admin/products/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages    @next/next/no-html-link-for-pages
+  51:21  error    Do not use an `<a>` element to navigate to `/admin/devices/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages     @next/next/no-html-link-for-pages
+  52:21  error    Do not use an `<a>` element to navigate to `/admin/posts/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages       @next/next/no-html-link-for-pages
+  53:21  error    Do not use an `<a>` element to navigate to `/admin/news/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages        @next/next/no-html-link-for-pages
+  58:21  error    Do not use an `<a>` element to navigate to `/api/auth/signout/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\page.tsx
+  1:52  warning  'CardDescription' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\products\_components\ProductForm.tsx
+  15:10  warning  'ThumbnailUploader' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\settings\LinksManager.tsx
+   9:25  warning  'GripVertical' is defined but never used  @typescript-eslint/no-unused-vars
+   9:39  warning  'Trash2' is defined but never used        @typescript-eslint/no-unused-vars
+  23:22  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\settings\ProfileForm.tsx
+  21:22  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\settings\page.tsx
+  6:10  warning  'Tabs' is defined but never used         @typescript-eslint/no-unused-vars
+  6:16  warning  'TabsContent' is defined but never used  @typescript-eslint/no-unused-vars
+  6:29  warning  'TabsList' is defined but never used     @typescript-eslint/no-unused-vars
+  6:39  warning  'TabsTrigger' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\works\[id]\page.tsx
+  2:8  warning  'ImageUpload' is defined but never used  @typescript-eslint/no-unused-vars
+  4:8  warning  'Link' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\contact\page.tsx
+  17:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\contact\page.tsx:17:9
+  15 |         const domain = 'example.com'
+  16 |         // In real world, user would replace this.
+> 17 |         setEmail(`${user}@${domain}`)
+     |         ^^^^^^^^ Avoid calling setState() directly within an effect
+  18 |     }, [])
+  19 |
+  20 |     return (  react-hooks/set-state-in-effect
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\devices\page.tsx
+  3:33  warning  'ShoppingBag' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\products\page.tsx
+  21:62  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\stats\page.tsx
+  73:0  error  Parsing error: Declaration or statement expected
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\ImageUpload.tsx
+  40:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\layout\Header.tsx
+  83:50  warning  'idx' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\ui\copy-button.tsx
+  17:18  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\ui\input.tsx
+  4:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\ui\textarea.tsx
+  4:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+✖ 33 problems (13 errors, 20 warnings)
+

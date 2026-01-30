@@ -1,0 +1,135 @@
+{
+    "prompt_id": "promptops-spec-20260130-003",
+    "version": "v1.2.0",
+    "change_log": [
+        "v1.0.0 ポートフォリオサイト（モーション重視）初版",
+        "v1.1.0 自作管理画面(/admin)・Googleログイン・DB/Storage・移行容易性を追加",
+        "v1.2.0 News/Blog/Stats追加・設計思想・運用/運営マニュアル・0円Analytics方針を追加"
+    ],
+    "final_prompt": {
+        "role": "あなたは『モーションデザイン×高速UX×運用設計』に強いシニアフルスタックエンジニア兼Webデザイナー。Next.js(App Router)で“AI臭ゼロ”のUIと、同一デザインの管理画面を実装できる。",
+        "goal": "就活/一般/クライアント全方位に刺さるポートフォリオサイトを、Vercel(無料)で公開しつつ、どこからでもブラウザで更新できる自作管理画面(/admin)を提供する。管理画面も本体と同じデザイン/モーション規約で統一し、運営マニュアル付きで長期運用でき、将来の課金・移行が容易な構造にする。",
+        "context": {
+            "location": "Japan",
+            "environment": "Next.js(App Router) + Vercel(Hobby) + Supabase(DB/Auth/Storage)を第一候補。Googleログイン。管理者は本人のみ(allowlist)。画像は作品サムネのみ。",
+            "situation": "yui540系の“触りたくなるUI”が基準。サイバーパンク2077っぽい質感も可。ただし速度・操作性・可読性が最優先。"
+        },
+        "audience": "採用担当/一般ユーザー/クライアント/コミュニティ + 管理者(本人)",
+        "constraints": {
+            "budget": "初期は極力0円。容量/転送が足りなくなれば後から課金・移行できる設計必須。",
+            "deadline": "MVPを最短で出し、磨き込み可能な設計。",
+            "medium": "Web(PC/スマホ対応)。管理画面も同一UI/モーション。",
+            "rules": [
+                "デザイントークン(色/余白/タイポ/モーション)を単一ソースにし、本体/管理/ブログ/お知らせで共通利用",
+                "モーションは『情報理解の補助 + 操作フィードバック』として設計(意味のある動きのみ)",
+                "パフォーマンス最優先: transform/opacity中心。スクロール連動は見せ場1〜2箇所に限定",
+                "prefers-reduced-motion対応(演出弱め/無効)。キーボード操作/フォーカス可視化/コントラスト確保",
+                "テンプレ臭を避ける: 既製テンプレ丸写し禁止。独自トークン/独自レイアウト/具体的コピーで“自作感”を作る"
+            ],
+            "ng": [
+                "管理画面が既製CMSの見た目で世界観が崩れる",
+                "重いWebGL/常時動画で操作性を落とす",
+                "目的のない常時アニメ、読めないUI、戻れない導線"
+            ]
+        },
+        "inputs_required": [
+            "表示名/サイト名/OGP用タイトル/OGP画像(任意)",
+            "プロフィール(短/中/長) + 強み(3つ) + 技術スタック(タグ)",
+            "Links(X/GitHub/YouTube/Booth等)",
+            "Works(タイトル/説明/技術/役割/URL/サムネ画像/任意で成果数値)",
+            "Products(商品名/概要/販売URL/価格表記方針/サムネ任意)",
+            "Devices(カテゴリ/製品名/一言/理由/リンク/画像任意)",
+            "News(タイトル/本文/タグ/公開日)",
+            "Blog(記事: タイトル/本文/タグ/公開日)",
+            "Statsで見たいKPI定義(例: PV/クリック/問い合わせ導線クリック/作品詳細遷移など)",
+            "管理者Googleメール(allowlist: 自分だけ)",
+            "コンタクト用メールアドレス(表示/コピー/難読化方針)"
+        ],
+        "design_philosophy": [
+            "Fast-first: 体感速度が正義。動きは軽く、要所にだけ強い演出",
+            "Motion-as-feedback: 動きは『押せた/移動した/完了した』を伝えるUI言語",
+            "Data-driven: コンテンツはDB(または将来差替可)に集約。UIはデータを描画するだけ",
+            "Single Source of Truth: デザイントークンとモーション規約を共通化し、全画面の一貫性を担保",
+            "Migration-ready: Repository層 + Export/Importで将来の課金/移行を詰ませない",
+            "Privacy-first metrics: 0円の範囲はプライバシー重視の計測を採用し、必要になったら高度化"
+        ],
+        "steps": [
+            "0) 参考デザイン分析: yui540の『余白/タイポ/導線/モーション階層』を抽出し、サイバーパンク要素は色数を絞って上品に統合",
+            "1) IA(情報設計): Home(要約) / Works / Products / Devices / News / Blog / About / Contact を確定。Homeで30秒理解できる導線にする",
+            "2) トークン定義: color/typography/spacing/radius/shadow(glow)/noise/blur + motion(ease/duration/distance) をJSONで定義し共通利用",
+            "3) モーション仕様(階層化): Micro(hover/press/focus) / Navigation(ページ遷移) / Scroll(reveal中心、見せ場のみ強い) / Delight(軽い驚き)。prefers-reduced-motion時は縮退",
+            "4) 実装基盤: Next.js(App Router) + UIコンポーネント(自作) + アニメはGSAP or Motion(どちらかに統一)。スクロール滑らかさは必要ならLenis採用",
+            "5) 認証: Auth.js Google Provider。/adminはログイン必須+allowlist。環境変数とコールバックURLを公式通りに設定",
+            "6) DB/Storage: Supabase(Postgres + Storage)。テーブル: profile, links, works, products, devices, news, posts, stats_events(任意)。RLSで管理者のみ書込",
+            "7) 管理画面(/admin): 同一デザインでCRUD(作成/編集/削除/並び替え) + 画像アップロード(サムネのみ) + 即公開。スマホ操作も想定",
+            "8) Stats: 0円で始めるなら Cloudflare Web Analytics(無料) を優先導入。パフォーマンス監視はVercel Speed Insights(ホビー可)を有効化。必要になったら有料/自前へ移行",
+            "9) 運営マニュアル作成: 更新手順/品質チェック/バックアップ/移行/障害対応/コスト閾値をREADMEと管理画面内ヘルプに実装"
+        ],
+        "output_format": "必ず以下を“成果物として”出力せよ(コード/ドキュメント含む):\nA. サイトマップ(本体+管理)\nB. 画面一覧 + ワイヤー(テキスト)\nC. デザイントークン(JSON)\nD. モーション仕様表(対象/トリガー/動き/時間/ease/縮退)\nE. DBスキーマ(SQL) + RLS方針\nF. Next.js雛形(主要ファイル構成 + 重要コード)\nG. /adminのCRUD UI(同一コンポーネント利用)\nH. Supabase/Auth.jsセットアップ手順(Env/Google OAuth)\nI. Analytics/Speed Insights導入手順(0円)\nJ. 運用/運営マニュアル(更新/品質/バックアップ/移行/障害/コスト)\nK. エクスポート/インポート(JSON)機能仕様(将来移行用)",
+        "quality_criteria": [
+            "本体/管理/ブログ/お知らせで世界観が一致(タイポ/余白/モーションが統一)",
+            "更新が速い: 作品1件追加(サムネ含)が3分以内",
+            "サクサク: スクロール/遷移/入力が重くならない。アニメがINPを悪化させない",
+            "0円でまず動く + 制限を超えたときの課金/移行が手順化されている",
+            "AI臭ゼロ: コピーが具体的(役割/成果/工夫/数字)で、トークン/レイアウトが独自"
+        ],
+        "uncertainty_policy": {
+            "facts_need_urls": true,
+            "assumptions_must_be_labeled": true,
+            "unknowns": [
+                "Blog本文のエディタ方式(Markdown/リッチテキスト)最終決定",
+                "Contactのスパム対策レベル(単純mailto/コピー/難読化)最終決定"
+            ]
+        },
+        "open_questions_if_any": [
+            "BlogはMarkdownエディタでOK？(管理画面内でプレビュー必須か)",
+            "メールアドレスは表示する？コピーのみ？難読化する？"
+        ]
+    },
+    "evaluation": {
+        "rubric": [
+            {
+                "name": "要件充足",
+                "pass_condition": "Works/Products/Devices/Profile/Links + News/Blog/Stats + /admin + Googleログイン + 画像 が揃う"
+            },
+            {
+                "name": "体験品質",
+                "pass_condition": "本体/管理ともモーション規約が統一され、操作フィードバックが心地よい"
+            },
+            {
+                "name": "運用容易性",
+                "pass_condition": "ブラウザだけで更新でき、並び替え/公開/削除が直感的。運営マニュアルが実用的"
+            },
+            {
+                "name": "パフォーマンス",
+                "pass_condition": "画像最適化と軽量モーションで体感が速い。prefers-reduced-motionでも破綻しない"
+            },
+            {
+                "name": "移行耐性",
+                "pass_condition": "Export/Import + Repository層でSupabase/Storage/Analyticsを差替可能"
+            }
+        ],
+        "regression_tests": [
+            {
+                "case": "スマホで/adminログイン→Works追加(サムネ)→即公開",
+                "expected": "3分以内で公開。UI崩れなし。アップロード後に表示が速い"
+            },
+            {
+                "case": "News/Blogを5本追加→一覧/詳細が整う",
+                "expected": "タグ/日付/OGP/読みやすさが保たれ、動きが邪魔しない"
+            },
+            {
+                "case": "prefers-reduced-motion=true",
+                "expected": "本体/管理とも演出が縮退し、操作性が落ちない"
+            },
+            {
+                "case": "Supabase容量が逼迫",
+                "expected": "エクスポート→別Storage/別DBへ移行できる設計と手順が揃う"
+            },
+            {
+                "case": "Statsを見て改善する",
+                "expected": "0円Analyticsで主要KPIが確認でき、改善アクションに繋がる導線がマニュアル化されている"
+            }
+        ]
+    }
+}

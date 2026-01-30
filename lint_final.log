@@ -1,0 +1,53 @@
+
+> temp_app@0.1.0 lint
+> eslint
+
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\actions\settings.ts
+  43:24  warning  'BackupData' is defined but never used  @typescript-eslint/no-unused-vars
+  65:14  warning  'e' is defined but never used           @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\actions\works.ts
+  19:10  warning  'ZodError' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\page.tsx
+  1:52  warning  'CardDescription' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\products\_components\ProductForm.tsx
+  15:10  warning  'ThumbnailUploader' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\settings\LinksManager.tsx
+   9:25  warning  'GripVertical' is defined but never used  @typescript-eslint/no-unused-vars
+   9:39  warning  'Trash2' is defined but never used        @typescript-eslint/no-unused-vars
+  23:22  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\settings\ProfileForm.tsx
+  21:22  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\settings\page.tsx
+  6:10  warning  'Tabs' is defined but never used         @typescript-eslint/no-unused-vars
+  6:16  warning  'TabsContent' is defined but never used  @typescript-eslint/no-unused-vars
+  6:29  warning  'TabsList' is defined but never used     @typescript-eslint/no-unused-vars
+  6:39  warning  'TabsTrigger' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\admin\(auth)\works\[id]\page.tsx
+  2:8  warning  'ImageUpload' is defined but never used  @typescript-eslint/no-unused-vars
+  4:8  warning  'Link' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\devices\page.tsx
+  3:33  warning  'ShoppingBag' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\app\products\page.tsx
+  21:62  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\ImageUpload.tsx
+  40:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\layout\Header.tsx
+  83:50  warning  'idx' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\デスクトップ\web\src\components\ui\copy-button.tsx
+  17:18  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 20 problems (2 errors, 18 warnings)
+

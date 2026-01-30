@@ -1,0 +1,37 @@
+
+> temp_app@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.0
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+./src/app/devices/page.tsx
+3:33  Warning: 'ShoppingBag' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/layout/Header.tsx
+83:50  Warning: 'idx' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/providers/MotionProvider.tsx
+24:13  Warning: Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps').
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/26) ...
+Error occurred prerendering page "/admin/devices/new". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: Attempted to call useMotion() from the server but useMotion is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.
+    at C:\Users\syuue\OneDrive\デスクトップ\web\.next\server\chunks\233.js:1:10194
+    at P (C:\Users\syuue\OneDrive\デスクトップ\web\.next\server\chunks\233.js:1:5902)
+    at ek (C:\Users\syuue\OneDrive\デスクトップ\web\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:84:13368)
+    at e (C:\Users\syuue\OneDrive\デスクトップ\web\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:84:17266)
+    at e$ (C:\Users\syuue\OneDrive\デスクトップ\web\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:84:17728)
+    at Array.toJSON (C:\Users\syuue\OneDrive\デスクトップ\web\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:84:14874)
+    at stringify (<anonymous>)
+    at eU (C:\Users\syuue\OneDrive\デスクトップ\web\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:84:26231)
+    at eB (C:\Users\syuue\OneDrive\デスクトップ\web\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:84:26461)
+    at eq (C:\Users\syuue\OneDrive\デスクトップ\web\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:84:27015)
+Export encountered an error on /admin/(auth)/devices/new/page: /admin/devices/new, exiting the build.
+ ⨯ Static worker exited with code: 1 and signal: null

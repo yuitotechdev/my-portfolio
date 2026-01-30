@@ -1,0 +1,27 @@
+# Tasks
+
+- [x] 1. Next.js (App Router) + TS + Tailwind Scaffold & Startup Check
+    - [x] Initialize Next.js project
+    - [x] Verify startup (npm run dev)
+- [ ] 2. Project Configuration & Documentation
+    - [x] Create .env.example
+    - [x] Create README.md
+    - [x] Create supabase/schema.sql
+    - [x] Create TASKS.md
+- [ ] 3. Auth.js Google Login & Admin Protection
+    - [ ] Configure Auth.js with Google Provider
+    - [ ] Implement Allowlist (ADMIN_EMAIL)
+    - [ ] Protect /admin routes
+- [ ] 4. Supabase Setup (Tables, RLS, Storage)
+    - [ ] Create tables: works, posts, news, profile, links
+    - [ ] Configure RLS policies
+    - [ ] Setup Storage for thumbnails
+- [ ] 5. Admin Works CRUD
+    - [ ] Implement Work list & details in /admin
+    - [ ] Implement Create/Update/Delete
+    - [ ] Implement Thumbnail Upload
+    - [ ] Verify immediate reflection on public /works
+- [ ] 6. Admin Posts & News & Import/Export
+    - [ ] Implement /admin/posts (Markdown + Preview)
+    - [ ] Implement /admin/news
+    - [ ] Implement Export/Import (JSON)

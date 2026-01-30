@@ -1,0 +1,150 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  /* Warm Paper Theme */
+  --background: 38 20% 95%;
+  /* #F7F4EE */
+  --foreground: 24 10% 7%;
+  /* #14110F */
+
+  --muted: 27 8% 39%;
+  /* #6B625B (Warm Gray) */
+  --muted-foreground: 24 10% 7%;
+  /* Keep legible */
+
+  --card: 0 0% 100%;
+  --card-foreground: 24 10% 7%;
+
+  --primary: 24 40% 39%;
+  /* #8A5A3C (Leather Accent) */
+  --primary-foreground: 38 20% 95%;
+
+  --border: 24 15% 92%;
+  /* rgba(20,17,15,0.08) approx match */
+  --input: 24 15% 92%;
+  --ring: 24 40% 39%;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-in: fade-in 0.3s ease-out;
+  --animate-out: fade-out 0.3s ease-in;
+  --animate-slide-in-from-bottom: slide-in-from-bottom 0.3s ease-out;
+  --animate-slide-in-from-top: slide-in-from-top 0.3s ease-out;
+
+  /* Premium Warm Paper Tokens */
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-shadow: 0 4px 30px rgba(20, 17, 15, 0.06);
+
+  --color-border-warm: rgba(138, 90, 60, 0.14);
+  --shadow-surface: 0 1px 0 rgba(20, 17, 15, 0.04), 0 12px 30px rgba(20, 17, 15, 0.06);
+  --shadow-ring: 0 0 0 1px rgba(20, 17, 15, 0.05);
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-[var(--glass-bg)] backdrop-blur-md border border-[var(--glass-border)] shadow-[var(--glass-shadow)];
+  }
+
+  .glass-dark {
+    @apply bg-black/70 backdrop-blur-md border border-white/10 shadow-sm;
+  }
+
+  .glass-card {
+    @apply bg-white/50 backdrop-blur-md border border-gray-200/50 shadow-sm transition-all hover:bg-white/80 hover:shadow-md;
+  }
+
+  /* Warm Paper Surface - Robust against no-blur */
+  .surface-panel {
+    @apply bg-[var(--glass-bg)] backdrop-blur-md shadow-[var(--shadow-surface)] ring-[var(--shadow-ring)] ring-inset rounded-xl;
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0
+  }
+
+  to {
+    height: var(--radix-accordion-content-height)
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height)
+  }
+
+  to {
+    height: 0
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1
+  }
+
+  to {
+    opacity: 0
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(10px);
+    opacity: 0
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-10px);
+    opacity: 0
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
