@@ -4,6 +4,7 @@ import { AmbientGlow } from "@/components/ui/AmbientGlow"
 import { SmoothScroll } from "@/components/providers/SmoothScroll"
 import { CustomCursor } from "@/components/ui/CustomCursor"
 import { ProjectWiper } from "@/components/layout/ProjectWiper"
+import { GrainOverlay } from "@/components/ui/GrainOverlay"
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -12,6 +13,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                 <CustomCursor />
                 <ProjectWiper />
                 <AmbientGlow />
+                <GrainOverlay />
 
                 <div className="relative z-10">
                     <PageTransition>

@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 
 import { NAV_ITEMS } from '@/config/i18n'
 import { ScrambleText } from '@/components/ui/ScrambleText'
+import { Magnetic } from '@/components/ui/Magnetic'
 
 const navItems = NAV_ITEMS
 
@@ -37,25 +38,28 @@ export function Header() {
         >
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group">
-                    <span className="group-hover:text-indigo-600 transition-colors">Port</span><ScrambleText text="folio." scrambleOnMount={false} scrambleOnHover={true} />
-                </Link>
+                <Magnetic intensity={0.1}>
+                    <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group">
+                        <span className="group-hover:text-indigo-600 transition-colors">Port</span><ScrambleText text="folio." scrambleOnMount={false} scrambleOnHover={true} />
+                    </Link>
+                </Magnetic>
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-1">
                     {navItems.map((item) => {
                         const isActive = pathname.startsWith(item.href)
                         return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={cn(
-                                    "px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-gray-100/50 dark:hover:bg-gray-800/50",
-                                    isActive ? "text-indigo-600 bg-gray-50 dark:bg-gray-900" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-                                )}
-                            >
-                                <ScrambleText text={item.name} scrambleOnMount={true} scrambleOnHover={true} />
-                            </Link>
+                            <Magnetic key={item.href} intensity={0.15}>
+                                <Link
+                                    href={item.href}
+                                    className={cn(
+                                        "px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-gray-100/50 dark:hover:bg-gray-800/50",
+                                        isActive ? "text-indigo-600 bg-gray-50 dark:bg-gray-900" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                                    )}
+                                >
+                                    <ScrambleText text={item.name} scrambleOnMount={true} scrambleOnHover={true} />
+                                </Link>
+                            </Magnetic>
                         )
                     })}
                     <motion.button

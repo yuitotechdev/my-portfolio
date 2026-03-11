@@ -17,10 +17,15 @@ export function CustomCursor() {
     const cursorX = useMotionValue(-100)
     const cursorY = useMotionValue(-100)
     
-    // スムーズなスプリング（少し遊びを持たせる）
-    const springConfig = { damping: 25, stiffness: 300, mass: 0.5 }
-    const x = useSpring(cursorX, springConfig)
-    const y = useSpring(cursorY, springConfig)
+    // 1. 精緻な内部ドット (ほぼ即時追従で遅延を解消)
+    const dotConfig = { damping: 20, stiffness: 800, mass: 0.1 }
+    const dotX = useSpring(cursorX, dotConfig)
+    const dotY = useSpring(cursorY, dotConfig)
+
+    // 2. 柔らかい外部リング (少しだけ遅れて優雅さを演出)
+    const ringConfig = { damping: 28, stiffness: 150, mass: 0.5 }
+    const ringX = useSpring(cursorX, ringConfig)
+    const ringY = useSpring(cursorY, ringConfig)
 
     useEffect(() => {
         if (isSafe) return
@@ -71,22 +76,35 @@ export function CustomCursor() {
     if (isSafe) return null
 
     return (
-        <motion.div
-            className="fixed top-0 left-0 z-[9999] pointer-events-none rounded-full flex items-center justify-center mix-blend-difference"
-            style={{
-                x,
-                y,
-                opacity: isVisible ? 1 : 0,
-                translateX: '-50%',
-                translateY: '-50%',
-            }}
-            animate={{
-                width: isHovering ? 64 : 16,
-                height: isHovering ? 64 : 16,
-                backgroundColor: isHovering ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'
-            }}
-            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-        >
-        </motion.div>
+        <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]">
+            {/* 1. 外輪 (優雅なスプリング追従) */}
+            <motion.div
+                className="absolute top-0 left-0 rounded-full mix-blend-difference border border-white/40"
+                style={{
+                    x: ringX,
+                    y: ringY,
+                    opacity: isVisible ? 1 : 0,
+                    translateX: '-50%',
+                    translateY: '-50%',
+                }}
+                animate={{
+                    width: isHovering ? 64 : 40,
+                    height: isHovering ? 64 : 40,
+                    backgroundColor: isHovering ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0)'
+                }}
+                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+            />
+            {/* 2. 内部ドット (即座のフィードバック用) */}
+            <motion.div
+                className="absolute top-0 left-0 w-1.5 h-1.5 bg-white rounded-full mix-blend-difference"
+                style={{
+                    x: dotX,
+                    y: dotY,
+                    opacity: isVisible ? 1 : 0,
+                    translateX: '-50%',
+                    translateY: '-50%',
+                }}
+            />
+        </div>
     )
 }

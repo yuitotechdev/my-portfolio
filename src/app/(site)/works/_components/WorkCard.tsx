@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { motion, useMotionValue, useSpring, useTransform, useScroll } from 'framer-motion'
 import { useMotion as useMotionContext } from '@/components/providers/MotionProvider'
 import { useTransitionStore } from '@/stores/useTransitionStore'
+import { useGlowStore } from '@/stores/useGlowStore'
 import { useRef } from 'react'
 
 const itemVariants = {
@@ -19,6 +20,7 @@ export function WorkCard({ work }: { work: Work }) {
     const isSafe = preference === 'safe' || preference === 'minimal'
     const router = useRouter()
     const { setProjectTitle } = useTransitionStore()
+    const { setColor } = useGlowStore()
 
     const x = useMotionValue(0)
     const y = useMotionValue(0)
@@ -43,10 +45,19 @@ export function WorkCard({ work }: { work: Work }) {
         y.set(yPct)
     }
 
+    const handleMouseEnter = () => {
+        if (isSafe) return
+        // Generate dynamic color based on title (HSL)
+        const hue = (work.title.length * 137.5) % 360
+        setColor(`hsla(${hue}, 70%, 50%, 0.2)`)
+    }
+
     const handleMouseLeave = () => {
         if (isSafe) return
         x.set(0)
         y.set(0)
+        // Reset to default indigo-ish
+        setColor('rgba(99, 102, 241, 0.15)')
     }
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -74,6 +85,7 @@ export function WorkCard({ work }: { work: Work }) {
                 <motion.article 
                     className="h-full bg-card rounded-xl overflow-hidden shadow-sm border border-border transition-shadow hover:shadow-md flex flex-col luminous-border-on-dark relative"
                     onMouseMove={handleMouseMove}
+                    onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                     style={{
                         rotateX: isSafe ? 0 : rotateX,
