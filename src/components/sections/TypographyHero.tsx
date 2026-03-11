@@ -93,11 +93,10 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                         <motion.span
                             key={i}
                             variants={child}
-                            className="inline-block origin-bottom"
+                            className="inline-block origin-bottom hover:text-indigo-600 transition-colors duration-300"
                             whileHover={!isSafe ? {
                                 scale: 1.1,
                                 rotate: (i % 2 === 0 ? 5 : -5),
-                                color: "#4f46e5", // Indigo-600
                                 transition: MOTION.spring.rapid
                             } : undefined}
                         >
