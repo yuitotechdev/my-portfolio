@@ -22,12 +22,12 @@ export default async function DevicesPage() {
     const categories = Object.keys(grouped)
 
     return (
-        <main className="min-h-screen py-24 px-6 md:px-12 bg-gray-50">
+        <main className="min-h-screen py-24 px-6 md:px-12 bg-background">
             <div className="max-w-4xl mx-auto">
                 <Reveal>
                     <header className="mb-16">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">{PAGE_TITLES.devices}</h1>
-                        <p className="text-xl text-gray-600 max-w-2xl">
+                        <p className="text-xl text-muted-foreground max-w-2xl">
                             The equipment I use to create.
                         </p>
                     </header>
@@ -38,8 +38,8 @@ export default async function DevicesPage() {
                         {categories.map((category, idx) => (
                             <section key={category}>
                                 <Reveal delay={idx * 0.1}>
-                                    <h2 className="text-2xl font-bold mb-8 flex items-center gap-2 border-b pb-2 border-gray-200">
-                                        <Monitor className="w-5 h-5 text-gray-400" />
+                                    <h2 className="text-2xl font-bold mb-8 flex items-center gap-2 border-b pb-2 border-border">
+                                        <Monitor className="w-5 h-5 text-muted-foreground" />
                                         {category}
                                     </h2>
                                 </Reveal>
@@ -48,11 +48,11 @@ export default async function DevicesPage() {
                                     {grouped[category].map((device) => (
                                         <div
                                             key={device.id}
-                                            className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 md:items-start"
+                                            className="bg-muted/20 rounded-xl p-6 shadow-sm border border-border flex flex-col md:flex-row gap-6 md:items-start"
                                         >
                                             <div className="flex-1">
                                                 <div className="flex items-start justify-between mb-2">
-                                                    <h3 className="text-xl font-bold text-gray-900">{device.name}</h3>
+                                                    <h3 className="text-xl font-bold text-foreground">{device.name}</h3>
                                                     {device.link_url && (
                                                         <a
                                                             href={device.link_url}
@@ -60,18 +60,18 @@ export default async function DevicesPage() {
                                                             rel="noopener noreferrer"
                                                             className="text-gray-400 hover:text-indigo-600"
                                                         >
-                                                            <ExternalLink className="w-5 h-5" />
+                                                            <ExternalLink className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
                                                         </a>
                                                     )}
                                                 </div>
 
                                                 {device.purchase_reason && (
-                                                    <div className="mb-3 text-sm text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg inline-block border border-indigo-100">
+                                                    <div className="mb-3 text-sm text-primary bg-primary/10 px-3 py-1.5 rounded-lg inline-block border border-primary/20">
                                                         <span className="font-bold mr-1">Why:</span> {device.purchase_reason}
                                                     </div>
                                                 )}
 
-                                                <p className="text-gray-600 whitespace-pre-wrap">{device.description}</p>
+                                                <p className="text-muted-foreground whitespace-pre-wrap">{device.description}</p>
                                             </div>
                                         </div>
                                     ))}
