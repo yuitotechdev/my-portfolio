@@ -10,8 +10,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Product } from '@/lib/repositories/products'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { useTransition } from 'react'
+import { useTransition, useState } from 'react'
 import { toast } from 'sonner'
+import ImageUpload from '@/components/ImageUpload'
 
 // Wait, did I create generic ThumbnailUploader? Step 840 task list says "Implement Thumbnail Upload". 
 // I should verify simpler input first or assume I have it. 
@@ -23,8 +24,10 @@ import { toast } from 'sonner'
 export function ProductForm({ product }: { product?: Product }) {
     const isEdit = !!product
     const [isPending, startTransition] = useTransition()
+    const [thumbnailUrl, setThumbnailUrl] = useState(product?.thumbnail_url || '')
 
     async function handleSubmit(formData: FormData) {
+        formData.set('thumbnail_url', thumbnailUrl)
         startTransition(async () => {
             try {
                 if (isEdit && product) {
@@ -72,10 +75,21 @@ export function ProductForm({ product }: { product?: Product }) {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="thumbnail_url">サムネイルURL</Label>
-                            <Input id="thumbnail_url" name="thumbnail_url" defaultValue={product?.thumbnail_url || ''} placeholder="https://..." />
+                            <Label htmlFor="thumbnail_url">サムネイル画像</Label>
+                            <ImageUpload 
+                                bucket="products" 
+                                initialUrl={thumbnailUrl} 
+                                onUpload={(url) => setThumbnailUrl(url)} 
+                            />
+                            <Input 
+                                id="thumbnail_url" 
+                                name="thumbnail_url" 
+                                value={thumbnailUrl} 
+                                onChange={(e) => setThumbnailUrl(e.target.value)}
+                                placeholder="または直接URLを入力: https://..." 
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="order">表示順序</Label>

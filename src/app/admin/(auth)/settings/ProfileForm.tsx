@@ -7,13 +7,16 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Profile } from '@/lib/repositories/profile'
 import { Loader2 } from 'lucide-react'
-import { useTransition } from 'react'
+import { useTransition, useState } from 'react'
 import { toast } from 'sonner'
+import ImageUpload from '@/components/ImageUpload'
 
 export function ProfileForm({ profile }: { profile: Profile | null }) {
     const [isPending, startTransition] = useTransition()
+    const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '')
 
     async function handleSubmit(formData: FormData) {
+        formData.set('avatar_url', avatarUrl)
         startTransition(async () => {
             try {
                 await updateProfile(formData)
@@ -32,8 +35,19 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="avatar_url">アバターURL</Label>
-                <Input id="avatar_url" name="avatar_url" defaultValue={profile?.avatar_url || ''} placeholder="https://..." />
+                <Label htmlFor="avatar_url">アバター画像</Label>
+                <ImageUpload 
+                    bucket="avatars" 
+                    initialUrl={avatarUrl} 
+                    onUpload={(url) => setAvatarUrl(url)} 
+                />
+                <Input 
+                    id="avatar_url" 
+                    name="avatar_url" 
+                    value={avatarUrl} 
+                    onChange={(e) => setAvatarUrl(e.target.value)}
+                    placeholder="または直接URLを入力: https://..." 
+                />
             </div>
 
             <div className="space-y-2">

@@ -13,6 +13,8 @@ import Link from 'next/link'
 import { useTransition } from 'react'
 import { toast } from 'sonner'
 import { SmartImage } from '@/components/ui/smart-image'
+import ImageUpload from '@/components/ImageUpload'
+import { useState } from 'react'
 
 // Extend Work type for form props if needed, or cast handling
 interface WorkWithPublic extends Work {
@@ -22,12 +24,14 @@ interface WorkWithPublic extends Work {
 export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, action?: (formData: FormData) => Promise<{ error?: string } | void | undefined> }) {
     const isEdit = !!work
     const [isPending, startTransition] = useTransition()
+    const [thumbnailUrl, setThumbnailUrl] = useState(work?.thumbnail_url || '')
 
     // Handle action manually if not passed (for create vs update distinction wrapper?)
     // Actually the pages pass 'action' prop bound with ID for update, or just creating.
     // Spec: new/page.tsx passes createWork. [id]/page.tsx passes updateWork.bind(id).
 
     async function handleSubmit(formData: FormData) {
+        formData.set('thumbnail_url', thumbnailUrl)
         startTransition(async () => {
             try {
                 if (action) {
@@ -115,20 +119,22 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
 
                     {/* Image */}
                     <div className="space-y-4 pt-4 border-t">
-                        <Label htmlFor="thumbnail_url">サムネイルURL</Label>
+                        <Label htmlFor="thumbnail_url">サムネイル画像</Label>
+                        <ImageUpload 
+                            bucket="thumbnails" 
+                            initialUrl={thumbnailUrl} 
+                            onUpload={(url) => setThumbnailUrl(url)} 
+                        />
                         <div className="flex gap-4 items-start">
-                            <Input id="thumbnail_url" name="thumbnail_url" defaultValue={work?.thumbnail_url || ''} placeholder="https://..." className="flex-1" />
+                            <Input 
+                                id="thumbnail_url" 
+                                name="thumbnail_url" 
+                                value={thumbnailUrl} 
+                                onChange={(e) => setThumbnailUrl(e.target.value)}
+                                placeholder="または直接URLを入力: https://..." 
+                                className="flex-1" 
+                            />
                         </div>
-                        {work?.thumbnail_url && (
-                            <div className="relative w-full aspect-video rounded-lg overflow-hidden border bg-gray-100">
-                                <SmartImage
-                                    src={work.thumbnail_url}
-                                    alt="プレビュー"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                        )}
                     </div>
                 </CardContent>
             </Card>
