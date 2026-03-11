@@ -9,6 +9,7 @@ import { useMotion } from '@/components/providers/MotionProvider'
 import { cn } from '@/lib/utils'
 
 import { NAV_ITEMS } from '@/config/i18n'
+import { ScrambleText } from '@/components/ui/ScrambleText'
 
 const navItems = NAV_ITEMS
 
@@ -37,7 +38,7 @@ export function Header() {
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group">
-                    <span className="group-hover:text-indigo-600 transition-colors">Port</span>folio.
+                    <span className="group-hover:text-indigo-600 transition-colors">Port</span><ScrambleText text="folio." scrambleOnMount={false} scrambleOnHover={true} />
                 </Link>
 
                 {/* Desktop Nav */}
@@ -53,7 +54,7 @@ export function Header() {
                                     isActive ? "text-indigo-600 bg-gray-50 dark:bg-gray-900" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                                 )}
                             >
-                                {item.name}
+                                <ScrambleText text={item.name} scrambleOnMount={true} scrambleOnHover={true} />
                             </Link>
                         )
                     })}

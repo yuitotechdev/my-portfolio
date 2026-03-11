@@ -2,9 +2,12 @@
 
 import { Work } from '@/lib/repositories/works'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform, useScroll } from 'framer-motion'
 import { useMotion as useMotionContext } from '@/components/providers/MotionProvider'
+import { useTransitionStore } from '@/stores/useTransitionStore'
+import { useRef } from 'react'
 
 const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -14,9 +17,12 @@ const itemVariants = {
 export function WorkCard({ work }: { work: Work }) {
     const { preference } = useMotionContext()
     const isSafe = preference === 'safe' || preference === 'minimal'
+    const router = useRouter()
+    const { setProjectTitle } = useTransitionStore()
 
     const x = useMotionValue(0)
     const y = useMotionValue(0)
+    const cardRef = useRef<HTMLDivElement>(null)
 
     const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 })
     const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 })
@@ -43,9 +49,28 @@ export function WorkCard({ work }: { work: Work }) {
         y.set(0)
     }
 
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (isSafe) return
+        e.preventDefault()
+        setProjectTitle(work.title)
+        
+        // Wipe animation takes 0.8s
+        setTimeout(() => {
+            router.push(`/works/${work.slug}`)
+        }, 800)
+    }
+
+    // Scroll Parallax Effect
+    const { scrollYProgress } = useScroll({
+        target: cardRef,
+        offset: ["start end", "end start"]
+    })
+    const imageY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
+    const textY = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"])
+
     return (
-        <motion.div variants={itemVariants} className="group" style={{ perspective: 1000 }}>
-            <Link href={`/works/${work.slug}`} className="block h-full">
+        <motion.div variants={itemVariants} className="group" style={{ perspective: 1000 }} ref={cardRef}>
+            <Link href={`/works/${work.slug}`} className="block h-full" onClick={handleClick}>
                 <motion.article 
                     className="h-full bg-card rounded-xl overflow-hidden shadow-sm border border-border transition-shadow hover:shadow-md flex flex-col luminous-border-on-dark relative"
                     onMouseMove={handleMouseMove}
@@ -60,35 +85,37 @@ export function WorkCard({ work }: { work: Work }) {
                         className="relative aspect-video bg-muted overflow-hidden"
                         style={{ transform: isSafe ? "none" : "translateZ(30px)" }}
                     >
-                        {work.thumbnail_url ? (
-                            <Image
-                                src={work.thumbnail_url}
-                                alt={work.title}
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                        ) : (
-                            <div 
-                                className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
-                                style={{
-                                    background: `linear-gradient(135deg, 
-                                        hsl(${(work.title.length * 40) % 360}, 60%, var(--placeholder-lightness, 80%)), 
-                                        hsl(${(work.title.length * 40 + 60) % 360}, 70%, var(--placeholder-lightness-2, 90%)))`
-                                }}
-                            >
-                                <div className="text-white/50 transform -rotate-12 select-none pointer-events-none">
-                                    <span className="text-6xl font-black opacity-20 uppercase tracking-tighter">
-                                        {work.title.substring(0, 2)}
-                                    </span>
+                        <motion.div className="w-full h-full" style={{ y: isSafe ? 0 : imageY }}>
+                            {work.thumbnail_url ? (
+                                <Image
+                                    src={work.thumbnail_url}
+                                    alt={work.title}
+                                    fill
+                                    className="object-cover transition-transform duration-500 group-hover:scale-[1.15]"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
+                            ) : (
+                                <div 
+                                    className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                                    style={{
+                                        background: `linear-gradient(135deg, 
+                                            hsl(${(work.title.length * 40) % 360}, 60%, var(--placeholder-lightness, 80%)), 
+                                            hsl(${(work.title.length * 40 + 60) % 360}, 70%, var(--placeholder-lightness-2, 90%)))`
+                                    }}
+                                >
+                                    <div className="text-white/50 transform -rotate-12 select-none pointer-events-none">
+                                        <span className="text-6xl font-black opacity-20 uppercase tracking-tighter">
+                                            {work.title.substring(0, 2)}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </motion.div>
                     </div>
 
-                    <div 
-                        className="p-6 flex-1 flex flex-col"
-                        style={{ transform: isSafe ? "none" : "translateZ(40px)" }}
+                    <motion.div 
+                        className="p-6 flex-1 flex flex-col bg-card"
+                        style={{ transform: isSafe ? "none" : "translateZ(40px)", y: isSafe ? 0 : textY }}
                     >
                         <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                             {work.title}
@@ -101,12 +128,12 @@ export function WorkCard({ work }: { work: Work }) {
 
                         <div className="flex flex-wrap gap-2 mt-auto">
                             {work.tech_stack?.slice(0, 3).map(tech => (
-                                <span key={tech} className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground">
+                                <span key={tech} className="text-xs bg-zinc-700/80 dark:bg-zinc-800 text-white px-2 py-1 rounded">
                                     {tech}
                                 </span>
                             ))}
                         </div>
-                    </div>
+                    </motion.div>
                 </motion.article>
             </Link>
         </motion.div>

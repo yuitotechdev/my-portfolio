@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useSpring, useMotionValue } from 'framer-motion'
+import { motion, useSpring, useMotionValue, useScroll, useTransform } from 'framer-motion'
 import { MOTION } from '@/config/motion'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
@@ -37,6 +37,11 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
         mouseX.set(x * 20) // 20px tilt
         mouseY.set(y * 20)
     }
+
+    // Scroll Parallax
+    const { scrollYProgress } = useScroll()
+    const yParallax = useTransform(scrollYProgress, [0, 0.5], ["0%", "30%"])
+    const opacityParallax = useTransform(scrollYProgress, [0, 0.4], [1, 0])
 
     const title = profile?.name || 'Creator'
     // Split title into characters for orchestration
@@ -82,13 +87,16 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
 
             <motion.div
                 className="max-w-5xl w-full relative z-10"
-                initial="hidden"
-                animate="visible"
-                variants={container}
-                style={{ x: isSafe ? 0 : smoothX, y: isSafe ? 0 : smoothY }}
+                style={{ y: isSafe ? 0 : yParallax, opacity: isSafe ? 1 : opacityParallax }}
             >
-                {/* Title Orchestra */}
-                <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-foreground leading-[0.9] select-none cursor-default">
+                <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={container}
+                    style={{ x: isSafe ? 0 : smoothX, y: isSafe ? 0 : smoothY }}
+                >
+                    {/* Title Orchestra */}
+                    <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-foreground leading-[0.9] select-none cursor-default">
                     {chars.map((char, i) => (
                         <motion.span
                             key={i}
@@ -141,6 +149,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                             ))}
                         </div>
                     </div>
+                </motion.div>
                 </motion.div>
             </motion.div>
         </section>
