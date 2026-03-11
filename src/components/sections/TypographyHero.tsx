@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { type Profile, type LinkItem as SocialLink } from '@/lib/repositories/profile'
 import { useMotion as useMotionContext } from '@/components/providers/MotionProvider'
 import { HOME_TEXT } from '@/config/i18n'
+import { Magnetic } from '@/components/ui/Magnetic'
 
 interface TypographyHeroProps {
     profile: Profile | null
@@ -47,8 +48,8 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.2
+                staggerChildren: 0.08, // Slightly faster stagger for smoother wave
+                delayChildren: 0.3
             }
         }
     }
@@ -56,16 +57,18 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
     const child = {
         hidden: {
             opacity: 0,
-            y: 32, // More dramatic start
+            y: 40, // Increased dramatic drop
+            scale: 0.9, // Add scale
             rotateX: isSafe ? 0 : 45, // 3D rotate if safe
             filter: 'blur(12px)'
         },
         visible: {
             opacity: 1,
             y: 0,
+            scale: 1,
             rotateX: 0,
             filter: 'blur(0px)',
-            transition: MOTION.spring.heavy
+            transition: { ...MOTION.spring.heavy, damping: 20 } // Slightly bouncier snap
         }
     }
 
@@ -110,29 +113,32 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                     </p>
 
                     <div className="flex flex-col md:flex-row items-center gap-6 justify-start">
-                        <Button
-                            asChild
-                            size="lg"
-                            className="rounded-full px-10 text-lg h-14 bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-xl hover:shadow-primary/20 hover:scale-105 active:scale-95 duration-200"
-                        >
-                            <Link href="/works">
-                                {HOME_TEXT.view_works_btn} <ArrowRight className="ml-2 w-5 h-5" />
-                            </Link>
-                        </Button>
+                        <Magnetic intensity={0.2}>
+                            <Button
+                                asChild
+                                size="lg"
+                                className="rounded-full px-10 text-lg h-14 bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-xl hover:shadow-primary/20 hover:scale-105 active:scale-95 duration-200"
+                            >
+                                <Link href="/works">
+                                    {HOME_TEXT.view_works_btn} <ArrowRight className="ml-2 w-5 h-5" />
+                                </Link>
+                            </Button>
+                        </Magnetic>
 
                         <div className="flex gap-3 flex-wrap justify-center">
                             {links.map((link) => (
-                                <motion.a
-                                    key={link.id}
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors bg-muted/20 border border-border rounded-full text-sm font-medium hover:bg-muted/40 backdrop-blur-sm"
-                                    whileHover={{ y: -2 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    {link.title}
-                                </motion.a>
+                                <Magnetic key={link.id} intensity={0.1}>
+                                    <motion.a
+                                        href={link.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block px-4 py-2 text-muted-foreground hover:text-foreground transition-colors bg-muted/20 border border-border rounded-full text-sm font-medium hover:bg-muted/40 backdrop-blur-sm"
+                                        whileHover={{ y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        {link.title}
+                                    </motion.a>
+                                </Magnetic>
                             ))}
                         </div>
                     </div>

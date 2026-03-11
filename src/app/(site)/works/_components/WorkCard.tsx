@@ -3,7 +3,8 @@
 import { Work } from '@/lib/repositories/works'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { useMotion as useMotionContext } from '@/components/providers/MotionProvider'
 
 const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -11,11 +12,54 @@ const itemVariants = {
 }
 
 export function WorkCard({ work }: { work: Work }) {
+    const { preference } = useMotionContext()
+    const isSafe = preference === 'safe' || preference === 'minimal'
+
+    const x = useMotionValue(0)
+    const y = useMotionValue(0)
+
+    const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 })
+    const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 })
+
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"])
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"])
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+        if (isSafe) return
+        const rect = e.currentTarget.getBoundingClientRect()
+        const width = rect.width
+        const height = rect.height
+        const mouseX = e.clientX - rect.left
+        const mouseY = e.clientY - rect.top
+        const xPct = mouseX / width - 0.5
+        const yPct = mouseY / height - 0.5
+        x.set(xPct)
+        y.set(yPct)
+    }
+
+    const handleMouseLeave = () => {
+        if (isSafe) return
+        x.set(0)
+        y.set(0)
+    }
+
     return (
-        <motion.div variants={itemVariants} className="group">
+        <motion.div variants={itemVariants} className="group" style={{ perspective: 1000 }}>
             <Link href={`/works/${work.slug}`} className="block h-full">
-                <article className="h-full bg-card rounded-xl overflow-hidden shadow-sm border border-border transition-shadow hover:shadow-md flex flex-col">
-                    <div className="relative aspect-video bg-muted overflow-hidden">
+                <motion.article 
+                    className="h-full bg-card rounded-xl overflow-hidden shadow-sm border border-border transition-shadow hover:shadow-md flex flex-col luminous-border-on-dark relative"
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
+                    style={{
+                        rotateX: isSafe ? 0 : rotateX,
+                        rotateY: isSafe ? 0 : rotateY,
+                        transformStyle: "preserve-3d" // for interior elements
+                    }}
+                >
+                    <div 
+                        className="relative aspect-video bg-muted overflow-hidden"
+                        style={{ transform: isSafe ? "none" : "translateZ(30px)" }}
+                    >
                         {work.thumbnail_url ? (
                             <Image
                                 src={work.thumbnail_url}
@@ -42,7 +86,10 @@ export function WorkCard({ work }: { work: Work }) {
                         )}
                     </div>
 
-                    <div className="p-6 flex-1 flex flex-col">
+                    <div 
+                        className="p-6 flex-1 flex flex-col"
+                        style={{ transform: isSafe ? "none" : "translateZ(40px)" }}
+                    >
                         <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                             {work.title}
                         </h2>
@@ -60,7 +107,7 @@ export function WorkCard({ work }: { work: Work }) {
                             ))}
                         </div>
                     </div>
-                </article>
+                </motion.article>
             </Link>
         </motion.div>
     )

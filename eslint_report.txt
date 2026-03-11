@@ -1,0 +1,40 @@
+﻿
+C:\Users\syuue\OneDrive\繝・せ繧ｯ繝医ャ繝予雜｣蜻ｳ菴懈・\繝昴・繝医ヵ繧ｩ繝ｪ繧ｪ\binary-search.js
+   1:12  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:14  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  22:18  warning  'e' is defined but never used            @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\繝・せ繧ｯ繝医ャ繝予雜｣蜻ｳ菴懈・\繝昴・繝医ヵ繧ｩ繝ｪ繧ｪ\escape-non-ascii.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\syuue\OneDrive\繝・せ繧ｯ繝医ャ繝予雜｣蜻ｳ菴懈・\繝昴・繝医ヵ繧ｩ繝ｪ繧ｪ\src\app\admin\(auth)\works\_components\EditWorkForm.tsx
+  15:10  warning  'SmartImage' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\繝・せ繧ｯ繝医ャ繝予雜｣蜻ｳ菴懈・\繝昴・繝医ヵ繧ｩ繝ｪ繧ｪ\src\components\ui\AmbientGlow.tsx
+  16:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\syuue\OneDrive\繝・せ繧ｯ繝医ャ繝予雜｣蜻ｳ菴懈・\繝昴・繝医ヵ繧ｩ繝ｪ繧ｪ\src\components\ui\AmbientGlow.tsx:16:9
+  14 |
+  15 |     useEffect(() => {
+> 16 |         setMounted(true)
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  17 |         // Center initial position
+  18 |         x.set(window.innerWidth / 2)
+  19 |         y.set(window.innerHeight / 2)  react-hooks/set-state-in-effect
+
+C:\Users\syuue\OneDrive\繝・せ繧ｯ繝医ャ繝予雜｣蜻ｳ菴懈・\繝昴・繝医ヵ繧ｩ繝ｪ繧ｪ\src\scripts\setup-storage.ts
+  11:17  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\syuue\OneDrive\繝・せ繧ｯ繝医ャ繝予雜｣蜻ｳ菴懈・\繝昴・繝医ヵ繧ｩ繝ｪ繧ｪ\unescape.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+笨・10 problems (7 errors, 3 warnings)
+

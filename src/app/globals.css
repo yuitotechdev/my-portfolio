@@ -108,6 +108,25 @@
   .surface-panel {
     @apply bg-[var(--background)] shadow-[var(--shadow-surface)] ring-1 ring-[var(--border)] rounded-xl;
   }
+
+  /* Luminous Border for Dark Mode */
+  .luminous-border-on-dark {
+    position: relative;
+  }
+  .dark .luminous-border-on-dark::after {
+    content: ""; /* use ::after so it stays above the content if need be, or ::before for background glow */
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 20px rgba(56, 189, 248, 0.1); /* Subtle blue glow */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 10;
+  }
+  .dark .luminous-border-on-dark:hover::after {
+    opacity: 1;
+  }
 }
 
 @keyframes accordion-down {
