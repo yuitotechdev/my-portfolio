@@ -4,18 +4,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Sun, Moon } from 'lucide-react'
+import { useMotion } from '@/components/providers/MotionProvider'
 import { cn } from '@/lib/utils'
 
-const navItems = [
-    { name: 'Works', href: '/works' },
-    { name: 'Products', href: '/products' },
-    { name: 'Devices', href: '/devices' },
-    { name: 'News', href: '/news' },
-    { name: 'Blog', href: '/blog' }, // Spec says /blog
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-]
+import { NAV_ITEMS } from '@/config/i18n'
+
+const navItems = NAV_ITEMS
 
 // To match "Blog" in spec but "Posts" in implementation, I'll link to /posts but label "Blog".
 // Ideally I should rename the route, but sticking to existing /posts for stability.
@@ -23,6 +18,7 @@ const navItems = [
 export function Header() {
     const [scrolled, setScrolled] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const { theme, toggleTheme } = useMotion()
     const pathname = usePathname()
 
     useEffect(() => {
@@ -53,14 +49,21 @@ export function Header() {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-gray-100/50",
-                                    isActive ? "text-indigo-600 bg-gray-50" : "text-gray-600 hover:text-gray-900"
+                                    "px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-gray-100/50 dark:hover:bg-gray-800/50",
+                                    isActive ? "text-indigo-600 bg-gray-50 dark:bg-gray-900" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                                 )}
                             >
                                 {item.name}
                             </Link>
                         )
                     })}
+                    <button
+                        onClick={toggleTheme}
+                        className="ml-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
+                        title="テーマを切り替え"
+                    >
+                        {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
                 </nav>
 
                 {/* Mobile Toggle */}
@@ -80,7 +83,7 @@ export function Header() {
                             exit={{ opacity: 0, y: -20 }}
                             className="absolute top-0 left-0 w-full h-screen bg-white flex flex-col items-center justify-center gap-8 md:hidden"
                         >
-                            {navItems.map((item, idx) => (
+                            {navItems.map((item) => (
                                 <Link
                                     key={item.href}
                                     href={item.href}

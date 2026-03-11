@@ -13,28 +13,28 @@ export default async function AdminDevicesPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Devices</h1>
+                <h1 className="text-3xl font-bold tracking-tight">使用機材管理</h1>
                 <Button asChild>
                     <Link href="/admin/devices/new">
                         <Plus className="w-4 h-4 mr-2" />
-                        Add New Device
+                        機材を追加
                     </Link>
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>All Devices</CardTitle>
+                    <CardTitle>機材一覧</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[50px]">Order</TableHead>
-                                <TableHead>Category</TableHead>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead className="w-[50px]">順序</TableHead>
+                                <TableHead>カテゴリー</TableHead>
+                                <TableHead>名称</TableHead>
+                                <TableHead>公開状態</TableHead>
+                                <TableHead className="text-right">操作</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -53,11 +53,11 @@ export default async function AdminDevicesPage() {
                                     <TableCell>
                                         {device.is_public ? (
                                             <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800">
-                                                Public
+                                                公開中
                                             </span>
                                         ) : (
                                             <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
-                                                Draft
+                                                下書き
                                             </span>
                                         )}
                                     </TableCell>
@@ -74,7 +74,7 @@ export default async function AdminDevicesPage() {
                             {devices.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                                        No devices found.
+                                        機材が見つかりません。
                                     </TableCell>
                                 </TableRow>
                             )}

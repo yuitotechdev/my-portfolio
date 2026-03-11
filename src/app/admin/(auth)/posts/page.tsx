@@ -17,28 +17,28 @@ export default async function AdminPostsPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Posts</h1>
+                <h1 className="text-3xl font-bold tracking-tight">ブログ管理</h1>
                 <Button asChild>
                     <Link href="/admin/posts/new">
                         <Plus className="w-4 h-4 mr-2" />
-                        Add New Post
+                        記事を書く
                     </Link>
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>All Posts</CardTitle>
+                    <CardTitle>記事一覧</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Title</TableHead>
-                                <TableHead>Slug</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead>タイトル</TableHead>
+                                <TableHead>スラッグ</TableHead>
+                                <TableHead>公開状態</TableHead>
+                                <TableHead>作成日</TableHead>
+                                <TableHead className="text-right">操作</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -49,11 +49,11 @@ export default async function AdminPostsPage() {
                                     <TableCell>
                                         {post.published_at ? (
                                             <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800">
-                                                Published
+                                                公開済み
                                             </span>
                                         ) : (
                                             <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
-                                                Draft
+                                                下書き
                                             </span>
                                         )}
                                     </TableCell>
@@ -73,7 +73,7 @@ export default async function AdminPostsPage() {
                             {posts?.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                                        No posts found. Create your first post!
+                                        記事が見つかりません。最初の記事を執筆しましょう！
                                     </TableCell>
                                 </TableRow>
                             )}

@@ -35,20 +35,20 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                     if (result?.error) {
                         toast.error(result.error)
                     } else {
-                        toast.success(isEdit ? 'Work updated' : 'Work created')
+                        toast.success(isEdit ? '実績を更新しました' : '実績を作成しました')
                     }
                 } else {
                     // Fallback if action prop not used correctly
                     if (isEdit && work) {
                         await updateWork(work.id, formData)
-                        toast.success('Work updated')
+                        toast.success('実績を更新しました')
                     } else {
                         await createWork(formData)
-                        toast.success('Work created')
+                        toast.success('実績を作成しました')
                     }
                 }
             } catch (error) {
-                toast.error('Failed to save work')
+                toast.error('保存に失敗しました')
                 console.error(error)
             }
         })
@@ -57,14 +57,14 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
     return (
         <form action={handleSubmit} className="space-y-8 max-w-3xl">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold tracking-tight">{isEdit ? 'Edit Work' : 'New Work'}</h1>
+                <h1 className="text-2xl font-bold tracking-tight">{isEdit ? '実績を編集' : '実績を新規作成'}</h1>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/works">Cancel</Link>
+                        <Link href="/admin/works">キャンセル</Link>
                     </Button>
                     <Button type="submit" size="sm" disabled={isPending}>
                         {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                        Save
+                        保存
                     </Button>
                 </div>
             </div>
@@ -75,31 +75,31 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="flex items-center justify-between border rounded-lg p-4">
                             <div className="space-y-0.5">
-                                <Label htmlFor="is_public" className="text-base">Public Status</Label>
-                                <p className="text-xs text-muted-foreground">Visible on public site</p>
+                                <Label htmlFor="is_public" className="text-base">公開状態</Label>
+                                <p className="text-xs text-muted-foreground">サイトに表示するかどうか</p>
                             </div>
                             <Switch id="is_public" name="is_public" defaultChecked={work?.is_public ?? true} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="slug">Slug (URL path)</Label>
+                            <Label htmlFor="slug">スラッグ (URLパス)</Label>
                             <Input id="slug" name="slug" defaultValue={work?.slug} required placeholder="my-project-name" />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="title">Title <span className="text-red-500">*</span></Label>
-                        <Input id="title" name="title" defaultValue={work?.title} required placeholder="Project Title" />
+                        <Label htmlFor="title">タイトル <span className="text-red-500">*</span></Label>
+                        <Input id="title" name="title" defaultValue={work?.title} required placeholder="プロジェクト名" />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" name="description" defaultValue={work?.description || ''} placeholder="Project summary..." className="h-32" />
+                        <Label htmlFor="description">説明文</Label>
+                        <Textarea id="description" name="description" defaultValue={work?.description || ''} placeholder="プロジェクトの概要..." className="h-32" />
                     </div>
 
                     {/* URLs */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="deployment_url">Deployment URL</Label>
+                            <Label htmlFor="deployment_url">デプロイURL</Label>
                             <Input id="deployment_url" name="deployment_url" type="url" defaultValue={work?.deployment_url || ''} placeholder="https://..." />
                         </div>
                         <div className="space-y-2">
@@ -109,13 +109,13 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="tech_stack">Tech Stack (Comma separated)</Label>
+                        <Label htmlFor="tech_stack">技術スタック (カンマ区切り)</Label>
                         <Input id="tech_stack" name="tech_stack" defaultValue={work?.tech_stack?.join(', ') || ''} placeholder="Next.js, Tailwind, Supabase" />
                     </div>
 
                     {/* Image */}
                     <div className="space-y-4 pt-4 border-t">
-                        <Label htmlFor="thumbnail_url">Thumbnail URL</Label>
+                        <Label htmlFor="thumbnail_url">サムネイルURL</Label>
                         <div className="flex gap-4 items-start">
                             <Input id="thumbnail_url" name="thumbnail_url" defaultValue={work?.thumbnail_url || ''} placeholder="https://..." className="flex-1" />
                         </div>
@@ -123,7 +123,7 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                             <div className="relative w-full aspect-video rounded-lg overflow-hidden border bg-gray-100">
                                 <SmartImage
                                     src={work.thumbnail_url}
-                                    alt="Preview"
+                                    alt="プレビュー"
                                     fill
                                     className="object-cover"
                                 />

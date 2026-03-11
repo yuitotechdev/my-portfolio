@@ -33,8 +33,13 @@ export default function ImageUpload({ bucket, onUpload, initialUrl }: ImageUploa
             formData.append('bucket', bucket)
 
             // Server Action Call
-            const publicUrl = await uploadImageAction(formData)
+            const result = await uploadImageAction(formData)
 
+            if (typeof result === 'object' && result.error) {
+                throw new Error(result.error)
+            }
+
+            const publicUrl = result as string
             setPreview(publicUrl)
             onUpload(publicUrl)
         } catch (err) {

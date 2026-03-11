@@ -15,12 +15,12 @@ export default async function AdminWorksPage() {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Works Management</h2>
+                <h2 className="text-2xl font-bold">WORKS_CONST管理</h2>
                 <Link
                     href="/admin/works/new"
                     className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors"
                 >
-                    Add Work
+                    実績を追加
                 </Link>
             </div>
 
@@ -28,10 +28,10 @@ export default async function AdminWorksPage() {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thumbnail</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title / Slug</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">サムネイル</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">タイトル / スラッグ</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">公開状態</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -56,11 +56,11 @@ export default async function AdminWorksPage() {
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${work.is_public ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                                         }`}>
-                                        {work.is_public ? 'Public' : 'Draft'}
+                                        {work.is_public ? '公開中' : '下書き'}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-4 items-center">
-                                    <Link href={`/admin/works/${work.id}`} className="text-indigo-600 hover:text-indigo-900">Edit</Link>
+                                    <Link href={`/admin/works/${work.id}`} className="text-indigo-600 hover:text-indigo-900">編集</Link>
                                     <DeleteButton id={work.id} title={work.title} deleteAction={deleteWork} />
                                 </td>
                             </tr>
@@ -68,7 +68,7 @@ export default async function AdminWorksPage() {
                         {(!works || works.length === 0) && (
                             <tr>
                                 <td colSpan={4} className="px-6 py-10 text-center text-gray-500">
-                                    No works found.
+                                    実績が見つかりません。
                                 </td>
                             </tr>
                         )}

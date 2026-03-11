@@ -2,6 +2,7 @@ import { ProductsRepository } from '@/lib/repositories/products'
 import { Reveal, StaggerList } from '@/components/ui/motion'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
+import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
 export const metadata = {
     title: 'Products - Portfolio',
@@ -16,7 +17,7 @@ export default async function ProductsPage() {
             <div className="max-w-7xl mx-auto">
                 <Reveal>
                     <header className="mb-16">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">Products</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">{PAGE_TITLES.products}</h1>
                         <p className="text-xl text-gray-600 max-w-2xl">
                             Tools, templates, and resources I&apos;ve built.
                         </p>
@@ -75,7 +76,7 @@ export default async function ProductsPage() {
                     <Reveal delay={0.2}>
                         <div className="py-24 text-center text-gray-400">
                             <ShoppingBag className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                            <p>No products available yet.</p>
+                            <p>{COMMON_TEXT.no_data}</p>
                         </div>
                     </Reveal>
                 )}

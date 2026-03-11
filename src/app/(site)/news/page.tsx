@@ -2,6 +2,7 @@ import { NewsRepository } from '@/lib/repositories/news'
 import { StaggerList, Reveal } from '@/components/ui/motion'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
 export const metadata = {
     title: 'News - Portfolio',
@@ -14,7 +15,7 @@ export default async function NewsPage() {
     return (
         <main className="min-h-screen py-24 px-6 md:px-12 max-w-3xl mx-auto">
             <Reveal>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">News</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">{PAGE_TITLES.news}</h1>
                 <p className="text-xl text-gray-600 mb-16">
                     Latest announcements and updates.
                 </p>
@@ -50,7 +51,7 @@ export default async function NewsPage() {
             {newsList.length === 0 && (
                 <Reveal>
                     <div className="py-12 pl-8 text-gray-400">
-                        No news yet.
+                        {COMMON_TEXT.no_data}
                     </div>
                 </Reveal>
             )}

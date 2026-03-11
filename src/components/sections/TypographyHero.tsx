@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { type Profile, type LinkItem as SocialLink } from '@/lib/repositories/profile'
 import { useMotion as useMotionContext } from '@/components/providers/MotionProvider'
+import { HOME_TEXT } from '@/config/i18n'
 
 interface TypographyHeroProps {
     profile: Profile | null
@@ -97,7 +98,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                                 transition: MOTION.spring.rapid
                             } : undefined}
                         >
-                            {char === " " ? "\u00A0" : char}
+                            {char === " " ? " " : char}
                         </motion.span>
                     ))}
                 </h1>
@@ -115,7 +116,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                             className="rounded-full px-10 text-lg h-14 bg-slate-900 hover:bg-indigo-600 transition-all shadow-xl hover:shadow-indigo-200 hover:scale-105 active:scale-95 duration-200"
                         >
                             <Link href="/works">
-                                View Selected Works <ArrowRight className="ml-2 w-5 h-5" />
+                                {HOME_TEXT.view_works_btn} <ArrowRight className="ml-2 w-5 h-5" />
                             </Link>
                         </Button>
 

@@ -15,14 +15,14 @@ export default async function SettingsPage() {
 
     return (
         <div className="space-y-8 max-w-4xl">
-            <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+            <h1 className="text-3xl font-bold tracking-tight">設定</h1>
 
             <div className="grid gap-8">
                 {/* Profile Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Profile Information</CardTitle>
-                        <CardDescription>Manage your public profile details.</CardDescription>
+                        <CardTitle>プロフィール情報</CardTitle>
+                        <CardDescription>公開プロフィールの詳細を管理します。</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <ProfileForm profile={profile} />
@@ -32,8 +32,8 @@ export default async function SettingsPage() {
                 {/* Links Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Social Links</CardTitle>
-                        <CardDescription>Manage links displayed on your site.</CardDescription>
+                        <CardTitle>ソーシャルリンク</CardTitle>
+                        <CardDescription>サイトに表示されるリンクを管理します。</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <LinksManager links={links} />
@@ -43,8 +43,8 @@ export default async function SettingsPage() {
                 {/* Backup Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Data Management</CardTitle>
-                        <CardDescription>Export or import your database content.</CardDescription>
+                        <CardTitle>データ管理</CardTitle>
+                        <CardDescription>データベースの内容をエクスポートまたはインポートします。</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <BackupManager />

@@ -16,49 +16,64 @@ async function requireAdmin() {
 }
 
 export async function createDevice(formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parseDeviceFormData(formData)
-    const result = deviceSchema.safeParse(rawData)
+        const rawData = parseDeviceFormData(formData)
+        const result = deviceSchema.safeParse(rawData)
 
-    if (!result.success) throw new Error(result.error.issues.map(e => e.message).join(', '))
+        if (!result.success) return { error: result.error.issues.map(e => e.message).join(', ') }
 
-    const { error } = await supabaseAdmin.from('devices').insert(result.data)
+        const { error } = await supabaseAdmin.from('devices').insert(result.data)
 
-    if (error) throw new Error('Failed to create device')
+        if (error) return { error: 'Failed to create device' }
 
-    revalidatePath('/admin/devices')
-    revalidatePath('/devices')
+        revalidatePath('/admin/devices')
+        revalidatePath('/devices')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
     redirect('/admin/devices')
 }
 
 export async function updateDevice(id: string, formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parseDeviceFormData(formData)
-    const result = deviceSchema.safeParse(rawData)
+        const rawData = parseDeviceFormData(formData)
+        const result = deviceSchema.safeParse(rawData)
 
-    if (!result.success) throw new Error(result.error.issues.map(e => e.message).join(', '))
+        if (!result.success) return { error: result.error.issues.map(e => e.message).join(', ') }
 
-    const { error } = await supabaseAdmin
-        .from('devices')
-        .update({ ...result.data, updated_at: new Date().toISOString() })
-        .eq('id', id)
+        const { error } = await supabaseAdmin
+            .from('devices')
+            .update({ ...result.data, updated_at: new Date().toISOString() })
+            .eq('id', id)
 
-    if (error) throw new Error('Failed to update device')
+        if (error) return { error: 'Failed to update device' }
 
-    revalidatePath('/admin/devices')
-    revalidatePath('/devices')
+        revalidatePath('/admin/devices')
+        revalidatePath('/devices')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
     redirect('/admin/devices')
 }
 
 export async function deleteDevice(id: string) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const { error } = await supabaseAdmin.from('devices').delete().eq('id', id)
+        const { error } = await supabaseAdmin.from('devices').delete().eq('id', id)
 
-    if (error) throw new Error('Failed to delete device')
+        if (error) return { error: 'Failed to delete device' }
 
-    revalidatePath('/admin/devices')
-    revalidatePath('/devices')
+        revalidatePath('/admin/devices')
+        revalidatePath('/devices')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
 }

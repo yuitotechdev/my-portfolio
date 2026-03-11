@@ -17,9 +17,9 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
         startTransition(async () => {
             try {
                 await updateProfile(formData)
-                toast.success('Profile updated')
+                toast.success('プロフィールを更新しました')
             } catch {
-                toast.error('Failed to update profile')
+                toast.error('プロフィールの更新に失敗しました')
             }
         })
     }
@@ -27,34 +27,34 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
     return (
         <form action={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">名前</Label>
                 <Input id="name" name="name" defaultValue={profile?.name || ''} required />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="avatar_url">Avatar URL</Label>
+                <Label htmlFor="avatar_url">アバターURL</Label>
                 <Input id="avatar_url" name="avatar_url" defaultValue={profile?.avatar_url || ''} placeholder="https://..." />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="bio_short">Bio (Short) - For Home Hero</Label>
+                <Label htmlFor="bio_short">略歴 (短) - ホームのヒーローセクション用</Label>
                 <Input id="bio_short" name="bio_short" defaultValue={profile?.bio_short || ''} placeholder="Software Engineer / Designer" />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="bio_medium">Bio (Medium) - For About Summary</Label>
+                <Label htmlFor="bio_medium">略歴 (中) - 自己紹介の要約用</Label>
                 <Textarea id="bio_medium" name="bio_medium" defaultValue={profile?.bio_medium || ''} className="h-24" />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="bio_long">Bio (Long) - Full About Page</Label>
+                <Label htmlFor="bio_long">略歴 (長) - 自己紹介ページ全文</Label>
                 <Textarea id="bio_long" name="bio_long" defaultValue={profile?.bio_long || ''} className="h-48" />
             </div>
 
             <div className="flex justify-end">
                 <Button type="submit" disabled={isPending}>
                     {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    Save Profile
+                    プロフィールを保存
                 </Button>
             </div>
         </form>

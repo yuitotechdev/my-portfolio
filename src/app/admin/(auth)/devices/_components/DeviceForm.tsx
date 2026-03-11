@@ -22,13 +22,13 @@ export function DeviceForm({ device }: { device?: Device }) {
             try {
                 if (isEdit && device) {
                     await updateDevice(device.id, formData)
-                    toast.success('Device updated')
+                    toast.success('機材情報を更新しました')
                 } else {
                     await createDevice(formData)
-                    toast.success('Device created')
+                    toast.success('機材情報を追加しました')
                 }
             } catch (error) {
-                toast.error('Failed to save device')
+                toast.error('保存に失敗しました')
                 console.error(error)
             }
         })
@@ -39,38 +39,38 @@ export function DeviceForm({ device }: { device?: Device }) {
             <Card>
                 <CardContent className="pt-6 space-y-6">
                     <div className="flex items-center justify-between border-b pb-4">
-                        <Label htmlFor="is_public" className="text-base">Public Status</Label>
+                        <Label htmlFor="is_public" className="text-base">公開状態</Label>
                         <Switch id="is_public" name="is_public" defaultChecked={device?.is_public ?? true} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="category">Category <span className="text-red-500">*</span></Label>
-                            <Input id="category" name="category" defaultValue={device?.category || ''} required placeholder="PC / Audio / Desk" />
+                            <Label htmlFor="category">カテゴリー <span className="text-red-500">*</span></Label>
+                            <Input id="category" name="category" defaultValue={device?.category || ''} required placeholder="PC / オーディオ / デスク" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="name">Device Name <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="name">機材名称 <span className="text-red-500">*</span></Label>
                             <Input id="name" name="name" defaultValue={device?.name} required placeholder="MacBook Pro M3" />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="purchase_reason">Why I bought it (Purchase Reason)</Label>
-                        <Textarea id="purchase_reason" name="purchase_reason" defaultValue={device?.purchase_reason || ''} placeholder="Needed meaningful power..." />
+                        <Label htmlFor="purchase_reason">導入理由</Label>
+                        <Textarea id="purchase_reason" name="purchase_reason" defaultValue={device?.purchase_reason || ''} placeholder="購入した理由など..." />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="description">Specs / Description</Label>
+                        <Label htmlFor="description">スペック / 詳細</Label>
                         <Textarea id="description" name="description" defaultValue={device?.description || ''} placeholder="M3 Max, 64GB RAM..." />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="link_url">Product Link</Label>
+                            <Label htmlFor="link_url">製品リンク</Label>
                             <Input id="link_url" name="link_url" defaultValue={device?.link_url || ''} placeholder="https://amazon..." />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="order">Sort Order</Label>
+                            <Label htmlFor="order">表示順序</Label>
                             <Input id="order" name="order" type="number" defaultValue={device?.order ?? 0} />
                         </div>
                     </div>
@@ -80,10 +80,10 @@ export function DeviceForm({ device }: { device?: Device }) {
             <div className="flex items-center gap-4">
                 <Button type="submit" disabled={isPending}>
                     {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    {isEdit ? 'Update Device' : 'Create Device'}
+                    {isEdit ? '更新する' : '追加する'}
                 </Button>
                 <Button type="button" variant="outline" asChild>
-                    <Link href="/admin/devices">Cancel</Link>
+                    <Link href="/admin/devices">キャンセル</Link>
                 </Button>
             </div>
         </form>

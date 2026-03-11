@@ -1,6 +1,7 @@
 import { ProfileRepository } from '@/lib/repositories/profile'
 import { Reveal } from '@/components/ui/motion'
 import Image from 'next/image'
+import { PAGE_TITLES } from '@/config/i18n'
 
 export const metadata = {
     title: 'About - Portfolio',
@@ -14,7 +15,7 @@ export default async function AboutPage() {
         <main className="min-h-screen py-24 px-6 md:px-12 max-w-3xl mx-auto">
             <Reveal>
                 <header className="mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">About</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">{PAGE_TITLES.about}</h1>
                     <div className="flex flex-col md:flex-row gap-8 items-start">
                         {profile?.avatar_url && (
                             <div className="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-full overflow-hidden bg-gray-100">

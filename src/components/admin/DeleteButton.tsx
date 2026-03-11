@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 interface DeleteButtonProps {
     id: string
     title: string
-    deleteAction: (id: string) => Promise<void>
+    deleteAction: (id: string) => Promise<{ error?: string } | void | undefined>
 }
 
 export function DeleteButton({ id, title, deleteAction }: DeleteButtonProps) {
@@ -19,12 +19,16 @@ export function DeleteButton({ id, title, deleteAction }: DeleteButtonProps) {
     const handleDelete = async () => {
         try {
             setIsDeleting(true)
-            await deleteAction(id)
-            toast.success(`${title} deleted successfully`)
-            router.refresh() // Ensure list updates
+            const result = await deleteAction(id)
+            if (result?.error) {
+                toast.error(result.error)
+            } else {
+                toast.success(`${title} を削除しました`)
+                router.refresh()
+            }
         } catch (error) {
             console.error(error)
-            toast.error('Failed to delete item')
+            toast.error('削除に失敗しました')
         } finally {
             setIsDeleting(false)
             setIsModalOpen(false)
@@ -37,14 +41,14 @@ export function DeleteButton({ id, title, deleteAction }: DeleteButtonProps) {
                 onClick={() => setIsModalOpen(true)}
                 className="text-red-600 hover:text-red-900 font-medium"
             >
-                Delete
+                削除
             </button>
 
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={`Delete "${title}"?`}
-                description="This action cannot be undone. This will permanently delete this item from our servers."
+                title={`「${title}」を削除しますか？`}
+                description="この操作は取り消せません。サーバーからこの項目が永久に削除されます。"
                 variant="destructive"
             >
                 <div className="flex justify-end gap-3 mt-4">
@@ -53,14 +57,14 @@ export function DeleteButton({ id, title, deleteAction }: DeleteButtonProps) {
                         disabled={isDeleting}
                         className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
                     >
-                        Cancel
+                        キャンセル
                     </button>
                     <button
                         onClick={handleDelete}
                         disabled={isDeleting}
                         className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 flex items-center gap-2"
                     >
-                        {isDeleting ? 'Deleting...' : 'Delete'}
+                        {isDeleting ? '削除中...' : '削除'}
                     </button>
                 </div>
             </Modal>

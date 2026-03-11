@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
 interface News {
     id?: string
@@ -24,6 +25,7 @@ export default function NewsEditor({ news, action }: NewsEditorProps) {
     const [title, setTitle] = useState(news?.title || '')
     const [slug, setSlug] = useState(news?.slug || '')
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit')
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newTitle = e.target.value
@@ -37,10 +39,10 @@ export default function NewsEditor({ news, action }: NewsEditorProps) {
         try {
             setIsSubmitting(true)
             await action(formData)
-            toast.success(news ? 'News updated successfully' : 'News created successfully')
+            toast.success(news ? 'お知らせを更新しました' : 'お知らせを作成しました')
         } catch (error) {
             console.error(error)
-            const message = error instanceof Error ? error.message : 'Failed to save news'
+            const message = error instanceof Error ? error.message : 'お知らせの保存に失敗しました'
             toast.error(message)
         } finally {
             setIsSubmitting(false)
@@ -54,7 +56,7 @@ export default function NewsEditor({ news, action }: NewsEditorProps) {
                     <input
                         type="text"
                         name="title"
-                        placeholder="News Title"
+                        placeholder="お知らせのタイトル"
                         value={title}
                         onChange={handleTitleChange}
                         required
@@ -71,7 +73,7 @@ export default function NewsEditor({ news, action }: NewsEditorProps) {
                             className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
                         <label htmlFor="is_public" className="ml-2 block text-sm text-gray-900 whitespace-nowrap">
-                            Publish
+                            公開する
                         </label>
                     </div>
                     <button
@@ -79,15 +81,15 @@ export default function NewsEditor({ news, action }: NewsEditorProps) {
                         disabled={isSubmitting}
                         className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isSubmitting ? 'Saving...' : (news ? 'Update' : 'Create')}
+                        {isSubmitting ? '保存中...' : (news ? '更新する' : '作成する')}
                     </button>
-                    <Link href="/admin/news" className={`text-gray-500 hover:text-gray-700 ${isSubmitting ? 'pointer-events-none opacity-50' : ''}`}>Cancel</Link>
+                    <Link href="/admin/news" className={`text-gray-500 hover:text-gray-700 ${isSubmitting ? 'pointer-events-none opacity-50' : ''}`}>キャンセル</Link>
                 </div>
             </div>
 
-            <div className="mb-4 flex gap-4">
+            <div className="mb-4 flex gap-4 items-end">
                 <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 uppercase">Slug</label>
+                    <label className="block text-xs font-medium text-gray-500 uppercase">スラッグ (URLパス)</label>
                     <input
                         type="text"
                         name="slug"
@@ -97,24 +99,40 @@ export default function NewsEditor({ news, action }: NewsEditorProps) {
                         className="mt-1 block w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50 px-3 py-2"
                     />
                 </div>
+                <div className="flex bg-gray-100 p-1 rounded-md md:hidden">
+                    <button
+                        type="button"
+                        onClick={() => setViewMode('edit')}
+                        className={`px-3 py-1 text-xs rounded ${viewMode === 'edit' ? 'bg-white shadow-sm' : 'text-gray-500'}`}
+                    >
+                        編集
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setViewMode('preview')}
+                        className={`px-3 py-1 text-xs rounded ${viewMode === 'preview' ? 'bg-white shadow-sm' : 'text-gray-500'}`}
+                    >
+                        プレビュー
+                    </button>
+                </div>
             </div>
 
             <div className="flex-1 flex gap-6 overflow-hidden border-t pt-4">
                 {/* Editor */}
-                <div className="flex-1 flex flex-col">
-                    <label className="block text-xs font-medium text-gray-500 uppercase mb-2">Content</label>
+                <div className={cn("flex-1 flex flex-col", viewMode === 'preview' && "hidden md:flex")}>
+                    <label className="block text-xs font-medium text-gray-500 uppercase mb-2">本文 (Markdown)</label>
                     <textarea
                         name="content"
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className="flex-1 w-full p-4 border rounded-lg font-mono text-sm focus:border-indigo-500 focus:ring-indigo-500 resize-none leading-relaxed"
-                        placeholder="Announce something..."
+                        placeholder="内容を入力してください..."
                     />
                 </div>
 
                 {/* Preview */}
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    <label className="block text-xs font-medium text-gray-500 uppercase mb-2">Preview</label>
+                <div className={cn("flex-1 flex flex-col overflow-hidden", viewMode === 'edit' && "hidden md:flex")}>
+                    <label className="block text-xs font-medium text-gray-500 uppercase mb-2">プレビュー</label>
                     <div className="flex-1 overflow-y-auto w-full p-8 border rounded-lg bg-white prose prose-sm max-w-none">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                             {content}

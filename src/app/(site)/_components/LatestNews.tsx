@@ -3,6 +3,7 @@ import { Reveal, StaggerList } from '@/components/ui/motion'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import { HOME_TEXT, COMMON_TEXT } from '@/config/i18n'
 
 export async function LatestNews() {
     const recentNews = (await NewsRepository.getAllPublic()).slice(0, 3)
@@ -12,9 +13,9 @@ export async function LatestNews() {
             <div className="max-w-3xl mx-auto">
                 <Reveal>
                     <div className="flex items-center justify-between mb-12">
-                        <h2 className="text-3xl font-bold tracking-tight">News</h2>
+                        <h2 className="text-3xl font-bold tracking-tight">{HOME_TEXT.news_title}</h2>
                         <Link href="/news" className="text-sm font-medium hover:underline text-gray-600">
-                            View all
+                            {HOME_TEXT.view_all}
                         </Link>
                     </div>
                 </Reveal>
@@ -25,7 +26,7 @@ export async function LatestNews() {
                             <article className="border-l-2 border-gray-100 pl-6 py-1 transition-colors hover:border-indigo-500">
                                 <div className="flex items-center gap-4 text-sm text-gray-400 mb-1">
                                     {news.published_at && (
-                                        <time className="font-mono">
+                                        <time className="font-mono" suppressHydrationWarning>
                                             {format(new Date(news.published_at), 'yyyy.MM.dd')}
                                         </time>
                                     )}
@@ -37,7 +38,7 @@ export async function LatestNews() {
                         </Link>
                     ))}
                     {recentNews.length === 0 && (
-                        <div className="text-gray-400 py-8">No updates yet.</div>
+                        <div className="text-gray-400 py-8">{COMMON_TEXT.no_data}</div>
                     )}
                 </StaggerList>
             </div>

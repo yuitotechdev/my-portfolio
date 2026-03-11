@@ -1,9 +1,10 @@
 import { DevicesRepository } from '@/lib/repositories/devices'
 import { Reveal, StaggerList } from '@/components/ui/motion'
-import { ExternalLink, Monitor, ShoppingBag } from 'lucide-react'
+import { ExternalLink, Monitor } from 'lucide-react'
+import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
 export const metadata = {
-    title: 'Devices - Portfolio',
+    title: 'Gear - Portfolio',
     description: 'My gear and setup.',
 }
 
@@ -25,7 +26,7 @@ export default async function DevicesPage() {
             <div className="max-w-4xl mx-auto">
                 <Reveal>
                     <header className="mb-16">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">Devices / Desk Setup</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">{PAGE_TITLES.devices}</h1>
                         <p className="text-xl text-gray-600 max-w-2xl">
                             The equipment I use to create.
                         </p>
@@ -82,7 +83,7 @@ export default async function DevicesPage() {
                     <Reveal delay={0.2}>
                         <div className="py-24 text-center text-gray-400">
                             <Monitor className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                            <p>No devices listed yet.</p>
+                            <p>{COMMON_TEXT.no_data}</p>
                         </div>
                     </Reveal>
                 )}

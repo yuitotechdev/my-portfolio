@@ -29,6 +29,30 @@
   --font-mono: var(--font-geist-mono);
 }
 
+.dark {
+  /* Night Sky Theme */
+  --background: 222 47% 4%;
+  /* #050a14 */
+  --foreground: 210 40% 98%;
+
+  --muted: 217 19% 27%;
+  --muted-foreground: 215 20% 65%;
+
+  --card: 222 47% 8%;
+  --card-foreground: 210 40% 98%;
+
+  --primary: 217 91% 60%;
+  /* Indigo Blue */
+  --primary-foreground: 210 40% 98%;
+
+  --border: 222 47% 12%;
+  --input: 222 47% 12%;
+  --ring: 217 91% 60%;
+
+  --glass-bg: rgba(5, 10, 20, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

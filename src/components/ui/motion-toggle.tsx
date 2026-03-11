@@ -15,9 +15,9 @@ export function MotionToggle() {
     }
 
     const options = [
-        { value: 'high', label: 'High', icon: Zap, desc: 'Full Motion' },
-        { value: 'safe', label: 'Safe', icon: Shield, desc: 'No Parallax/Scale' },
-        { value: 'minimal', label: 'Minimal', icon: Battery, desc: 'Fade Only' },
+        { value: 'high', label: '高', icon: Zap, desc: 'フルモーション' },
+        { value: 'safe', label: '標準', icon: Shield, desc: 'パララックス/スケールなし' },
+        { value: 'minimal', label: '最小', icon: Battery, desc: 'フェードのみ' },
     ]
 
     const currentOption = options.find(o => o.value === preference) || options[0]

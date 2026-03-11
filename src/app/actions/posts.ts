@@ -17,80 +17,97 @@ async function requireAdmin() {
 
 
 export async function createPost(formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parsePostFormData(formData)
-    const result = postSchema.safeParse(rawData)
+        const rawData = parsePostFormData(formData)
+        const result = postSchema.safeParse(rawData)
 
-    if (!result.success) {
-        const errorMessage = result.error.issues.map(e => e.message).join(', ')
-        throw new Error(errorMessage)
-    }
-
-    const { error } = await supabaseAdmin
-        .from('posts')
-        .insert({
-            ...result.data,
-            published_at: result.data.is_public ? new Date().toISOString() : null
-        })
-
-    if (error) {
-        console.error('Create Post Error:', error)
-        if (error.code === '23505') {
-            throw new Error('Slug already exists')
+        if (!result.success) {
+            const errorMessage = result.error.issues.map(e => e.message).join(', ')
+            return { error: errorMessage }
         }
-        throw new Error('Failed to create post')
-    }
 
-    revalidatePath('/posts')
-    revalidatePath('/admin/posts')
+        const { error } = await supabaseAdmin
+            .from('posts')
+            .insert({
+                ...result.data,
+                published_at: result.data.is_public ? new Date().toISOString() : null
+            })
+
+        if (error) {
+            console.error('Create Post Error:', error)
+            if (error.code === '23505') {
+                return { error: 'Slug already exists' }
+            }
+            return { error: 'Failed to create post' }
+        }
+
+        revalidatePath('/posts')
+        revalidatePath('/admin/posts')
+    } catch (err: unknown) {
+        console.error('Action Error:', err)
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
     redirect('/admin/posts')
 }
 
 export async function updatePost(id: string, formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parsePostFormData(formData)
-    const result = postSchema.safeParse(rawData)
+        const rawData = parsePostFormData(formData)
+        const result = postSchema.safeParse(rawData)
 
-    if (!result.success) {
-        const errorMessage = result.error.issues.map(e => e.message).join(', ')
-        throw new Error(errorMessage)
-    }
-
-    const { error } = await supabaseAdmin
-        .from('posts')
-        .update({
-            ...result.data,
-            updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-
-    if (error) {
-        console.error('Update Post Error:', error)
-        if (error.code === '23505') {
-            throw new Error('Slug already exists')
+        if (!result.success) {
+            const errorMessage = result.error.issues.map(e => e.message).join(', ')
+            return { error: errorMessage }
         }
-        throw new Error('Failed to update post')
-    }
 
-    revalidatePath('/posts')
-    revalidatePath('/admin/posts')
+        const { error } = await supabaseAdmin
+            .from('posts')
+            .update({
+                ...result.data,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', id)
+
+        if (error) {
+            console.error('Update Post Error:', error)
+            if (error.code === '23505') {
+                return { error: 'Slug already exists' }
+            }
+            return { error: 'Failed to update post' }
+        }
+
+        revalidatePath('/posts')
+        revalidatePath('/admin/posts')
+    } catch (err: unknown) {
+        console.error('Action Error:', err)
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
     redirect('/admin/posts')
 }
 
 export async function deletePost(id: string) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const { error } = await supabaseAdmin
-        .from('posts')
-        .delete()
-        .eq('id', id)
+        const { error } = await supabaseAdmin
+            .from('posts')
+            .delete()
+            .eq('id', id)
 
-    if (error) {
-        throw new Error('Failed to delete post')
+        if (error) {
+            return { error: 'Failed to delete post' }
+        }
+
+        revalidatePath('/posts')
+        revalidatePath('/admin/posts')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
     }
-
-    revalidatePath('/posts')
-    revalidatePath('/admin/posts')
 }

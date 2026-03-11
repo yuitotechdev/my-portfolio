@@ -17,80 +17,118 @@ async function requireAdmin() {
 
 
 export async function createNews(formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parseNewsFormData(formData)
-    const result = newsSchema.safeParse(rawData)
+        const rawData = parseNewsFormData(formData)
+        const result = newsSchema.safeParse(rawData)
 
-    if (!result.success) {
-        const errorMessage = result.error.issues.map(e => e.message).join(', ')
-        throw new Error(errorMessage)
-    }
-
-    const { error } = await supabaseAdmin
-        .from('news')
-        .insert({
-            ...result.data,
-            published_at: result.data.is_public ? new Date().toISOString() : null
-        })
-
-    if (error) {
-        console.error('Create News Error:', error)
-        if (error.code === '23505') {
-            throw new Error('Slug already exists')
+        if (!result.success) {
+            const errorMessage = result.error.issues.map(e => e.message).join(', ')
+            return { error: errorMessage }
         }
-        throw new Error('Failed to create news')
-    }
 
-    revalidatePath('/news')
-    revalidatePath('/admin/news')
+        const { error } = await supabaseAdmin
+            .from('news')
+            .insert({
+                ...result.data,
+                published_at: result.data.is_public ? new Date().toISOString() : null
+            })
+
+        if (error) {
+            console.error('Create News Error:', error)
+            if (error.code === '23505') {
+                return { error: 'Slug already exists' }
+            }
+            return { error: 'Failed to create news' }
+        }
+
+        revalidatePath('/news')
+        revalidatePath('/admin/news')
+    } catch (err: unknown) {
+        console.error('Action Error:', err)
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
     redirect('/admin/news')
 }
 
 export async function updateNews(id: string, formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parseNewsFormData(formData)
-    const result = newsSchema.safeParse(rawData)
+        const rawData = parseNewsFormData(formData)
+        const result = newsSchema.safeParse(rawData)
 
-    if (!result.success) {
-        const errorMessage = result.error.issues.map(e => e.message).join(', ')
-        throw new Error(errorMessage)
-    }
-
-    const { error } = await supabaseAdmin
-        .from('news')
-        .update({
-            ...result.data,
-            updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-
-    if (error) {
-        console.error('Update News Error:', error)
-        if (error.code === '23505') {
-            throw new Error('Slug already exists')
+        if (!result.success) {
+            const errorMessage = result.error.issues.map(e => e.message).join(', ')
+            return { error: errorMessage }
         }
-        throw new Error('Failed to update news')
-    }
 
-    revalidatePath('/news')
-    revalidatePath('/admin/news')
+        const { error } = await supabaseAdmin
+            .from('news')
+            .update({
+                ...result.data,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', id)
+
+        if (error) {
+            console.error('Update News Error:', error)
+            if (error.code === '23505') {
+                return { error: 'Slug already exists' }
+            }
+            return { error: 'Failed to update news' }
+        }
+
+        revalidatePath('/news')
+        revalidatePath('/admin/news')
+    } catch (err: unknown) {
+        console.error('Action Error:', err)
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
     redirect('/admin/news')
 }
 
 export async function deleteNews(id: string) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const { error } = await supabaseAdmin
-        .from('news')
-        .delete()
-        .eq('id', id)
+        const { error } = await supabaseAdmin
+            .from('news')
+            .delete()
+            .eq('id', id)
 
-    if (error) {
-        throw new Error('Failed to delete news')
+        if (error) {
+            return { error: 'Failed to delete news' }
+        }
+
+        revalidatePath('/news')
+        revalidatePath('/admin/news')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
     }
+}
 
-    revalidatePath('/news')
-    revalidatePath('/admin/news')
+export async function deleteMultipleNews(ids: string[]) {
+    try {
+        await requireAdmin()
+
+        const { error } = await supabaseAdmin
+            .from('news')
+            .delete()
+            .in('id', ids)
+
+        if (error) {
+            return { error: 'Failed to delete multiple news' }
+        }
+
+        revalidatePath('/news')
+        revalidatePath('/admin/news')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
 }

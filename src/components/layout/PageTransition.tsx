@@ -13,7 +13,6 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     // Admin routes are always Safe (Minimal transition)
     const isAdmin = pathname?.startsWith('/admin')
     const isHigh = preference === 'high' && !isAdmin
-    const isSafe = (preference === 'safe' || isAdmin) && preference !== 'minimal'
 
     return (
         <AnimatePresence mode="wait">

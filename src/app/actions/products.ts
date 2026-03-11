@@ -16,53 +16,68 @@ async function requireAdmin() {
 }
 
 export async function createProduct(formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parseProductFormData(formData)
-    const result = productSchema.safeParse(rawData)
+        const rawData = parseProductFormData(formData)
+        const result = productSchema.safeParse(rawData)
 
-    if (!result.success) {
-        throw new Error(result.error.issues.map(e => e.message).join(', '))
+        if (!result.success) {
+            return { error: result.error.issues.map(e => e.message).join(', ') }
+        }
+
+        const { error } = await supabaseAdmin.from('products').insert(result.data)
+
+        if (error) return { error: 'Failed to create product' }
+
+        revalidatePath('/admin/products')
+        revalidatePath('/products')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
     }
-
-    const { error } = await supabaseAdmin.from('products').insert(result.data)
-
-    if (error) throw new Error('Failed to create product')
-
-    revalidatePath('/admin/products')
-    revalidatePath('/products')
     redirect('/admin/products')
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const rawData = parseProductFormData(formData)
-    const result = productSchema.safeParse(rawData)
+        const rawData = parseProductFormData(formData)
+        const result = productSchema.safeParse(rawData)
 
-    if (!result.success) {
-        throw new Error(result.error.issues.map(e => e.message).join(', '))
+        if (!result.success) {
+            return { error: result.error.issues.map(e => e.message).join(', ') }
+        }
+
+        const { error } = await supabaseAdmin
+            .from('products')
+            .update({ ...result.data, updated_at: new Date().toISOString() })
+            .eq('id', id)
+
+        if (error) return { error: 'Failed to update product' }
+
+        revalidatePath('/admin/products')
+        revalidatePath('/products')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
     }
-
-    const { error } = await supabaseAdmin
-        .from('products')
-        .update({ ...result.data, updated_at: new Date().toISOString() })
-        .eq('id', id)
-
-    if (error) throw new Error('Failed to update product')
-
-    revalidatePath('/admin/products')
-    revalidatePath('/products')
     redirect('/admin/products')
 }
 
 export async function deleteProduct(id: string) {
-    await requireAdmin()
+    try {
+        await requireAdmin()
 
-    const { error } = await supabaseAdmin.from('products').delete().eq('id', id)
+        const { error } = await supabaseAdmin.from('products').delete().eq('id', id)
 
-    if (error) throw new Error('Failed to delete product')
+        if (error) return { error: 'Failed to delete product' }
 
-    revalidatePath('/admin/products')
-    revalidatePath('/products')
+        revalidatePath('/admin/products')
+        revalidatePath('/products')
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        return { error: message }
+    }
 }

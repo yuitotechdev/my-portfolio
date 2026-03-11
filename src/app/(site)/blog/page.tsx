@@ -2,6 +2,7 @@ import { PostsRepository } from '@/lib/repositories/posts'
 import { StaggerList, Reveal } from '@/components/ui/motion'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
 export const metadata = {
     title: 'Blog - Portfolio',
@@ -14,7 +15,7 @@ export default async function BlogPage() {
     return (
         <main className="min-h-screen py-24 px-6 md:px-12 max-w-3xl mx-auto">
             <Reveal>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Blog</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">{PAGE_TITLES.blog}</h1>
                 <p className="text-xl text-gray-600 mb-16">
                     A collection of thoughts, technical deep dives, and progress updates.
                 </p>
@@ -45,7 +46,7 @@ export default async function BlogPage() {
             {posts.length === 0 && (
                 <Reveal>
                     <div className="py-12 text-center border-t border-gray-100 mt-12">
-                        <p className="text-gray-400">No posts yet.</p>
+                        <p className="text-gray-400">{COMMON_TEXT.no_data}</p>
                     </div>
                 </Reveal>
             )}

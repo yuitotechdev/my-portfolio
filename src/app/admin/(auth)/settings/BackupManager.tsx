@@ -27,10 +27,10 @@ export function BackupManager() {
             window.URL.revokeObjectURL(url)
             document.body.removeChild(a)
 
-            toast.success('Export successful!')
+            toast.success('エクスポートが完了しました！')
         } catch (e) {
             console.error(e)
-            toast.error('Export failed.')
+            toast.error('エクスポートに失敗しました。')
         } finally {
             setLoading(false)
         }
@@ -49,13 +49,13 @@ export function BackupManager() {
             setImportSummary(summary)
 
             if (!summary.valid) {
-                toast.error('Invalid backup file. Check errors below.')
+                toast.error('無効なバックアップファイルです。以下のエラーを確認してください。')
             } else {
-                toast.info('Backup file validated. Review summary before importing.')
+                toast.info('バックアップファイルが検証されました。インポート前に概要を確認してください。')
             }
         } catch (e) {
             console.error(e)
-            toast.error('Failed to validate file')
+            toast.error('ファイルの検証に失敗しました。')
         } finally {
             setLoading(false)
         }
@@ -64,7 +64,7 @@ export function BackupManager() {
     const handleExecuteImport = async () => {
         if (!importFile) return
 
-        if (!confirm('This will overwrite/update existing data. This cannot be undone. Are you sure?')) {
+        if (!confirm('この操作により既存のデータが上書き/更新されます。元に戻すことはできません。よろしいですか？')) {
             return
         }
 
@@ -72,7 +72,7 @@ export function BackupManager() {
             setLoading(true)
             const text = await importFile.text()
             await executeImport(text)
-            toast.success('Import successful! Data restored.')
+            toast.success('インポートが完了しました！データが復元されました。')
 
             // Reset
             setImportFile(null)
@@ -81,7 +81,7 @@ export function BackupManager() {
 
         } catch (e) {
             console.error(e)
-            toast.error('Import execution failed.')
+            toast.error('インポートの実行に失敗しました。')
         } finally {
             setLoading(false)
         }
@@ -91,16 +91,16 @@ export function BackupManager() {
         <div className="space-y-8">
             {/* Export Section */}
             <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Export Data</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">データのエクスポート</h3>
                 <p className="text-sm text-gray-500 mb-4">
-                    Download a JSON backup of all your content (Works, Posts, News, Profile, Links).
+                    すべてのコンテンツ（実績、投稿、お知らせ、プロフィール、リンク）のJSONバックアップをダウンロードします。
                 </p>
                 <Button
                     onClick={handleExport}
                     disabled={loading}
                     variant="outline"
                 >
-                    {loading ? 'Processing...' : 'Download Backup'}
+                    {loading ? '処理中...' : 'バックアップをダウンロード'}
                 </Button>
             </div>
 
@@ -108,12 +108,12 @@ export function BackupManager() {
 
             {/* Import Section */}
             <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Import Data</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">データのインポート</h3>
                 <p className="text-sm text-gray-500 mb-4">
-                    Restore data from a JSON backup. First select a file to validate.
+                    JSONバックアップからデータを復元します。まずファイルを選択して検証してください。
                 </p>
                 <label className="block max-w-sm">
-                    <span className="sr-only">Choose file</span>
+                    <span className="sr-only">ファイルを選択</span>
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -134,17 +134,17 @@ export function BackupManager() {
                 {/* Validation Summary */}
                 {importSummary && (
                     <div className={`mt-6 p-4 rounded border ${importSummary.valid ? 'bg-gray-50 border-gray-200' : 'bg-red-50 border-red-200'}`}>
-                        <h4 className="font-semibold mb-2">Import Summary</h4>
+                        <h4 className="font-semibold mb-2">インポート概要</h4>
 
                         {!importSummary.valid && (
                             <div className="text-red-600 text-sm mb-4">
-                                <p className="font-bold">Errors found:</p>
+                                <p className="font-bold">見つかったエラー:</p>
                                 <ul className="list-disc pl-5">
                                     {importSummary.errors?.slice(0, 5).map((err, i) => (
                                         <li key={i}>{err}</li>
                                     ))}
                                     {(importSummary.errors?.length || 0) > 5 && (
-                                        <li>...and {(importSummary.errors?.length || 0) - 5} more</li>
+                                        <li>...他 {(importSummary.errors?.length || 0) - 5} 件</li>
                                     )}
                                 </ul>
                             </div>
@@ -153,11 +153,11 @@ export function BackupManager() {
                         {importSummary.valid && (
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>Works: <span className="font-mono">{importSummary.counts.works}</span></div>
-                                    <div>Posts: <span className="font-mono">{importSummary.counts.posts}</span></div>
-                                    <div>News: <span className="font-mono">{importSummary.counts.news}</span></div>
-                                    <div>Profile: <span className="font-mono">{importSummary.counts.profile}</span></div>
-                                    <div>Links: <span className="font-mono">{importSummary.counts.links}</span></div>
+                                    <div>WORKS_CONST: <span className="font-mono">{importSummary.counts.works}</span></div>
+                                    <div>ブログ投稿: <span className="font-mono">{importSummary.counts.posts}</span></div>
+                                    <div>お知らせ: <span className="font-mono">{importSummary.counts.news}</span></div>
+                                    <div>プロフィール: <span className="font-mono">{importSummary.counts.profile}</span></div>
+                                    <div>リンク: <span className="font-mono">{importSummary.counts.links}</span></div>
                                 </div>
 
                                 <div className="pt-2">
@@ -167,10 +167,10 @@ export function BackupManager() {
                                         variant="destructive"
                                         className="w-full"
                                     >
-                                        {loading ? 'Restoring...' : 'Confirm Restore (Overwrite)'}
+                                        {loading ? '復元中...' : '復元を確定する (上書き)'}
                                     </Button>
                                     <p className="text-xs text-center text-gray-500 mt-2">
-                                        This action will update existing records and insert new ones.
+                                        この操作により、既存のレコードが更新され、新しいレコードが挿入されます。
                                     </p>
                                 </div>
                             </div>

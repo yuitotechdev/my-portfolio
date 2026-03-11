@@ -4,6 +4,7 @@ import { Reveal } from '@/components/ui/motion'
 import { Mail } from 'lucide-react'
 import { CopyButton } from '@/components/ui/copy-button'
 import { useState, useEffect } from 'react'
+import { PAGE_TITLES } from '@/config/i18n'
 
 export default function ContactPage() {
     const [email, setEmail] = useState('')
@@ -27,7 +28,7 @@ export default function ContactPage() {
                         <Mail className="w-8 h-8 text-gray-900" />
                     </div>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Get in touch</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">{PAGE_TITLES.contact}</h1>
                 <p className="text-xl text-gray-600 mb-12 leading-relaxed">
                     Interested in working together or have a question?
                     <br />

@@ -3,6 +3,7 @@ import { Reveal, StaggerList } from '@/components/ui/motion'
 import { WorkCard } from '@/app/(site)/works/_components/WorkCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import { HOME_TEXT, COMMON_TEXT } from '@/config/i18n'
 
 export async function FeaturedWorks() {
     // Intentionally fast fetch, but Suspense will handle if slow
@@ -13,9 +14,9 @@ export async function FeaturedWorks() {
             <div className="max-w-7xl mx-auto">
                 <Reveal>
                     <div className="flex items-center justify-between mb-12">
-                        <h2 className="text-3xl font-bold tracking-tight">Featured Works</h2>
+                        <h2 className="text-3xl font-bold tracking-tight">{HOME_TEXT.works_title}</h2>
                         <Link href="/works" className="text-sm font-medium hover:underline text-gray-600">
-                            View all
+                            {HOME_TEXT.view_all}
                         </Link>
                     </div>
                 </Reveal>
@@ -27,7 +28,7 @@ export async function FeaturedWorks() {
                         ))}
                     </StaggerList>
                 ) : (
-                    <div className="text-gray-400 py-12">No works published yet.</div>
+                    <div className="text-gray-400 py-12">{COMMON_TEXT.no_data}</div>
                 )}
             </div>
         </section>
