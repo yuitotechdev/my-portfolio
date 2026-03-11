@@ -50,7 +50,8 @@ export function ScrambleText({
             let completeCount = 0
             
             for (let i = 0, n = queueRef.current.length; i < n; i++) {
-                let { from, to, start, end, char } = queueRef.current[i]
+                const { from, to, start, end } = queueRef.current[i]
+                let { char } = queueRef.current[i]
                 
                 if (frame >= end) {
                     completeCount++

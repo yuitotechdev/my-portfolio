@@ -8,7 +8,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 async function setupBuckets() {
     const buckets = ['thumbnails', 'products', 'avatars']
     for (const b of buckets) {
-        const { data, error } = await supabase.storage.getBucket(b)
+        const { error } = await supabase.storage.getBucket(b)
         if (error) {
             console.log(`Bucket ${b} not found, creating...`)
             const { error: createError } = await supabase.storage.createBucket(b, {

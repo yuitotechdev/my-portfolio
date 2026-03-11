@@ -12,7 +12,6 @@ import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useTransition } from 'react'
 import { toast } from 'sonner'
-import { SmartImage } from '@/components/ui/smart-image'
 import ImageUpload from '@/components/ImageUpload'
 import { useState } from 'react'
 

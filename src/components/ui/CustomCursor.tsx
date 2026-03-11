@@ -60,8 +60,10 @@ export function CustomCursor() {
 
     // ページ遷移時にホバー状態をリセット
     useEffect(() => {
-        setIsHovering(false)
-    }, [pathname])
+        if (isHovering) {
+            setIsHovering(false)
+        }
+    }, [pathname, isHovering])
 
     if (isSafe) return null
 
