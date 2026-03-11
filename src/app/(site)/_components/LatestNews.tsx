@@ -9,7 +9,7 @@ export async function LatestNews() {
     const recentNews = (await NewsRepository.getAllPublic()).slice(0, 3)
 
     return (
-        <section className="py-24 px-6 md:px-12 bg-white">
+        <section className="py-24 px-6 md:px-12 bg-background">
             <div className="max-w-3xl mx-auto">
                 <Reveal>
                     <div className="flex items-center justify-between mb-12">
@@ -48,7 +48,7 @@ export async function LatestNews() {
 
 export function LatestNewsSkeleton() {
     return (
-        <section className="py-24 px-6 md:px-12 bg-white">
+        <section className="py-24 px-6 md:px-12 bg-background">
             <div className="max-w-3xl mx-auto">
                 <div className="flex items-center justify-between mb-12">
                     <Skeleton className="h-10 w-32" />

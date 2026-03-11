@@ -10,7 +10,7 @@ export async function FeaturedWorks() {
     const recentWorks = (await WorksRepository.getAllPublic()).slice(0, 3)
 
     return (
-        <section className="py-24 px-6 md:px-12 bg-gray-50">
+        <section className="py-24 px-6 md:px-12 bg-muted/30">
             <div className="max-w-7xl mx-auto">
                 <Reveal>
                     <div className="flex items-center justify-between mb-12">
@@ -37,7 +37,7 @@ export async function FeaturedWorks() {
 
 export function FeaturedWorksSkeleton() {
     return (
-        <section className="py-24 px-6 md:px-12 bg-gray-50">
+        <section className="py-24 px-6 md:px-12 bg-muted/30">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-12">
                     <Skeleton className="h-10 w-48" /> {/* Title */}

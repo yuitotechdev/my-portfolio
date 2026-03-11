@@ -33,7 +33,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
                         {/* Layer 2: Secondary Damping (Slightly darker/blue tint) */}
                         <motion.div
                             className={cn(
-                                "fixed inset-0 z-[60] pointer-events-none bg-blue-50/50", // More opaque, lighter blue
+                                "fixed inset-0 z-[60] pointer-events-none bg-muted/30", 
                                 isHigh && "backdrop-blur-[2px]" // Minimal blur on secondary
                             )}
                             variants={MOTION.frosted.secondary}
@@ -43,7 +43,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
                         {/* Layer 1: Primary Water Surface (White/Frosted) */}
                         <motion.div
                             className={cn(
-                                "fixed inset-0 z-[61] pointer-events-none bg-white/90", // Much more opaque (was 60)
+                                "fixed inset-0 z-[61] pointer-events-none bg-background/90", 
                                 isHigh && "backdrop-blur-xl supports-[backdrop-filter]:backdrop-blur-xl" // Heavy frost
                             )}
                             variants={MOTION.frosted.primary}
