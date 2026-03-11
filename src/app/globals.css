@@ -58,7 +58,7 @@
 
 /* Smooth Theme Wipe Transition */
 * {
-  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out, color 0.5s ease-in-out;
 }
 /* Specifically exclude animations that would be broken by global transition */
 .animate-pulse, .animate-spin {

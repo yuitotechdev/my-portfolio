@@ -71,11 +71,11 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
 
     return (
         <section
-            className="min-h-[85vh] flex items-center justify-center px-6 md:px-12 bg-white relative overflow-hidden"
+            className="min-h-[85vh] flex items-center justify-center px-6 md:px-12 bg-background relative overflow-hidden"
             onMouseMove={handleMouseMove}
         >
             {/* Background Gradient (Subtle) */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.08),transparent)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(56,189,248,0.03),transparent)]" />
 
             <motion.div
                 className="max-w-5xl w-full relative z-10"
@@ -85,7 +85,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                 style={{ x: isSafe ? 0 : smoothX, y: isSafe ? 0 : smoothY }}
             >
                 {/* Title Orchestra */}
-                <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-slate-900 leading-[0.9] select-none cursor-default mix-blend-multiply">
+                <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-foreground leading-[0.9] select-none cursor-default">
                     {chars.map((char, i) => (
                         <motion.span
                             key={i}
@@ -105,7 +105,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
 
                 {/* Subtitle & Socials */}
                 <motion.div variants={child} transition={MOTION.spring.smooth}>
-                    <p className="text-xl md:text-3xl text-gray-500 font-light max-w-2xl mb-12 leading-relaxed tracking-wide">
+                    <p className="text-xl md:text-3xl text-muted-foreground font-light max-w-2xl mb-12 leading-relaxed tracking-wide">
                         {profile?.bio_short || 'Building digital experiences that feel alive.'}
                     </p>
 
@@ -113,7 +113,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                         <Button
                             asChild
                             size="lg"
-                            className="rounded-full px-10 text-lg h-14 bg-slate-900 hover:bg-indigo-600 transition-all shadow-xl hover:shadow-indigo-200 hover:scale-105 active:scale-95 duration-200"
+                            className="rounded-full px-10 text-lg h-14 bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-xl hover:shadow-primary/20 hover:scale-105 active:scale-95 duration-200"
                         >
                             <Link href="/works">
                                 {HOME_TEXT.view_works_btn} <ArrowRight className="ml-2 w-5 h-5" />
@@ -127,7 +127,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                                     href={link.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="px-4 py-2 text-gray-500 hover:text-slate-900 transition-colors bg-gray-50/50 border border-gray-100 rounded-full text-sm font-medium hover:bg-white hover:border-gray-300 backdrop-blur-sm"
+                                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors bg-muted/20 border border-border rounded-full text-sm font-medium hover:bg-muted/40 backdrop-blur-sm"
                                     whileHover={{ y: -2 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
