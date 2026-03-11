@@ -57,13 +57,21 @@ export function Header() {
                             </Link>
                         )
                     })}
-                    <button
+                    <motion.button
                         onClick={toggleTheme}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9, rotate: 15 }}
                         className="ml-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
                         title="テーマを切り替え"
                     >
-                        {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                    </button>
+                        <motion.div
+                            initial={false}
+                            animate={{ rotate: theme === 'dark' ? 180 : 0 }}
+                            transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+                        >
+                            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+                        </motion.div>
+                    </motion.button>
                 </nav>
 
                 {/* Mobile Toggle */}

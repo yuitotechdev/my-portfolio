@@ -15,7 +15,7 @@ export async function FeaturedWorks() {
                 <Reveal>
                     <div className="flex items-center justify-between mb-12">
                         <h2 className="text-3xl font-bold tracking-tight">{HOME_TEXT.works_title}</h2>
-                        <Link href="/works" className="text-sm font-medium hover:underline text-gray-600">
+                        <Link href="/works" className="text-sm font-medium hover:underline text-muted-foreground">
                             {HOME_TEXT.view_all}
                         </Link>
                     </div>
@@ -28,7 +28,7 @@ export async function FeaturedWorks() {
                         ))}
                     </StaggerList>
                 ) : (
-                    <div className="text-gray-400 py-12">{COMMON_TEXT.no_data}</div>
+                    <div className="text-muted-foreground py-12">{COMMON_TEXT.no_data}</div>
                 )}
             </div>
         </section>

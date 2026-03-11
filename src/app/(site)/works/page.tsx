@@ -15,7 +15,7 @@ export default async function WorksPage() {
         <main className="min-h-screen py-24 px-6 md:px-12 max-w-7xl mx-auto">
             <Reveal>
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">{PAGE_TITLES.works}</h1>
-                <p className="text-xl text-gray-600 mb-16 max-w-2xl">
+                <p className="text-xl text-muted-foreground mb-16 max-w-2xl">
                     Selected projects showing web application development,
                     design systems, and technical challenges.
                 </p>
@@ -29,8 +29,8 @@ export default async function WorksPage() {
 
             {works.length === 0 && (
                 <Reveal>
-                    <div className="p-12 text-center bg-gray-50/50 rounded-lg">
-                        <p className="text-gray-500">{COMMON_TEXT.no_data}</p>
+                    <div className="p-12 text-center bg-muted/20 rounded-lg">
+                        <p className="text-muted-foreground">{COMMON_TEXT.no_data}</p>
                     </div>
                 </Reveal>
             )}

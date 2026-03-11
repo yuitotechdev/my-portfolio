@@ -14,7 +14,7 @@ export async function LatestNews() {
                 <Reveal>
                     <div className="flex items-center justify-between mb-12">
                         <h2 className="text-3xl font-bold tracking-tight">{HOME_TEXT.news_title}</h2>
-                        <Link href="/news" className="text-sm font-medium hover:underline text-gray-600">
+                        <Link href="/news" className="text-sm font-medium hover:underline text-muted-foreground">
                             {HOME_TEXT.view_all}
                         </Link>
                     </div>
@@ -23,22 +23,22 @@ export async function LatestNews() {
                 <StaggerList className="space-y-8">
                     {recentNews.map((news) => (
                         <Link key={news.id} href={`/news/${news.slug}`} className="block group">
-                            <article className="border-l-2 border-gray-100 pl-6 py-1 transition-colors hover:border-indigo-500">
-                                <div className="flex items-center gap-4 text-sm text-gray-400 mb-1">
+                            <article className="border-l-2 border-border pl-6 py-1 transition-colors hover:border-primary">
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-1">
                                     {news.published_at && (
                                         <time className="font-mono" suppressHydrationWarning>
                                             {format(new Date(news.published_at), 'yyyy.MM.dd')}
                                         </time>
                                     )}
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                                <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                                     {news.title}
                                 </h3>
                             </article>
                         </Link>
                     ))}
                     {recentNews.length === 0 && (
-                        <div className="text-gray-400 py-8">{COMMON_TEXT.no_data}</div>
+                        <div className="text-muted-foreground py-8">{COMMON_TEXT.no_data}</div>
                     )}
                 </StaggerList>
             </div>
@@ -57,7 +57,7 @@ export function LatestNewsSkeleton() {
 
                 <div className="space-y-8">
                     {[1, 2, 3].map((i) => (
-                        <div key={i} className="pl-6 border-l-2 border-gray-100 py-1 space-y-2">
+                        <div key={i} className="pl-6 border-l-2 border-border py-1 space-y-2">
                             <Skeleton className="h-4 w-24" /> {/* Date */}
                             <Skeleton className="h-6 w-3/4" /> {/* Title */}
                         </div>

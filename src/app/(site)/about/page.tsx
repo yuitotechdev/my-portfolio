@@ -18,7 +18,7 @@ export default async function AboutPage() {
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">{PAGE_TITLES.about}</h1>
                     <div className="flex flex-col md:flex-row gap-8 items-start">
                         {profile?.avatar_url && (
-                            <div className="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-full overflow-hidden bg-gray-100">
+                            <div className="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-full overflow-hidden bg-muted">
                                 <Image
                                     src={profile.avatar_url}
                                     alt={profile.name || 'Avatar'}
@@ -29,7 +29,7 @@ export default async function AboutPage() {
                         )}
                         <div>
                             <h2 className="text-2xl font-bold mb-2">{profile?.name || 'Creator'}</h2>
-                            <p className="text-xl text-gray-600 leading-relaxed">
+                            <p className="text-xl text-muted-foreground leading-relaxed">
                                 {profile?.bio_medium || profile?.bio_short}
                             </p>
                         </div>
@@ -38,9 +38,9 @@ export default async function AboutPage() {
             </Reveal>
 
             <Reveal delay={0.2}>
-                <section className="prose prose-lg prose-gray max-w-none whitespace-pre-wrap text-gray-700">
+                <section className="prose prose-lg prose-gray dark:prose-invert max-w-none whitespace-pre-wrap text-foreground">
                     {profile?.bio_long ? profile.bio_long : (
-                        <p className="text-gray-400 italic">No details added yet.</p>
+                        <p className="text-muted-foreground italic">No details added yet.</p>
                     )}
                 </section>
             </Reveal>

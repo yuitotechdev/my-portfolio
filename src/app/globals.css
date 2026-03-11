@@ -41,19 +41,28 @@
   --card: 222 47% 4%;
   --card-foreground: 210 40% 98%;
 
-  --primary: 217 91% 65%;
-  /* Slightly brighter blue for dark mode visibility */
+  --primary: 217 91% 70%;
+  /* Bright Luminous Blue for Dark Mode */
   --primary-foreground: 210 40% 98%;
 
-  --border: 222 47% 8%;
-  --input: 222 47% 8%;
-  --ring: 217 91% 65%;
+  --border: 222 47% 12%;
+  --input: 222 47% 12%;
+  --ring: 217 91% 70%;
 
-  --glass-bg: rgba(2, 6, 23, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(2, 6, 23, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
 
-  --placeholder-lightness: 30%;
-  --placeholder-lightness-2: 40%;
+  --placeholder-lightness: 25%;
+  --placeholder-lightness-2: 35%;
+}
+
+/* Smooth Theme Wipe Transition */
+* {
+  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+}
+/* Specifically exclude animations that would be broken by global transition */
+.animate-pulse, .animate-spin {
+  transition: none;
 }
 
 @theme inline {
