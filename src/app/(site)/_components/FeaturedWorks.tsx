@@ -1,9 +1,11 @@
 import { WorksRepository } from '@/lib/repositories/works'
-import { Reveal, StaggerList } from '@/components/ui/motion'
+import { Reveal as MotionReveal, StaggerList } from '@/components/ui/motion'
+import { Reveal } from '@/components/ui/Reveal'
 import { WorkCard } from '@/app/(site)/works/_components/WorkCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { HOME_TEXT, COMMON_TEXT } from '@/config/i18n'
+import { LiveTelemetry } from '@/components/ui/LiveTelemetry'
 
 export async function FeaturedWorks() {
     // Intentionally fast fetch, but Suspense will handle if slow
@@ -12,7 +14,7 @@ export async function FeaturedWorks() {
     return (
         <section className="py-24 px-6 md:px-12 bg-muted/30">
             <div className="max-w-7xl mx-auto">
-                <Reveal>
+                <Reveal width="100%">
                     <div className="flex items-center justify-between mb-12">
                         <h2 className="text-3xl font-bold tracking-tight">{HOME_TEXT.works_title}</h2>
                         <Link href="/works" className="text-sm font-medium hover:underline text-muted-foreground">
@@ -30,6 +32,8 @@ export async function FeaturedWorks() {
                 ) : (
                     <div className="text-muted-foreground py-12">{COMMON_TEXT.no_data}</div>
                 )}
+
+                <LiveTelemetry />
             </div>
         </section>
     )

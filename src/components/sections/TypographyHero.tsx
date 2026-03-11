@@ -9,6 +9,7 @@ import { type Profile, type LinkItem as SocialLink } from '@/lib/repositories/pr
 import { useMotion as useMotionContext } from '@/components/providers/MotionProvider'
 import { HOME_TEXT } from '@/config/i18n'
 import { Magnetic } from '@/components/ui/Magnetic'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 interface TypographyHeroProps {
     profile: Profile | null
@@ -17,8 +18,16 @@ interface TypographyHeroProps {
 
 export function TypographyHero({ profile, links }: TypographyHeroProps) {
     const { preference } = useMotionContext()
+    const { isEnabled: soundEnabled } = useSoundStore()
     const isMinimal = preference === 'minimal'
     const isSafe = preference === 'safe' || isMinimal
+
+    // Audio triggers (Idea 1)
+    const playHover = () => {
+        if (!soundEnabled) return
+        // In a real app, use useSound hook here.
+        // For now, we structure the trigger.
+    }
 
     // Parallax & Mouse Interaction (High only)
     const mouseX = useMotionValue(0)
@@ -95,22 +104,29 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                     variants={container}
                     style={{ x: isSafe ? 0 : smoothX, y: isSafe ? 0 : smoothY }}
                 >
-                    {/* Title Orchestra */}
+                    {/* Title Orchestra (Kinetic Typography Idea 2) */}
                     <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-foreground leading-[0.9] select-none cursor-default">
-                    {chars.map((char, i) => (
-                        <motion.span
-                            key={i}
-                            variants={child}
-                            className="inline-block origin-bottom hover:text-indigo-600 transition-colors duration-300"
-                            whileHover={!isSafe ? {
-                                scale: 1.1,
-                                rotate: (i % 2 === 0 ? 5 : -5),
-                                transition: MOTION.spring.rapid
-                            } : undefined}
-                        >
-                            {char === " " ? " " : char}
-                        </motion.span>
-                    ))}
+                    {chars.map((char, i) => {
+                        const dynamicWeight = useTransform(scrollYProgress, [0, 0.2], [900, 100])
+                        const dynamicScaleY = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
+
+                        return (
+                            <motion.span
+                                key={i}
+                                variants={child}
+                                onMouseEnter={playHover}
+                                className="inline-block origin-bottom hover:text-indigo-600 transition-colors duration-300"
+                                style={{ fontWeight: dynamicWeight, scaleY: dynamicScaleY }}
+                                whileHover={!isSafe ? {
+                                    scale: 1.1,
+                                    rotate: (i % 2 === 0 ? 5 : -5),
+                                    transition: MOTION.spring.rapid
+                                } : undefined}
+                            >
+                                {char === " " ? " " : char}
+                            </motion.span>
+                        )
+                    })}
                 </h1>
 
                 {/* Subtitle & Socials */}

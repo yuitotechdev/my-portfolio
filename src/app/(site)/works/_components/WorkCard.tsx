@@ -81,7 +81,7 @@ export function WorkCard({ work }: { work: Work }) {
 
     return (
         <motion.div variants={itemVariants} className="group" style={{ perspective: 1000 }} ref={cardRef}>
-            <Link href={`/works/${work.slug}`} className="block h-full" onClick={handleClick}>
+            <Link href={`/works/${work.slug}`} className="block h-full" onClick={handleClick} data-cursor="view">
                 <motion.article 
                     className="h-full bg-card rounded-xl overflow-hidden shadow-sm border border-border transition-shadow hover:shadow-md flex flex-col luminous-border-on-dark relative"
                     onMouseMove={handleMouseMove}
