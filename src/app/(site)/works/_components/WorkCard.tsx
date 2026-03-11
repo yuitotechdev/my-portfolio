@@ -25,8 +25,19 @@ export function WorkCard({ work }: { work: Work }) {
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50">
-                                <span className="text-4xl">●</span>
+                            <div 
+                                className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                                style={{
+                                    background: `linear-gradient(135deg, 
+                                        hsl(${(work.title.length * 40) % 360}, 70%, 80%), 
+                                        hsl(${(work.title.length * 40 + 60) % 360}, 80%, 90%))`
+                                }}
+                            >
+                                <div className="text-white/50 transform -rotate-12 select-none pointer-events-none">
+                                    <span className="text-6xl font-black opacity-20 uppercase tracking-tighter">
+                                        {work.title.substring(0, 2)}
+                                    </span>
+                                </div>
                             </div>
                         )}
                     </div>
