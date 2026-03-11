@@ -121,7 +121,7 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                     <div className="space-y-4 pt-4 border-t">
                         <Label htmlFor="thumbnail_url">サムネイル画像</Label>
                         <ImageUpload 
-                            bucket="thumbnails" 
+                            bucket="works" 
                             initialUrl={thumbnailUrl} 
                             onUpload={(url) => setThumbnailUrl(url)} 
                         />

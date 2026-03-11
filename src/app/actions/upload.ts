@@ -37,7 +37,7 @@ export async function uploadImageAction(formData: FormData) {
 
         if (uploadError) {
             console.error('Upload Error:', uploadError)
-            return { error: 'Failed to upload image' }
+            return { error: `Failed to upload image: ${uploadError.message}` }
         }
 
         const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(filePath)
