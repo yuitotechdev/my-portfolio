@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Clock, MapPin, GitCommit } from 'lucide-react'
 
 export function LiveTelemetry() {
@@ -9,12 +8,18 @@ export function LiveTelemetry() {
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
-        setMounted(true)
-        const timer = setInterval(() => {
+        const timer = setTimeout(() => {
+            setMounted(true)
+        }, 0)
+        
+        const interval = setInterval(() => {
             const now = new Date()
             setTime(now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
         }, 1000)
-        return () => clearInterval(timer)
+        return () => {
+            clearTimeout(timer)
+            clearInterval(interval)
+        }
     }, [])
 
     if (!mounted) return null

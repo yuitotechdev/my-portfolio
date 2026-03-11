@@ -15,10 +15,14 @@ export function AmbientGlow() {
     const y = useSpring(0, springConfig)
 
     useEffect(() => {
-        setMounted(true)
-        // Center initial position
-        x.set(window.innerWidth / 2)
-        y.set(window.innerHeight / 2)
+        // Asynchronous update to avoid "cascading renders" error during build
+        const timer = setTimeout(() => {
+            setMounted(true)
+            // Center initial position
+            x.set(window.innerWidth / 2)
+            y.set(window.innerHeight / 2)
+        }, 0)
+        return () => clearTimeout(timer)
     }, [x, y])
 
     useEffect(() => {

@@ -1,5 +1,5 @@
 import { WorksRepository } from '@/lib/repositories/works'
-import { Reveal as MotionReveal, StaggerList } from '@/components/ui/motion'
+import { StaggerList } from '@/components/ui/motion'
 import { Reveal } from '@/components/ui/Reveal'
 import { WorkCard } from '@/app/(site)/works/_components/WorkCard'
 import { Skeleton } from '@/components/ui/skeleton'

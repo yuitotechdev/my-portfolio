@@ -52,6 +52,9 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
     const yParallax = useTransform(scrollYProgress, [0, 0.5], ["0%", "30%"])
     const opacityParallax = useTransform(scrollYProgress, [0, 0.4], [1, 0])
 
+    const dynamicWeight = useTransform(scrollYProgress, [0, 0.2], [900, 100])
+    const dynamicScaleY = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
+
     const title = profile?.name || 'Creator'
     // Split title into characters for orchestration
     const chars = title.split('')
@@ -107,9 +110,6 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                     {/* Title Orchestra (Kinetic Typography Idea 2) */}
                     <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-foreground leading-[0.9] select-none cursor-default">
                     {chars.map((char, i) => {
-                        const dynamicWeight = useTransform(scrollYProgress, [0, 0.2], [900, 100])
-                        const dynamicScaleY = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
-
                         return (
                             <motion.span
                                 key={i}
