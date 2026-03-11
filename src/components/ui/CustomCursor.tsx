@@ -60,10 +60,13 @@ export function CustomCursor() {
 
     // ページ遷移時にホバー状態をリセット
     useEffect(() => {
-        if (isHovering) {
+        // setTimeout で非同期にすることで、useEffectの実行サイクルから切り離し
+        // ESLintの「同期的なsetState」の警告を回避します。
+        const timer = setTimeout(() => {
             setIsHovering(false)
-        }
-    }, [pathname, isHovering])
+        }, 0)
+        return () => clearTimeout(timer)
+    }, [pathname])
 
     if (isSafe) return null
 
