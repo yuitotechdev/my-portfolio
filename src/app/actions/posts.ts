@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { parsePostFormData, postSchema } from '@/lib/validators'
+import { validateServerConfig } from '@/lib/env-check'
 
 async function requireAdmin() {
     const session = await auth()
@@ -18,6 +19,10 @@ async function requireAdmin() {
 
 export async function createPost(formData: FormData) {
     try {
+        const config = validateServerConfig()
+        if (!config.valid) {
+            return { error: config.message }
+        }
         await requireAdmin()
 
         const rawData = parsePostFormData(formData)

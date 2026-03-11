@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { parseWorkFormData, workSchema } from '@/lib/validators'
+import { validateServerConfig } from '@/lib/env-check'
 
 // Helper to ensure admin (Double check in action level is good practice)
 async function requireAdmin() {
@@ -20,6 +21,11 @@ async function requireAdmin() {
 
 export async function createWork(formData: FormData) {
     try {
+        const config = validateServerConfig()
+        if (!config.valid) {
+            return { error: config.message }
+        }
+
         await requireAdmin()
 
         const rawData = parseWorkFormData(formData)
@@ -58,6 +64,11 @@ export async function createWork(formData: FormData) {
 
 export async function updateWork(id: string, formData: FormData) {
     try {
+        const config = validateServerConfig()
+        if (!config.valid) {
+            return { error: config.message }
+        }
+
         await requireAdmin()
 
         const rawData = parseWorkFormData(formData)
@@ -96,6 +107,11 @@ export async function updateWork(id: string, formData: FormData) {
 
 export async function deleteWork(id: string) {
     try {
+        const config = validateServerConfig()
+        if (!config.valid) {
+            return { error: config.message }
+        }
+
         await requireAdmin()
 
         const { error } = await supabaseAdmin
