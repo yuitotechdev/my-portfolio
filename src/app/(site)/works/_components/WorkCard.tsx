@@ -14,8 +14,8 @@ export function WorkCard({ work }: { work: Work }) {
     return (
         <motion.div variants={itemVariants} className="group">
             <Link href={`/works/${work.slug}`} className="block h-full">
-                <article className="h-full bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 transition-shadow hover:shadow-md flex flex-col">
-                    <div className="relative aspect-video bg-gray-100 overflow-hidden">
+                <article className="h-full bg-card rounded-xl overflow-hidden shadow-sm border border-border transition-shadow hover:shadow-md flex flex-col">
+                    <div className="relative aspect-video bg-muted overflow-hidden">
                         {work.thumbnail_url ? (
                             <Image
                                 src={work.thumbnail_url}
@@ -29,8 +29,8 @@ export function WorkCard({ work }: { work: Work }) {
                                 className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
                                 style={{
                                     background: `linear-gradient(135deg, 
-                                        hsl(${(work.title.length * 40) % 360}, 70%, 80%), 
-                                        hsl(${(work.title.length * 40 + 60) % 360}, 80%, 90%))`
+                                        hsl(${(work.title.length * 40) % 360}, 60%, var(--placeholder-lightness, 80%)), 
+                                        hsl(${(work.title.length * 40 + 60) % 360}, 70%, var(--placeholder-lightness-2, 90%)))`
                                 }}
                             >
                                 <div className="text-white/50 transform -rotate-12 select-none pointer-events-none">
@@ -43,18 +43,18 @@ export function WorkCard({ work }: { work: Work }) {
                     </div>
 
                     <div className="p-6 flex-1 flex flex-col">
-                        <h2 className="text-xl font-bold mb-2 group-hover:text-indigo-600 transition-colors">
+                        <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                             {work.title}
                         </h2>
                         {work.description && (
-                            <p className="text-gray-600 text-sm line-clamp-2 mb-4 flex-1">
+                            <p className="text-muted-foreground text-sm line-clamp-2 mb-4 flex-1">
                                 {work.description}
                             </p>
                         )}
 
                         <div className="flex flex-wrap gap-2 mt-auto">
                             {work.tech_stack?.slice(0, 3).map(tech => (
-                                <span key={tech} className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">
+                                <span key={tech} className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground">
                                     {tech}
                                 </span>
                             ))}

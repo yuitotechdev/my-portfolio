@@ -31,7 +31,7 @@ export function Header() {
         <header
             className={cn(
                 "fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent",
-                scrolled ? "bg-white/80 backdrop-blur-md border-gray-100 py-3" : "bg-transparent py-5"
+                scrolled ? "glass py-3" : "bg-transparent py-5"
             )}
         >
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
@@ -81,7 +81,7 @@ export function Header() {
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            className="absolute top-0 left-0 w-full h-screen bg-white flex flex-col items-center justify-center gap-8 md:hidden"
+                            className="absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center gap-8 md:hidden"
                         >
                             {navItems.map((item) => (
                                 <Link

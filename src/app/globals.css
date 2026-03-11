@@ -30,27 +30,30 @@
 }
 
 .dark {
-  /* Night Sky Theme */
-  --background: 222 47% 4%;
-  /* #050a14 */
+  /* Deep Midnight Theme */
+  --background: 222 47% 2%;
+  /* #020617 - Even deeper black */
   --foreground: 210 40% 98%;
 
-  --muted: 217 19% 27%;
+  --muted: 217 19% 15%;
   --muted-foreground: 215 20% 65%;
 
-  --card: 222 47% 8%;
+  --card: 222 47% 4%;
   --card-foreground: 210 40% 98%;
 
-  --primary: 217 91% 60%;
-  /* Indigo Blue */
+  --primary: 217 91% 65%;
+  /* Slightly brighter blue for dark mode visibility */
   --primary-foreground: 210 40% 98%;
 
-  --border: 222 47% 12%;
-  --input: 222 47% 12%;
-  --ring: 217 91% 60%;
+  --border: 222 47% 8%;
+  --input: 222 47% 8%;
+  --ring: 217 91% 65%;
 
-  --glass-bg: rgba(5, 10, 20, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(2, 6, 23, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  --placeholder-lightness: 30%;
+  --placeholder-lightness-2: 40%;
 }
 
 @theme inline {
@@ -85,20 +88,16 @@
 
 @layer utilities {
   .glass {
-    @apply bg-[var(--glass-bg)] backdrop-blur-md border border-[var(--glass-border)] shadow-[var(--glass-shadow)];
-  }
-
-  .glass-dark {
-    @apply bg-black/70 backdrop-blur-md border border-white/10 shadow-sm;
+    @apply bg-[var(--glass-bg)] backdrop-blur-md border border-[var(--glass-border)] shadow-sm transition-all;
   }
 
   .glass-card {
-    @apply bg-white/50 backdrop-blur-md border border-gray-200/50 shadow-sm transition-all hover:bg-white/80 hover:shadow-md;
+    @apply bg-[var(--card)]/50 backdrop-blur-md border border-[var(--border)] shadow-sm transition-all hover:bg-[var(--card)]/80 hover:shadow-md;
   }
 
-  /* Warm Paper Surface - Robust against no-blur */
+  /* Robust Surface Panel */
   .surface-panel {
-    @apply bg-[var(--glass-bg)] backdrop-blur-md shadow-[var(--shadow-surface)] ring-[var(--shadow-ring)] ring-inset rounded-xl;
+    @apply bg-[var(--background)] shadow-[var(--shadow-surface)] ring-1 ring-[var(--border)] rounded-xl;
   }
 }
 
