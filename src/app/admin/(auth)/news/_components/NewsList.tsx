@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { deleteNews, deleteMultipleNews } from '@/app/actions/news'
+import { deleteMultipleNews, deleteNews } from '@/app/actions/news'
 import { DeleteButton } from '@/components/admin/DeleteButton'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { News } from '@/lib/repositories/news'
 import { format } from 'date-fns'
 import { Edit, Trash2 } from 'lucide-react'
-import { type News } from '@/lib/repositories/news'
 import Link from 'next/link'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 export function NewsList({ initialNews }: { initialNews: News[] }) {
@@ -19,24 +19,34 @@ export function NewsList({ initialNews }: { initialNews: News[] }) {
         if (selectedIds.length === initialNews.length) {
             setSelectedIds([])
         } else {
-            setSelectedIds(initialNews.map(n => n.id))
+            setSelectedIds(initialNews.map((item) => item.id))
         }
     }
 
     const toggleSelect = (id: string) => {
-        setSelectedIds(prev =>
-            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-        )
+        setSelectedIds((prev) => (
+            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+        ))
     }
 
     const handleBulkDelete = async () => {
-        if (selectedIds.length === 0) return
-        if (!confirm(`${selectedIds.length}件の項目を削除してもよろしいですか？`)) return
+        if (selectedIds.length === 0) {
+            return
+        }
+
+        if (!confirm(`${selectedIds.length}件のお知らせを削除しますか？`)) {
+            return
+        }
 
         setIsDeleting(true)
         try {
-            await deleteMultipleNews(selectedIds)
-            toast.success(`${selectedIds.length}件の項目を削除しました`)
+            const result = await deleteMultipleNews(selectedIds)
+            if (result?.error) {
+                throw new Error(result.error)
+            }
+
+            toast.success(`${selectedIds.length}件のお知らせを削除しました`)
+            setSelectedIds([])
         } catch {
             toast.error('削除に失敗しました')
         } finally {
@@ -47,9 +57,9 @@ export function NewsList({ initialNews }: { initialNews: News[] }) {
     return (
         <div className="space-y-4">
             {selectedIds.length > 0 && (
-                <div className="flex items-center gap-4 p-2 bg-indigo-50 border border-indigo-100 rounded-lg animate-in slide-in-from-top-2">
-                    <span className="text-sm font-medium text-indigo-900 ml-2">
-                        {selectedIds.length} 個選択中
+                <div className="animate-in slide-in-from-top-2 flex items-center gap-4 rounded-lg border border-indigo-100 bg-indigo-50 p-2">
+                    <span className="ml-2 text-sm font-medium text-indigo-900">
+                        {selectedIds.length}件を選択中
                     </span>
                     <Button
                         variant="destructive"
@@ -57,8 +67,8 @@ export function NewsList({ initialNews }: { initialNews: News[] }) {
                         onClick={handleBulkDelete}
                         disabled={isDeleting}
                     >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        一括削除
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        選択した項目を削除
                     </Button>
                 </div>
             )}
@@ -94,22 +104,20 @@ export function NewsList({ initialNews }: { initialNews: News[] }) {
                             <TableCell className="font-medium">{news.title}</TableCell>
                             <TableCell>
                                 {news.published_at ? (
-                                    <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800">
-                                        公開済み
+                                    <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                        公開中
                                     </span>
                                 ) : (
-                                    <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
+                                    <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
                                         下書き
                                     </span>
                                 )}
                             </TableCell>
-                            <TableCell>
-                                {format(new Date(news.created_at), 'yyyy-MM-dd')}
-                            </TableCell>
-                            <TableCell className="text-right space-x-2">
+                            <TableCell>{format(new Date(news.created_at), 'yyyy-MM-dd')}</TableCell>
+                            <TableCell className="space-x-2 text-right">
                                 <Button variant="ghost" size="icon" asChild>
                                     <Link href={`/admin/news/${news.id}`}>
-                                        <Edit className="w-4 h-4" />
+                                        <Edit className="h-4 w-4" />
                                     </Link>
                                 </Button>
                                 <DeleteButton id={news.id} title={news.title} deleteAction={deleteNews} />
@@ -118,8 +126,8 @@ export function NewsList({ initialNews }: { initialNews: News[] }) {
                     ))}
                     {initialNews.length === 0 && (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                                お知らせが見つかりません。
+                            <TableCell colSpan={5} className="py-8 text-center text-gray-500">
+                                まだお知らせがありません。
                             </TableCell>
                         </TableRow>
                     )}

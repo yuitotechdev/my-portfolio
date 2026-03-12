@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { Modal } from '@/components/ui/modal'
-import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface DeleteButtonProps {
     id: string
@@ -48,7 +48,7 @@ export function DeleteButton({ id, title, deleteAction }: DeleteButtonProps) {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={`「${title}」を削除しますか？`}
-                description="この操作は取り消せません。サーバーからこの項目が永久に削除されます。"
+                description="この操作は取り消せません。公開ページや管理画面からも表示されなくなります。"
                 variant="destructive"
             >
                 <div className="flex justify-end gap-3 mt-4">
@@ -64,7 +64,7 @@ export function DeleteButton({ id, title, deleteAction }: DeleteButtonProps) {
                         disabled={isDeleting}
                         className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 flex items-center gap-2"
                     >
-                        {isDeleting ? '削除中...' : '削除'}
+                        {isDeleting ? '削除中...' : '削除する'}
                     </button>
                 </div>
             </Modal>

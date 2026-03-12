@@ -1,6 +1,5 @@
 'use client'
 
-import { type AdminFormAction } from '@/lib/admin-form-state'
 import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { MarkdownEditor } from '@/components/admin/MarkdownEditor'
 import { Button } from '@/components/ui/button'
@@ -8,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { type AdminFormAction } from '@/lib/admin-form-state'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -45,15 +45,15 @@ export default function EditPostForm({
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-4">
-                <Link href="/admin/posts" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <ArrowLeft className="w-5 h-5" />
+                <Link href="/admin/posts" className="rounded-full p-2 transition-colors hover:bg-gray-100">
+                    <ArrowLeft className="h-5 w-5" />
                 </Link>
-                <h1 className="text-3xl font-bold tracking-tight">Edit Post</h1>
+                <h1 className="text-3xl font-bold tracking-tight">ブログ記事を編集</h1>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Post Details</CardTitle>
+                    <CardTitle>記事情報</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form action={handleSubmit} className="space-y-6">
@@ -63,7 +63,7 @@ export default function EditPostForm({
 
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="title">Title *</Label>
+                                <Label htmlFor="title">タイトル *</Label>
                                 <Input
                                     id="title"
                                     name="title"
@@ -74,7 +74,7 @@ export default function EditPostForm({
                                 {titleError && <p className="text-sm text-red-600">{titleError}</p>}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="slug">Slug *</Label>
+                                <Label htmlFor="slug">URLスラッグ *</Label>
                                 <Input
                                     id="slug"
                                     name="slug"
@@ -82,33 +82,26 @@ export default function EditPostForm({
                                     required
                                     aria-invalid={!!slugError}
                                 />
+                                <p className="text-xs text-gray-500">ブログURLの末尾に使う半角英数字とハイフンの識別子です。</p>
                                 {slugError && <p className="text-sm text-red-600">{slugError}</p>}
                             </div>
                         </div>
 
-                        <MarkdownEditor
-                            value={content}
-                            onChange={setContent}
-                            required
-                        />
+                        <MarkdownEditor value={content} onChange={setContent} required />
                         {contentError && <p className="text-sm text-red-600">{contentError}</p>}
 
                         <div className="flex items-center space-x-2">
-                            <Switch
-                                id="is_public"
-                                name="is_public"
-                                defaultChecked={post.published_at !== null} // Logic differs slightly from model but fine for now, usually we track is_public separately or deduce it. Spec says is_public col exists? Let's assume schema has is_public based on validators.ts
-                            />
-                            <Label htmlFor="is_public">Published</Label>
+                            <Switch id="is_public" name="is_public" defaultChecked={post.is_public} />
+                            <Label htmlFor="is_public">公開する</Label>
                         </div>
 
                         <div className="flex justify-end gap-4">
                             <Button variant="outline" type="button" onClick={() => router.back()}>
-                                Cancel
+                                キャンセル
                             </Button>
                             <Button type="submit" disabled={isPending}>
-                                {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                                Update Post
+                                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                更新する
                             </Button>
                         </div>
                     </form>

@@ -1,18 +1,18 @@
+import { MotionButton, Reveal } from '@/components/ui/motion'
 import { WorksRepository } from '@/lib/repositories/works'
-import { Reveal, MotionButton } from '@/components/ui/motion'
+import { ArrowLeft, ExternalLink, Github } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, ExternalLink, Github } from 'lucide-react'
 import { WorkHero } from './_components/WorkHero'
 
 export const dynamic = 'force-dynamic'
-
-// Spec: /works/[slug] Works詳細
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
     const work = await WorksRepository.getBySlug(slug)
     if (!work) return { title: 'Not Found' }
+
     return {
         title: `${work.title} - Works`,
         description: work.description?.slice(0, 160)
@@ -46,7 +46,7 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
                     </h1>
 
                     <div className="flex flex-wrap gap-3 mb-10">
-                        {work.tech_stack?.map(tech => (
+                        {work.tech_stack?.map((tech) => (
                             <span key={tech} className="text-sm border border-border px-3 py-1 rounded-full text-foreground bg-muted/10 font-medium">
                                 {tech}
                             </span>
@@ -54,11 +54,7 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
                     </div>
                 </Reveal>
 
-                <WorkHero 
-                    id={work.id} 
-                    title={work.title} 
-                    thumbnailUrl={work.thumbnail_url} 
-                />
+                <WorkHero id={work.id} title={work.title} thumbnailUrl={work.thumbnail_url} />
 
                 <div className="grid md:grid-cols-4 gap-12">
                     <div className="md:col-span-3">
@@ -69,6 +65,28 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
                                 </p>
                             </div>
                         </Reveal>
+
+                        {work.screenshots.length > 0 && (
+                            <Reveal delay={0.35}>
+                                <section className="mt-12">
+                                    <h2 className="uppercase text-[10px] font-black text-zinc-400 dark:text-zinc-500 tracking-[0.2em] mb-4">
+                                        Feature Screenshots
+                                    </h2>
+                                    <div className="grid grid-cols-1 gap-6">
+                                        {work.screenshots.map((screenshot, index) => (
+                                            <div key={`${screenshot}-${index}`} className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-muted/30 shadow-sm">
+                                                <Image
+                                                    src={screenshot}
+                                                    alt={`${work.title} screenshot ${index + 1}`}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            </Reveal>
+                        )}
                     </div>
 
                     <div className="md:col-span-1 space-y-6">
@@ -106,7 +124,6 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
                         </Reveal>
                     </div>
                 </div>
-
             </article>
         </main>
     )

@@ -31,47 +31,49 @@ export function ProductForm({
     }
 
     return (
-        <form action={handleSubmit} className="space-y-8 max-w-2xl">
+        <form action={handleSubmit} className="max-w-2xl space-y-8">
             <Card>
-                <CardContent className="pt-6 space-y-6">
+                <CardContent className="space-y-6 pt-6">
                     {state.status === 'error' && state.message && (
                         <p className="text-sm text-red-600">{state.message}</p>
                     )}
 
                     <div className="flex items-center justify-between border-b pb-4">
-                        <Label htmlFor="is_public" className="text-base">Public</Label>
+                        <Label htmlFor="is_public" className="text-base">
+                            公開する
+                        </Label>
                         <Switch id="is_public" name="is_public" defaultChecked={product?.is_public ?? true} />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="title">Title <span className="text-red-500">*</span></Label>
-                        <Input id="title" name="title" defaultValue={product?.title} required placeholder="Product title" />
+                        <Label htmlFor="title">タイトル <span className="text-red-500">*</span></Label>
+                        <Input id="title" name="title" defaultValue={product?.title} required placeholder="商品名やサービス名" />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="description">Description</Label>
+                        <Label htmlFor="description">説明</Label>
                         <Textarea
                             id="description"
                             name="description"
                             defaultValue={product?.description || ''}
-                            placeholder="Short product description"
+                            placeholder="プロダクトの概要を入力"
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="space-y-2">
-                            <Label htmlFor="url">Product URL <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="url">公開URL <span className="text-red-500">*</span></Label>
                             <Input id="url" name="url" defaultValue={product?.url} required placeholder="https://example.com" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="price_display">Price Label</Label>
-                            <Input id="price_display" name="price_display" defaultValue={product?.price_display || ''} placeholder="$10 / Free" />
+                            <Label htmlFor="price_display">価格表示</Label>
+                            <Input id="price_display" name="price_display" defaultValue={product?.price_display || ''} placeholder="¥1,000 / 無料" />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="thumbnail_url">Thumbnail</Label>
+                            <Label htmlFor="thumbnail_url">サムネイル画像</Label>
                             <ImageUpload
                                 bucket="products"
                                 initialUrl={thumbnailUrl}
@@ -86,7 +88,7 @@ export function ProductForm({
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="order">Order</Label>
+                            <Label htmlFor="order">表示順</Label>
                             <Input id="order" name="order" type="number" defaultValue={product?.order ?? 0} />
                         </div>
                     </div>
@@ -95,11 +97,11 @@ export function ProductForm({
 
             <div className="flex items-center gap-4">
                 <Button type="submit" disabled={isPending}>
-                    {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    {isEdit ? 'Update Product' : 'Create Product'}
+                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isEdit ? '更新する' : '追加する'}
                 </Button>
                 <Button type="button" variant="outline" asChild>
-                    <Link href="/admin/products">Cancel</Link>
+                    <Link href="/admin/products">キャンセル</Link>
                 </Button>
             </div>
         </form>

@@ -1,26 +1,25 @@
 'use server'
 
-import { supabaseAdmin } from '@/lib/supabase-admin'
-import { revalidatePath } from 'next/cache'
 import { auth } from '@/auth'
-import { parseProfileFormData, profileSchema, parseLinkFormData, linkSchema } from '@/lib/validators'
 import {
     type AdminFormState,
     errorFormState,
     successFormState,
     zodIssuesToFieldErrors
 } from '@/lib/admin-form-state'
+import { supabaseAdmin } from '@/lib/supabase-admin'
+import { linkSchema, parseLinkFormData, parseProfileFormData, profileSchema } from '@/lib/validators'
+import { revalidatePath } from 'next/cache'
 
 async function requireAdmin() {
     const session = await auth()
     const adminEmail = process.env.ADMIN_EMAIL
 
     if (!session?.user?.email || session.user.email !== adminEmail) {
-        throw new Error('Unauthorized')
+        throw new Error('管理者のみ操作できます')
     }
 }
 
-// Profile Actions
 export async function updateProfile(_prevState: AdminFormState, formData: FormData) {
     try {
         await requireAdmin()
@@ -30,12 +29,11 @@ export async function updateProfile(_prevState: AdminFormState, formData: FormDa
 
         if (!result.success) {
             return errorFormState(
-                'Please check the form fields',
+                '入力内容を確認してください',
                 zodIssuesToFieldErrors(result.error.issues)
             )
         }
 
-        // Check if profile exists (Safe check against multiple rows)
         const { data: existingRows } = await supabaseAdmin.from('profile').select('id').limit(1)
         const existing = existingRows?.[0]
 
@@ -53,20 +51,21 @@ export async function updateProfile(_prevState: AdminFormState, formData: FormDa
             error = insertError
         }
 
-        if (error) return errorFormState('Failed to update profile')
+        if (error) {
+            return errorFormState('プロフィールの更新に失敗しました')
+        }
 
         revalidatePath('/')
         revalidatePath('/about')
         revalidatePath('/admin/settings')
 
-        return successFormState('Profile updated successfully')
+        return successFormState('プロフィールを更新しました')
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        const message = err instanceof Error ? err.message : '予期しないエラーが発生しました'
         return errorFormState(message)
     }
 }
 
-// Link Actions
 export async function createLink(_prevState: AdminFormState, formData: FormData) {
     try {
         await requireAdmin()
@@ -76,20 +75,22 @@ export async function createLink(_prevState: AdminFormState, formData: FormData)
 
         if (!result.success) {
             return errorFormState(
-                'Please check the form fields',
+                '入力内容を確認してください',
                 zodIssuesToFieldErrors(result.error.issues)
             )
         }
 
         const { error } = await supabaseAdmin.from('links').insert(result.data)
-        if (error) return errorFormState('Failed to create link')
+        if (error) {
+            return errorFormState('リンクの追加に失敗しました')
+        }
 
         revalidatePath('/')
         revalidatePath('/admin/settings')
 
-        return successFormState('Link created successfully')
+        return successFormState('リンクを追加しました')
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        const message = err instanceof Error ? err.message : '予期しないエラーが発生しました'
         return errorFormState(message)
     }
 }
@@ -100,14 +101,18 @@ export async function updateLink(id: string, formData: FormData) {
     const rawData = parseLinkFormData(formData)
     const result = linkSchema.safeParse(rawData)
 
-    if (!result.success) throw new Error(result.error.issues.map(e => e.message).join(', '))
+    if (!result.success) {
+        throw new Error(result.error.issues.map((issue) => issue.message).join(', '))
+    }
 
     const { error } = await supabaseAdmin
         .from('links')
         .update({ ...result.data, updated_at: new Date().toISOString() })
         .eq('id', id)
 
-    if (error) throw new Error('Failed to update link')
+    if (error) {
+        throw new Error('リンクの更新に失敗しました')
+    }
 
     revalidatePath('/')
     revalidatePath('/admin/settings')
@@ -117,7 +122,9 @@ export async function deleteLink(id: string) {
     await requireAdmin()
 
     const { error } = await supabaseAdmin.from('links').delete().eq('id', id)
-    if (error) throw new Error('Failed to delete link')
+    if (error) {
+        throw new Error('リンクの削除に失敗しました')
+    }
 
     revalidatePath('/')
     revalidatePath('/admin/settings')

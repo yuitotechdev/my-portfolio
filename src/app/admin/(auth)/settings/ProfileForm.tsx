@@ -33,12 +33,12 @@ export function ProfileForm({
             )}
 
             <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">名前</Label>
                 <Input id="name" name="name" defaultValue={profile?.name || ''} required />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="avatar_url">Avatar</Label>
+                <Label htmlFor="avatar_url">プロフィール画像</Label>
                 <ImageUpload
                     bucket="avatars"
                     initialUrl={avatarUrl}
@@ -54,24 +54,24 @@ export function ProfileForm({
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="bio_short">Short Bio</Label>
-                <Input id="bio_short" name="bio_short" defaultValue={profile?.bio_short || ''} placeholder="Software Engineer / Designer" />
+                <Label htmlFor="bio_short">短い紹介文</Label>
+                <Input id="bio_short" name="bio_short" defaultValue={profile?.bio_short || ''} placeholder="ソフトウェアエンジニア / デザイナー" />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="bio_medium">Medium Bio</Label>
+                <Label htmlFor="bio_medium">中くらいの紹介文</Label>
                 <Textarea id="bio_medium" name="bio_medium" defaultValue={profile?.bio_medium || ''} className="h-24" />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="bio_long">Long Bio</Label>
+                <Label htmlFor="bio_long">長い紹介文</Label>
                 <Textarea id="bio_long" name="bio_long" defaultValue={profile?.bio_long || ''} className="h-48" />
             </div>
 
             <div className="flex justify-end">
                 <Button type="submit" disabled={isPending}>
-                    {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    Save Profile
+                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    プロフィールを保存
                 </Button>
             </div>
         </form>

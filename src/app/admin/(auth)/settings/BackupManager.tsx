@@ -1,9 +1,9 @@
 'use client'
 
-import { exportData, validateImport, executeImport, ImportSummary } from '@/app/actions/settings'
-import { useState, useRef } from 'react'
-import { toast } from 'sonner'
+import { executeImport, exportData, type ImportSummary, validateImport } from '@/app/actions/settings'
 import { Button } from '@/components/ui/button'
+import { useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 export function BackupManager() {
     const [loading, setLoading] = useState(false)
@@ -16,29 +16,31 @@ export function BackupManager() {
             setLoading(true)
             const data = await exportData()
 
-            // Create downloadable file
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
             const url = window.URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `backup-${new Date().toISOString().split('T')[0]}.json`
-            document.body.appendChild(a)
-            a.click()
+            const link = document.createElement('a')
+            link.href = url
+            link.download = `backup-${new Date().toISOString().split('T')[0]}.json`
+            document.body.appendChild(link)
+            link.click()
             window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
+            document.body.removeChild(link)
 
-            toast.success('エクスポートが完了しました！')
-        } catch (e) {
-            console.error(e)
-            toast.error('エクスポートに失敗しました。')
+            toast.success('バックアップを保存しました')
+        } catch (error) {
+            console.error(error)
+            toast.error('バックアップの作成に失敗しました')
         } finally {
             setLoading(false)
         }
     }
 
-    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || e.target.files.length === 0) return
-        const file = e.target.files[0]
+    const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files || event.target.files.length === 0) {
+            return
+        }
+
+        const file = event.target.files[0]
         setImportFile(file)
         setImportSummary(null)
 
@@ -49,22 +51,24 @@ export function BackupManager() {
             setImportSummary(summary)
 
             if (!summary.valid) {
-                toast.error('無効なバックアップファイルです。以下のエラーを確認してください。')
+                toast.error('バックアップファイルに問題があります。内容を確認してください。')
             } else {
-                toast.info('バックアップファイルが検証されました。インポート前に概要を確認してください。')
+                toast.info('バックアップファイルを確認しました。問題なければ取り込みを実行できます。')
             }
-        } catch (e) {
-            console.error(e)
-            toast.error('ファイルの検証に失敗しました。')
+        } catch (error) {
+            console.error(error)
+            toast.error('ファイルの読み込みに失敗しました')
         } finally {
             setLoading(false)
         }
     }
 
     const handleExecuteImport = async () => {
-        if (!importFile) return
+        if (!importFile) {
+            return
+        }
 
-        if (!confirm('この操作により既存のデータが上書き/更新されます。元に戻すことはできません。よろしいですか？')) {
+        if (!confirm('現在のデータを上書きします。続行しますか？')) {
             return
         }
 
@@ -72,16 +76,16 @@ export function BackupManager() {
             setLoading(true)
             const text = await importFile.text()
             await executeImport(text)
-            toast.success('インポートが完了しました！データが復元されました。')
+            toast.success('バックアップを取り込みました')
 
-            // Reset
             setImportFile(null)
             setImportSummary(null)
-            if (fileInputRef.current) fileInputRef.current.value = ''
-
-        } catch (e) {
-            console.error(e)
-            toast.error('インポートの実行に失敗しました。')
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error('バックアップの取り込みに失敗しました')
         } finally {
             setLoading(false)
         }
@@ -89,28 +93,22 @@ export function BackupManager() {
 
     return (
         <div className="space-y-8">
-            {/* Export Section */}
             <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">データのエクスポート</h3>
-                <p className="text-sm text-gray-500 mb-4">
-                    すべてのコンテンツ（実績、投稿、お知らせ、プロフィール、リンク）のJSONバックアップをダウンロードします。
+                <h3 className="mb-2 text-sm font-medium text-gray-900">データを書き出す</h3>
+                <p className="mb-4 text-sm text-gray-500">
+                    制作実績、ブログ、お知らせ、プロフィール、リンクを JSON 形式で保存します。
                 </p>
-                <Button
-                    onClick={handleExport}
-                    disabled={loading}
-                    variant="outline"
-                >
+                <Button onClick={handleExport} disabled={loading} variant="outline">
                     {loading ? '処理中...' : 'バックアップをダウンロード'}
                 </Button>
             </div>
 
             <hr className="border-gray-100" />
 
-            {/* Import Section */}
             <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">データのインポート</h3>
-                <p className="text-sm text-gray-500 mb-4">
-                    JSONバックアップからデータを復元します。まずファイルを選択して検証してください。
+                <h3 className="mb-2 text-sm font-medium text-gray-900">データを取り込む</h3>
+                <p className="mb-4 text-sm text-gray-500">
+                    JSON バックアップを選択して検証後に取り込みます。
                 </p>
                 <label className="block max-w-sm">
                     <span className="sr-only">ファイルを選択</span>
@@ -120,31 +118,23 @@ export function BackupManager() {
                         accept="application/json"
                         onChange={handleFileSelect}
                         disabled={loading}
-                        className="block w-full text-sm text-gray-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-indigo-50 file:text-indigo-700
-                            hover:file:bg-indigo-100
-                            transition-all cursor-pointer
-                          "
+                        className="block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
                     />
                 </label>
 
-                {/* Validation Summary */}
                 {importSummary && (
-                    <div className={`mt-6 p-4 rounded border ${importSummary.valid ? 'bg-gray-50 border-gray-200' : 'bg-red-50 border-red-200'}`}>
-                        <h4 className="font-semibold mb-2">インポート概要</h4>
+                    <div className={`mt-6 rounded border p-4 ${importSummary.valid ? 'border-gray-200 bg-gray-50' : 'border-red-200 bg-red-50'}`}>
+                        <h4 className="mb-2 font-semibold">取り込み結果</h4>
 
                         {!importSummary.valid && (
-                            <div className="text-red-600 text-sm mb-4">
-                                <p className="font-bold">見つかったエラー:</p>
+                            <div className="mb-4 text-sm text-red-600">
+                                <p className="font-bold">見つかったエラー</p>
                                 <ul className="list-disc pl-5">
-                                    {importSummary.errors?.slice(0, 5).map((err, i) => (
-                                        <li key={i}>{err}</li>
+                                    {importSummary.errors?.slice(0, 5).map((error, index) => (
+                                        <li key={index}>{error}</li>
                                     ))}
                                     {(importSummary.errors?.length || 0) > 5 && (
-                                        <li>...他 {(importSummary.errors?.length || 0) - 5} 件</li>
+                                        <li>ほか {((importSummary.errors?.length || 0) - 5)} 件</li>
                                     )}
                                 </ul>
                             </div>
@@ -153,8 +143,8 @@ export function BackupManager() {
                         {importSummary.valid && (
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>WORKS_CONST: <span className="font-mono">{importSummary.counts.works}</span></div>
-                                    <div>ブログ投稿: <span className="font-mono">{importSummary.counts.posts}</span></div>
+                                    <div>制作実績: <span className="font-mono">{importSummary.counts.works}</span></div>
+                                    <div>ブログ: <span className="font-mono">{importSummary.counts.posts}</span></div>
                                     <div>お知らせ: <span className="font-mono">{importSummary.counts.news}</span></div>
                                     <div>プロフィール: <span className="font-mono">{importSummary.counts.profile}</span></div>
                                     <div>リンク: <span className="font-mono">{importSummary.counts.links}</span></div>
@@ -167,10 +157,10 @@ export function BackupManager() {
                                         variant="destructive"
                                         className="w-full"
                                     >
-                                        {loading ? '復元中...' : '復元を確定する (上書き)'}
+                                        {loading ? '取り込み中...' : '取り込みを実行する'}
                                     </Button>
-                                    <p className="text-xs text-center text-gray-500 mt-2">
-                                        この操作により、既存のレコードが更新され、新しいレコードが挿入されます。
+                                    <p className="mt-2 text-center text-xs text-gray-500">
+                                        実行すると現在のデータは上書きされます。
                                     </p>
                                 </div>
                             </div>

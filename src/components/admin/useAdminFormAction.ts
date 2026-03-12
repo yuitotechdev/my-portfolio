@@ -31,7 +31,7 @@ export function useAdminFormAction(
         handledSubmissionId.current = state.submissionId
 
         if (state.status === 'success') {
-            toast.success(state.message || 'Saved successfully')
+            toast.success(state.message || '保存しました')
             options.onSuccess?.(state)
 
             if (state.redirectTo) {
@@ -46,7 +46,7 @@ export function useAdminFormAction(
         }
 
         if (state.status === 'error') {
-            toast.error(state.message || 'Failed to save')
+            toast.error(state.message || '保存に失敗しました')
             options.onError?.(state)
         }
     }, [options, router, state])

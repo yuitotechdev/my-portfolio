@@ -7,6 +7,7 @@ export default async function AdminWorksPage() {
     const { data: works } = await supabaseAdmin
         .from('works')
         .select('*')
+        .order('order', { ascending: true })
         .order('created_at', { ascending: false })
 
     return (

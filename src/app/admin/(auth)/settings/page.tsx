@@ -10,14 +10,14 @@ export default async function SettingsPage() {
     const links = await ProfileRepository.getLinks()
 
     return (
-        <div className="space-y-8 max-w-4xl">
-            <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <div className="max-w-4xl space-y-8">
+            <h1 className="text-3xl font-bold tracking-tight">設定</h1>
 
             <div className="grid gap-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Profile</CardTitle>
-                        <CardDescription>Update the public profile shown on the site.</CardDescription>
+                        <CardTitle>プロフィール</CardTitle>
+                        <CardDescription>公開サイトに表示するプロフィール情報を更新します。</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <ProfileForm profile={profile} action={updateProfile} />
@@ -26,8 +26,8 @@ export default async function SettingsPage() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Social Links</CardTitle>
-                        <CardDescription>Manage the links shown on the site.</CardDescription>
+                        <CardTitle>外部リンク</CardTitle>
+                        <CardDescription>サイトに表示するSNSや外部リンクを管理します。</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <LinksManager links={links} action={createLink} />
@@ -36,8 +36,8 @@ export default async function SettingsPage() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Backup</CardTitle>
-                        <CardDescription>Export or import your content data.</CardDescription>
+                        <CardTitle>バックアップ</CardTitle>
+                        <CardDescription>コンテンツデータの書き出しと取り込みを行います。</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <BackupManager />

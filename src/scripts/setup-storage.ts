@@ -6,7 +6,7 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 async function setupBuckets() {
-    const buckets = ['thumbnails', 'products', 'avatars']
+    const buckets = ['works', 'products', 'devices', 'avatars']
     for (const b of buckets) {
         const { error } = await supabase.storage.getBucket(b)
         if (error) {

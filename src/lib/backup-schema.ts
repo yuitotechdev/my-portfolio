@@ -12,6 +12,7 @@ export const backupWorkSchema = z.object({
     slug: z.string(),
     description: z.string().nullable().optional(),
     thumbnail_url: z.string().nullable().optional(),
+    screenshots: z.array(z.string()).optional(),
     tech_stack: z.array(z.string()).optional(),
     deployment_url: z.string().nullable().optional(),
     github_url: z.string().nullable().optional(),

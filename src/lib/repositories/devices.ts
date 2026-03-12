@@ -7,6 +7,7 @@ export type Device = {
     description: string | null
     purchase_reason: string | null
     link_url: string | null
+    thumbnail_url: string | null
     order: number
     is_public: boolean
     created_at: string

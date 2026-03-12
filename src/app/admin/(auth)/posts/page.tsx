@@ -2,7 +2,7 @@ import { deletePost } from '@/app/actions/posts'
 import { DeleteButton } from '@/components/admin/DeleteButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../../components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { format } from 'date-fns'
 import { Edit, Plus } from 'lucide-react'
@@ -20,8 +20,8 @@ export default async function AdminPostsPage() {
                 <h1 className="text-3xl font-bold tracking-tight">ブログ管理</h1>
                 <Button asChild>
                     <Link href="/admin/posts/new">
-                        <Plus className="w-4 h-4 mr-2" />
-                        記事を書く
+                        <Plus className="mr-2 h-4 w-4" />
+                        新しい記事を追加
                     </Link>
                 </Button>
             </div>
@@ -35,7 +35,7 @@ export default async function AdminPostsPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>タイトル</TableHead>
-                                <TableHead>スラッグ</TableHead>
+                                <TableHead>URLスラッグ</TableHead>
                                 <TableHead>公開状態</TableHead>
                                 <TableHead>作成日</TableHead>
                                 <TableHead className="text-right">操作</TableHead>
@@ -48,22 +48,20 @@ export default async function AdminPostsPage() {
                                     <TableCell className="text-gray-500">{post.slug}</TableCell>
                                     <TableCell>
                                         {post.published_at ? (
-                                            <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800">
-                                                公開済み
+                                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                                公開中
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800">
+                                            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
                                                 下書き
                                             </span>
                                         )}
                                     </TableCell>
-                                    <TableCell>
-                                        {format(new Date(post.created_at), 'yyyy-MM-dd')}
-                                    </TableCell>
-                                    <TableCell className="text-right space-x-2">
+                                    <TableCell>{format(new Date(post.created_at), 'yyyy-MM-dd')}</TableCell>
+                                    <TableCell className="space-x-2 text-right">
                                         <Button variant="ghost" size="icon" asChild>
                                             <Link href={`/admin/posts/${post.id}`}>
-                                                <Edit className="w-4 h-4" />
+                                                <Edit className="h-4 w-4" />
                                             </Link>
                                         </Button>
                                         <DeleteButton id={post.id} title={post.title} deleteAction={deletePost} />
@@ -72,8 +70,8 @@ export default async function AdminPostsPage() {
                             ))}
                             {posts?.length === 0 && (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                                        記事が見つかりません。最初の記事を執筆しましょう！
+                                    <TableCell colSpan={5} className="py-8 text-center text-gray-500">
+                                        まだ記事がありません。新しい記事を追加してください。
                                     </TableCell>
                                 </TableRow>
                             )}

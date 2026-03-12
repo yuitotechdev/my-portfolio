@@ -1,22 +1,22 @@
 'use server'
 
-import { supabaseAdmin } from '@/lib/supabase-admin'
-import { revalidatePath } from 'next/cache'
 import { auth } from '@/auth'
-import { parseProductFormData, productSchema } from '@/lib/validators'
 import {
     type AdminFormState,
     errorFormState,
     successFormState,
     zodIssuesToFieldErrors
 } from '@/lib/admin-form-state'
+import { supabaseAdmin } from '@/lib/supabase-admin'
+import { parseProductFormData, productSchema } from '@/lib/validators'
+import { revalidatePath } from 'next/cache'
 
 async function requireAdmin() {
     const session = await auth()
     const adminEmail = process.env.ADMIN_EMAIL
 
     if (!session?.user?.email || session.user.email !== adminEmail) {
-        throw new Error('Unauthorized')
+        throw new Error('管理者のみ操作できます')
     }
 }
 
@@ -29,21 +29,23 @@ export async function createProduct(_prevState: AdminFormState, formData: FormDa
 
         if (!result.success) {
             return errorFormState(
-                'Please check the form fields',
+                '入力内容を確認してください',
                 zodIssuesToFieldErrors(result.error.issues)
             )
         }
 
         const { error } = await supabaseAdmin.from('products').insert(result.data)
 
-        if (error) return errorFormState('Failed to create product')
+        if (error) {
+            return errorFormState('プロダクトの追加に失敗しました')
+        }
 
         revalidatePath('/admin/products')
         revalidatePath('/products')
 
-        return successFormState('Product created successfully', '/admin/products')
+        return successFormState('プロダクトを追加しました', '/admin/products')
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        const message = err instanceof Error ? err.message : '予期しないエラーが発生しました'
         return errorFormState(message)
     }
 }
@@ -57,7 +59,7 @@ export async function updateProduct(id: string, _prevState: AdminFormState, form
 
         if (!result.success) {
             return errorFormState(
-                'Please check the form fields',
+                '入力内容を確認してください',
                 zodIssuesToFieldErrors(result.error.issues)
             )
         }
@@ -67,14 +69,16 @@ export async function updateProduct(id: string, _prevState: AdminFormState, form
             .update({ ...result.data, updated_at: new Date().toISOString() })
             .eq('id', id)
 
-        if (error) return errorFormState('Failed to update product')
+        if (error) {
+            return errorFormState('プロダクトの更新に失敗しました')
+        }
 
         revalidatePath('/admin/products')
         revalidatePath('/products')
 
-        return successFormState('Product updated successfully', '/admin/products')
+        return successFormState('プロダクトを更新しました', '/admin/products')
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        const message = err instanceof Error ? err.message : '予期しないエラーが発生しました'
         return errorFormState(message)
     }
 }
@@ -85,12 +89,14 @@ export async function deleteProduct(id: string) {
 
         const { error } = await supabaseAdmin.from('products').delete().eq('id', id)
 
-        if (error) return { error: 'Failed to delete product' }
+        if (error) {
+            return { error: 'プロダクトの削除に失敗しました' }
+        }
 
         revalidatePath('/admin/products')
         revalidatePath('/products')
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+        const message = err instanceof Error ? err.message : '予期しないエラーが発生しました'
         return { error: message }
     }
 }

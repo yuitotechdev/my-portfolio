@@ -1,9 +1,9 @@
-import { NewsList } from './_components/NewsList'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
+import { NewsList } from './_components/NewsList'
 
 export default async function AdminNewsPage() {
     const { data: newsList } = await supabaseAdmin
@@ -17,8 +17,8 @@ export default async function AdminNewsPage() {
                 <h1 className="text-3xl font-bold tracking-tight">お知らせ管理</h1>
                 <Button asChild>
                     <Link href="/admin/news/new">
-                        <Plus className="w-4 h-4 mr-2" />
-                        新しく追加
+                        <Plus className="mr-2 h-4 w-4" />
+                        新しいお知らせを追加
                     </Link>
                 </Button>
             </div>
@@ -34,4 +34,3 @@ export default async function AdminNewsPage() {
         </div>
     )
 }
-// Rebuild trigger

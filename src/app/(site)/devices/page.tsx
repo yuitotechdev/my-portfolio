@@ -1,23 +1,23 @@
-import { DevicesRepository } from '@/lib/repositories/devices'
 import { Reveal, StaggerList } from '@/components/ui/motion'
+import { COMMON_TEXT, PAGE_TITLES } from '@/config/i18n'
+import { DevicesRepository } from '@/lib/repositories/devices'
 import { ExternalLink, Monitor } from 'lucide-react'
-import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
+import Image from 'next/image'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
     title: 'Gear - Portfolio',
-    description: 'My gear and setup.',
+    description: 'My gear and setup.'
 }
 
 export default async function DevicesPage() {
     const devices = await DevicesRepository.getAllPublic()
 
-    // Group by category
     const grouped = devices.reduce((acc, device) => {
-        const cat = device.category || 'Other'
-        if (!acc[cat]) acc[cat] = []
-        acc[cat].push(device)
+        const category = device.category || 'Other'
+        if (!acc[category]) acc[category] = []
+        acc[category].push(device)
         return acc
     }, {} as Record<string, typeof devices>)
 
@@ -37,9 +37,9 @@ export default async function DevicesPage() {
 
                 {categories.length > 0 ? (
                     <div className="space-y-16">
-                        {categories.map((category, idx) => (
+                        {categories.map((category, index) => (
                             <section key={category}>
-                                <Reveal delay={idx * 0.1}>
+                                <Reveal delay={index * 0.1}>
                                     <h2 className="text-2xl font-bold mb-8 flex items-center gap-2 border-b pb-2 border-border">
                                         <Monitor className="w-5 h-5 text-muted-foreground" />
                                         {category}
@@ -52,6 +52,21 @@ export default async function DevicesPage() {
                                             key={device.id}
                                             className="bg-muted/20 rounded-xl p-6 shadow-sm border border-border flex flex-col md:flex-row gap-6 md:items-start"
                                         >
+                                            <div className="relative w-full md:w-48 aspect-[4/3] overflow-hidden rounded-xl bg-muted/40 border border-border">
+                                                {device.thumbnail_url ? (
+                                                    <Image
+                                                        src={device.thumbnail_url}
+                                                        alt={device.name}
+                                                        fill
+                                                        className="object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
+                                                        No Image
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             <div className="flex-1">
                                                 <div className="flex items-start justify-between mb-2">
                                                     <h3 className="text-xl font-bold text-foreground">{device.name}</h3>

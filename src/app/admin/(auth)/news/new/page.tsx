@@ -27,15 +27,15 @@ export default function NewNewsPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-4">
-                <Link href="/admin/news" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <ArrowLeft className="w-5 h-5" />
+                <Link href="/admin/news" className="rounded-full p-2 transition-colors hover:bg-gray-100">
+                    <ArrowLeft className="h-5 w-5" />
                 </Link>
-                <h1 className="text-3xl font-bold tracking-tight">New News</h1>
+                <h1 className="text-3xl font-bold tracking-tight">お知らせを追加</h1>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>News Details</CardTitle>
+                    <CardTitle>お知らせ情報</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form action={handleSubmit} className="space-y-6">
@@ -45,53 +45,54 @@ export default function NewNewsPage() {
 
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="title">Title *</Label>
+                                <Label htmlFor="title">タイトル *</Label>
                                 <Input
                                     id="title"
                                     name="title"
-                                    placeholder="News title"
+                                    placeholder="お知らせタイトルを入力"
                                     required
                                     aria-invalid={!!titleError}
                                 />
                                 {titleError && <p className="text-sm text-red-600">{titleError}</p>}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="slug">Slug *</Label>
+                                <Label htmlFor="slug">URLスラッグ *</Label>
                                 <Input
                                     id="slug"
                                     name="slug"
-                                    placeholder="news-slug"
+                                    placeholder="site-update"
                                     required
                                     aria-invalid={!!slugError}
                                 />
+                                <p className="text-xs text-gray-500">お知らせURLの末尾に使う半角英数字とハイフンの識別子です。</p>
                                 {slugError && <p className="text-sm text-red-600">{slugError}</p>}
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="content">Content</Label>
+                            <Label htmlFor="content">本文</Label>
                             <Textarea
                                 id="content"
                                 name="content"
-                                placeholder="Short content or description"
+                                placeholder="短いお知らせ本文を入力"
                                 className="min-h-[150px]"
                             />
+                            <p className="text-xs text-gray-500">告知や更新情報など、短めの文章に向いています。</p>
                             {contentError && <p className="text-sm text-red-600">{contentError}</p>}
-                            <p className="text-xs text-gray-500">Simple text for announcements.</p>
                         </div>
 
                         <div className="flex items-center space-x-2">
                             <Switch id="is_public" name="is_public" />
-                            <Label htmlFor="is_public">Publish immediately</Label>
+                            <Label htmlFor="is_public">保存後すぐに公開する</Label>
                         </div>
 
                         <div className="flex justify-end gap-4">
                             <Button variant="outline" type="button" onClick={() => router.back()}>
-                                Cancel
+                                キャンセル
                             </Button>
                             <Button type="submit" disabled={isPending}>
-                                {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                                Create News
+                                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                お知らせを追加
                             </Button>
                         </div>
                     </form>

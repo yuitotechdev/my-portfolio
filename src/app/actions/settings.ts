@@ -1,7 +1,8 @@
 'use server'
 
-import { supabaseAdmin } from '@/lib/supabase-admin'
 import { auth } from '@/auth'
+import { backupSchema } from '@/lib/backup-schema'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import { revalidatePath } from 'next/cache'
 
 async function requireAdmin() {
@@ -9,7 +10,7 @@ async function requireAdmin() {
     const adminEmail = process.env.ADMIN_EMAIL
 
     if (!session?.user?.email || session.user.email !== adminEmail) {
-        throw new Error('Unauthorized')
+        throw new Error('管理者のみ操作できます')
     }
 }
 
@@ -40,8 +41,6 @@ export async function exportData() {
     }
 }
 
-import { backupSchema } from '@/lib/backup-schema' // removed BackupData
-
 export type ImportSummary = {
     valid: boolean
     counts: {
@@ -60,8 +59,12 @@ export async function validateImport(jsonContent: string): Promise<ImportSummary
     let data
     try {
         data = JSON.parse(jsonContent)
-    } catch { // removed e
-        return { valid: false, counts: { works: 0, posts: 0, news: 0, profile: 0, links: 0 }, errors: ['Invalid JSON format'] }
+    } catch {
+        return {
+            valid: false,
+            counts: { works: 0, posts: 0, news: 0, profile: 0, links: 0 },
+            errors: ['JSONの形式が不正です']
+        }
     }
 
     const result = backupSchema.safeParse(data)
@@ -70,7 +73,7 @@ export async function validateImport(jsonContent: string): Promise<ImportSummary
         return {
             valid: false,
             counts: { works: 0, posts: 0, news: 0, profile: 0, links: 0 },
-            errors: result.error.issues.map(e => `${e.path.join('.')}: ${e.message}`)
+            errors: result.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`)
         }
     }
 
@@ -93,21 +96,23 @@ export async function executeImport(jsonContent: string) {
 
     const result = backupSchema.safeParse(JSON.parse(jsonContent))
     if (!result.success) {
-        throw new Error('Validation failed during execution')
+        throw new Error('取り込み前の検証に失敗しました')
     }
 
     const data = result.data
 
     const restoreTable = async (table: string, rows: Record<string, unknown>[]) => {
-        if (!rows || rows.length === 0) return
+        if (!rows || rows.length === 0) {
+            return
+        }
+
         const { error } = await supabaseAdmin.from(table).upsert(rows)
         if (error) {
             console.error(`Error restoring ${table}:`, error)
-            throw new Error(`Failed to restore ${table}`)
+            throw new Error(`${table} の復元に失敗しました`)
         }
     }
 
-    // Restore sequentially
     await restoreTable('works', data.works || [])
     await restoreTable('posts', data.posts || [])
     await restoreTable('news', data.news || [])

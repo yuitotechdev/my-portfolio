@@ -37,6 +37,7 @@ create table public.works (
   description text,
   content text, -- Markdown or structured
   thumbnail_url text,
+  screenshots text[] default '{}'::text[],
   tech_stack text[], -- Array of strings
   role text,
   deployment_url text,
@@ -74,6 +75,7 @@ create table public.devices (
   description text,
   purchase_reason text,
   link_url text,
+  thumbnail_url text,
   "order" integer default 0,
   is_public boolean default true,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
@@ -115,12 +117,28 @@ create policy "Public read posts" on public.posts for select using (is_public = 
 
 -- Storage (SQL check, though typically setup via UI, this documents the intention)
 insert into storage.buckets (id, name, public) 
-values ('works', 'works', true)
+values
+  ('works', 'works', true),
+  ('products', 'products', true),
+  ('devices', 'devices', true),
+  ('avatars', 'avatars', true)
 on conflict (id) do nothing;
 
 create policy "Public read works thumbnails"
 on storage.objects for select
 using ( bucket_id = 'works' );
+
+create policy "Public read product thumbnails"
+on storage.objects for select
+using ( bucket_id = 'products' );
+
+create policy "Public read device thumbnails"
+on storage.objects for select
+using ( bucket_id = 'devices' );
+
+create policy "Public read avatars"
+on storage.objects for select
+using ( bucket_id = 'avatars' );
 
 -- NOTE: Write access for all tables is restricted effectively to "service_role" only 
 -- because no "FOR INSERT/UPDATE/DELETE" policies are defined for 'public' or 'anon' roles.
