@@ -120,18 +120,18 @@ export function CustomCursor() {
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
                 style={{ 
                     opacity: isVisible ? 1 : 0,
-                    transition: 'opacity 0.5s ease'
+                    transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
                 <div 
-                    className="w-[180px] h-[180px] rounded-full blur-[30px]"
+                    className="w-[200px] h-[200px] rounded-full blur-[35px]"
                     style={{
                         background: theme === 'dark' 
-                            ? 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%)'
-                            : 'radial-gradient(circle, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0) 70%)',
-                        transform: `scale(${scaleX * 1.3})`,
+                            ? 'radial-gradient(circle, rgba(200,220,255,0.4) 0%, rgba(200,220,255,0) 70%)'
+                            : 'radial-gradient(circle, rgba(0,0,10,0.3) 0%, rgba(0,0,10,0) 70%)',
+                        transform: `scale(${scaleX * 1.4})`,
                         mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
-                        opacity: cursorType === 'text' ? 0.8 : 1
+                        opacity: cursorType === 'text' ? 1 : 0.8
                     }}
                 />
             </div>
