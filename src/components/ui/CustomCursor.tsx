@@ -124,14 +124,14 @@ export function CustomCursor() {
                 }}
             >
                 <div 
-                    className="w-[150px] h-[150px] rounded-full blur-[40px]"
+                    className="w-[180px] h-[180px] rounded-full blur-[30px]"
                     style={{
                         background: theme === 'dark' 
-                            ? 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%)'
-                            : 'radial-gradient(circle, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 70%)',
-                        transform: `scale(${scaleX * 1.2})`,
+                            ? 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%)'
+                            : 'radial-gradient(circle, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0) 70%)',
+                        transform: `scale(${scaleX * 1.3})`,
                         mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
-                        opacity: cursorType === 'text' ? 0.4 : 1
+                        opacity: cursorType === 'text' ? 0.8 : 1
                     }}
                 />
             </div>
