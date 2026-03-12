@@ -114,11 +114,30 @@ export function Header() {
                                     key={item.href}
                                     href={item.href}
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="text-2xl font-bold text-gray-900 hover:text-indigo-600 transition-colors"
+                                    className="text-2xl font-bold text-foreground hover:text-indigo-600 transition-colors"
                                 >
                                     {item.name}
                                 </Link>
                             ))}
+                            <button
+                                type="button"
+                                onClick={() => { toggleTheme(); playClick(); }}
+                                onMouseEnter={playHover}
+                                className="mt-4 inline-flex items-center gap-3 rounded-full border border-border bg-card/80 px-5 py-3 text-sm font-bold text-foreground shadow-sm transition-colors hover:bg-muted/60"
+                                title="テーマを切り替え"
+                            >
+                                {theme === 'dark' ? (
+                                    <>
+                                        <Sun className="w-4 h-4 text-amber-400" />
+                                        ライトテーマに切り替え
+                                    </>
+                                ) : (
+                                    <>
+                                        <Moon className="w-4 h-4 text-indigo-500" />
+                                        ダークテーマに切り替え
+                                    </>
+                                )}
+                            </button>
                         </motion.div>
                     )}
                 </AnimatePresence>
