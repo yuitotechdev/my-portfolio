@@ -8,10 +8,12 @@ import {
     Monitor, LayoutGrid, LogOut, Home, ArrowRight, type LucideIcon 
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useSoundEffect } from '@/hooks/useSoundEffect'
 
 export function AdminCommandPalette() {
     const [open, setOpen] = useState(false)
     const router = useRouter()
+    const { playHover, playClick } = useSoundEffect()
 
     // Listen for Ctrl+K
     useEffect(() => {
@@ -57,16 +59,16 @@ export function AdminCommandPalette() {
                                     </Command.Empty>
 
                                     <Command.Group heading="Navigation" className="px-2 pt-4 pb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                                        <CommandItem icon={Home} label="Dashboard" onSelect={() => runCommand(() => router.push('/admin'))} />
-                                        <CommandItem icon={LayoutGrid} label="Manage Works" onSelect={() => runCommand(() => router.push('/admin/works'))} />
-                                        <CommandItem icon={FileText} label="Manage Blog Posts" onSelect={() => runCommand(() => router.push('/admin/posts'))} />
-                                        <CommandItem icon={Newspaper} label="Manage News" onSelect={() => runCommand(() => router.push('/admin/news'))} />
-                                        <CommandItem icon={Monitor} label="Manage Devices" onSelect={() => runCommand(() => router.push('/admin/devices'))} />
+                                        <CommandItem icon={Home} label="Dashboard" onSelect={() => runCommand(() => router.push('/admin'))} playHover={playHover} playClick={playClick} />
+                                        <CommandItem icon={LayoutGrid} label="Manage Works" onSelect={() => runCommand(() => router.push('/admin/works'))} playHover={playHover} playClick={playClick} />
+                                        <CommandItem icon={FileText} label="Manage Blog Posts" onSelect={() => runCommand(() => router.push('/admin/posts'))} playHover={playHover} playClick={playClick} />
+                                        <CommandItem icon={Newspaper} label="Manage News" onSelect={() => runCommand(() => router.push('/admin/news'))} playHover={playHover} playClick={playClick} />
+                                        <CommandItem icon={Monitor} label="Manage Devices" onSelect={() => runCommand(() => router.push('/admin/devices'))} playHover={playHover} playClick={playClick} />
                                     </Command.Group>
 
                                     <Command.Group heading="Settings" className="px-2 pt-4 pb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                                        <CommandItem icon={Settings} label="Global Settings" onSelect={() => runCommand(() => router.push('/admin/settings'))} />
-                                        <CommandItem icon={LogOut} label="Log Out" onSelect={() => runCommand(() => router.push('/api/auth/signout'))} />
+                                        <CommandItem icon={Settings} label="Global Settings" onSelect={() => runCommand(() => router.push('/admin/settings'))} playHover={playHover} playClick={playClick} />
+                                        <CommandItem icon={LogOut} label="Log Out" onSelect={() => runCommand(() => router.push('/api/auth/signout'))} playHover={playHover} playClick={playClick} />
                                     </Command.Group>
                                 </Command.List>
 
@@ -100,11 +102,12 @@ export function AdminCommandPalette() {
     )
 }
 
-function CommandItem({ icon: Icon, label, onSelect }: { icon: LucideIcon, label: string, onSelect: () => void }) {
+function CommandItem({ icon: Icon, label, onSelect, playHover, playClick }: { icon: LucideIcon, label: string, onSelect: () => void, playHover: () => void, playClick: () => void }) {
     return (
         <Command.Item
-            onSelect={onSelect}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer aria-selected:bg-indigo-500 aria-selected:text-white dark:aria-selected:bg-indigo-600 transition-all group"
+            onSelect={() => { playClick(); onSelect(); }}
+            className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer aria-selected:bg-zinc-100 dark:aria-selected:bg-zinc-800 transition-colors group"
+            onMouseEnter={playHover}
         >
             <div className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 group-aria-selected:bg-white/20">
                 <Icon size={16} />

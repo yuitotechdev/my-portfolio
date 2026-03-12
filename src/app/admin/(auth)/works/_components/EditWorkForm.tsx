@@ -47,7 +47,7 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                         toast.success('実績を作成しました')
                     }
                 }
-            } catch (_) {
+            } catch {
                 toast.error('保存に失敗しました')
             }
         })

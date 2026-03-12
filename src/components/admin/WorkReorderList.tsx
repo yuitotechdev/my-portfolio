@@ -46,7 +46,7 @@ export function WorkReorderList({ initialWorks }: Props) {
                 // For now, let's toast success
                 toast.success('並び順を保存しました（モック）')
                 setHasChanges(false)
-            } catch (_) {
+            } catch {
                 toast.error('保存に失敗しました')
             }
         })

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, useSpring } from 'framer-motion'
+import { motion, useSpring, useTransform } from 'framer-motion'
 import { useMotion } from '@/components/providers/MotionProvider'
 import { useGlowStore } from '@/stores/useGlowStore'
 
@@ -37,18 +37,22 @@ export function AmbientGlow() {
         return () => window.removeEventListener('mousemove', updateMousePosition)
     }, [x, y, preference])
 
+    const interactionScale = useTransform(x, [0, 2000], [1, 1.2])
+    const smoothInteractionScale = useSpring(interactionScale, springConfig)
+
     if (!mounted) return null
 
     return (
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden isolate">
             {/* Interactive Glow */}
             <motion.div
-                className="absolute w-[80vw] h-[80vw] rounded-full mix-blend-soft-light transition-opacity duration-1000 blur-3xl opacity-50 dark:opacity-20"
+                className="absolute w-[80vw] h-[80vw] rounded-full mix-blend-soft-light transition-opacity duration-1000 blur-3xl opacity-50 dark:opacity-30"
                 style={{
                     x: preference === 'minimal' ? '0%' : x,
                     y: preference === 'minimal' ? '0%' : y,
                     translateX: '-50%',
                     translateY: '-50%',
+                    scale: preference === 'minimal' ? 1 : smoothInteractionScale,
                     background: `radial-gradient(circle, ${color} 0%, transparent 70%)`
                 }}
             />

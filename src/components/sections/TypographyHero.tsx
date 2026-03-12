@@ -108,7 +108,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                     style={{ x: isSafe ? 0 : smoothX, y: isSafe ? 0 : smoothY }}
                 >
                     {/* Title Orchestra (Kinetic Typography Idea 2) */}
-                    <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-foreground leading-[0.9] select-none cursor-default">
+                    <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 text-foreground leading-[0.9] select-none cursor-default py-10" style={{ transformStyle: 'preserve-3d' }}>
                     {chars.map((char, i) => {
                         return (
                             <motion.span
@@ -116,9 +116,14 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                                 variants={child}
                                 onMouseEnter={playHover}
                                 className="inline-block origin-bottom hover:text-indigo-600 transition-colors duration-300"
-                                style={{ fontWeight: dynamicWeight, scaleY: dynamicScaleY }}
+                                style={{ 
+                                    fontWeight: dynamicWeight, 
+                                    scaleY: dynamicScaleY,
+                                    translateZ: isSafe ? 0 : (i % 3) * 20 + 'px' // Individual depth
+                                }}
                                 whileHover={!isSafe ? {
                                     scale: 1.1,
+                                    translateZ: 100, // Pop forward
                                     rotate: (i % 2 === 0 ? 5 : -5),
                                     transition: MOTION.spring.rapid
                                 } : undefined}

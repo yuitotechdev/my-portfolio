@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMotion } from '@/components/providers/MotionProvider'
-import { usePathname } from 'next/navigation'
 import { Eye, Play, Plus } from 'lucide-react'
 
 export type CursorType = 'default' | 'view' | 'play' | 'link' | 'text' | 'plus'

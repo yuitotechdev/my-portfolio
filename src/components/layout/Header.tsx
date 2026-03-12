@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { NAV_ITEMS } from '@/config/i18n'
 import { ScrambleText } from '@/components/ui/ScrambleText'
 import { Magnetic } from '@/components/ui/Magnetic'
+import { useSoundEffect } from '@/hooks/useSoundEffect'
 
 const navItems = NAV_ITEMS
 
@@ -22,6 +23,7 @@ export function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const { theme, toggleTheme } = useMotion()
     const pathname = usePathname()
+    const { playHover, playClick } = useSoundEffect()
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -41,7 +43,12 @@ export function Header() {
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
                 {/* Logo */}
                 <Magnetic intensity={0.1}>
-                    <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group text-foreground">
+                    <Link 
+                        href="/" 
+                        className="text-xl font-bold tracking-tight z-50 relative group text-foreground"
+                        onMouseEnter={playHover}
+                        onClick={playClick}
+                    >
                         <span className="group-hover:text-indigo-600 transition-colors">Port</span><ScrambleText text="folio." scrambleOnMount={false} scrambleOnHover={true} />
                     </Link>
                 </Magnetic>
@@ -54,6 +61,8 @@ export function Header() {
                             <Magnetic key={item.href} intensity={0.15}>
                                 <Link
                                     href={item.href}
+                                    onMouseEnter={playHover}
+                                    onClick={playClick}
                                     className={cn(
                                         "px-4 py-2 rounded-full text-sm font-bold transition-all hover:bg-muted/50",
                                         isActive ? "text-indigo-600 bg-card shadow-sm ring-1 ring-border" : "text-muted-foreground hover:text-foreground"
@@ -65,7 +74,8 @@ export function Header() {
                         )
                     })}
                     <motion.button
-                        onClick={toggleTheme}
+                        onClick={() => { toggleTheme(); playClick(); }}
+                        onMouseEnter={playHover}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9, rotate: 15 }}
                         className="ml-2 p-2 rounded-full hover:bg-muted/50 transition-colors text-foreground"
@@ -84,7 +94,8 @@ export function Header() {
                 {/* Mobile Toggle */}
                 <button
                     className="md:hidden z-50 relative p-2"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    onClick={() => { setMobileMenuOpen(!mobileMenuOpen); playClick(); }}
+                    onMouseEnter={playHover}
                 >
                     {mobileMenuOpen ? <X /> : <Menu />}
                 </button>

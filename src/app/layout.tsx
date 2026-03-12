@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Analytics } from "@/components/analytics";
 import { MotionProvider } from "@/components/providers/MotionProvider";
 import { ExperienceControls } from "@/components/ui/ExperienceControls";
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,13 +36,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}
       >
         <MotionProvider>
-          <Header />
-          <div className="min-h-screen pt-20">
-            {/* pt-20 to account for fixed header */}
-            {children}
-          </div>
-          <Footer />
-          <ExperienceControls />
+          <SmoothScrollProvider>
+            <Header />
+            <div className="min-h-screen pt-20">
+              {/* pt-20 to account for fixed header */}
+              {children}
+            </div>
+            <Footer />
+            <ExperienceControls />
+          </SmoothScrollProvider>
           <Toaster />
           <Suspense fallback={null}>
             <Analytics />

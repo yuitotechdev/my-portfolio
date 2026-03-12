@@ -9,6 +9,7 @@ import { useMotion as useMotionContext } from '@/components/providers/MotionProv
 import { useTransitionStore } from '@/stores/useTransitionStore'
 import { useGlowStore } from '@/stores/useGlowStore'
 import { useRef } from 'react'
+import { useSoundEffect } from '@/hooks/useSoundEffect'
 
 const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -21,6 +22,7 @@ export function WorkCard({ work }: { work: Work }) {
     const router = useRouter()
     const { setProjectTitle } = useTransitionStore()
     const { setColor } = useGlowStore()
+    const { playHover, playTransition } = useSoundEffect()
 
     const x = useMotionValue(0)
     const y = useMotionValue(0)
@@ -46,6 +48,7 @@ export function WorkCard({ work }: { work: Work }) {
     }
 
     const handleMouseEnter = () => {
+        playHover()
         if (isSafe) return
         // Generate dynamic color based on title (HSL)
         const hue = (work.title.length * 137.5) % 360
@@ -61,6 +64,7 @@ export function WorkCard({ work }: { work: Work }) {
     }
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        playTransition()
         if (isSafe) return
         e.preventDefault()
         setProjectTitle(work.title)
