@@ -1,36 +1,45 @@
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useSpring } from 'framer-motion'
 import { useMotion } from '@/components/providers/MotionProvider'
 import { usePathname } from 'next/navigation'
-import { Eye, Play } from 'lucide-react'
+import { Eye, Play, Plus } from 'lucide-react'
 
-export type CursorType = 'default' | 'view' | 'play' | 'link' | 'text'
+export type CursorType = 'default' | 'view' | 'play' | 'link' | 'text' | 'plus'
 
 export function CustomCursor() {
-    const { preference } = useMotion()
+    const { preference, theme } = useMotion()
     const isSafe = preference === 'safe' || preference === 'minimal'
     
     const [cursorType, setCursorType] = useState<CursorType>('default')
     const [isVisible, setIsVisible] = useState(false)
     const pathname = usePathname()
     
-    const dotRef = useRef<HTMLDivElement>(null)
+    // Refs for direct DOM manipulation (Zero lag)
+    const containerRef = useRef<HTMLDivElement>(null)
     const ringRef = useRef<HTMLDivElement>(null)
-    const requestRef = useRef<number | null>(null)
+    const dotRef = useRef<HTMLDivElement>(null)
+    
     const mousePos = useRef({ x: -100, y: -100 })
     const ringPos = useRef({ x: -100, y: -100 })
+    const requestRef = useRef<number | null>(null)
+
+    // Stretch effect state
+    const [scaleX, setScaleX] = useState(1)
+    const [skew, setSkew] = useState(0)
 
     const updateCursorType = useCallback((e: MouseEvent) => {
         const target = e.target as HTMLElement
         const clickable = target.closest('a, button, [role="button"]')
-        const textInput = target.closest('input, textarea, [contenteditable="true"]')
+        const textInput = target.closest('p, h1, h2, h3, span, input, textarea')
         const viewArea = target.closest('[data-cursor="view"]')
         const playArea = target.closest('[data-cursor="play"]')
+        const plusArea = target.closest('[data-cursor="plus"]')
 
         if (viewArea) setCursorType('view')
         else if (playArea) setCursorType('play')
+        else if (plusArea) setCursorType('plus')
         else if (clickable) setCursorType('link')
         else if (textInput) setCursorType('text')
         else setCursorType('default')
@@ -40,20 +49,31 @@ export function CustomCursor() {
         if (isSafe) return
 
         const updateMousePosition = (e: MouseEvent) => {
-            mousePos.current = { x: e.clientX, y: e.clientY }
+            const { clientX, clientY } = e
+            
+            // Calculate velocity for stretch effect (Idea 3)
+            const dx = clientX - mousePos.current.x
+            const dy = clientY - mousePos.current.y
+            const velocity = Math.sqrt(dx * dx + dy * dy)
+            const stretch = Math.min(velocity * 0.015, 0.5)
+            
+            mousePos.current = { x: clientX, y: clientY }
             if (!isVisible) setIsVisible(true)
 
-            // 内部ドットは物理遅延ゼロ
+            // Dynamic scaling based on speed
+            setScaleX(1 + stretch)
+            setSkew(dx * 0.1)
+
+            // Direct Dot Update (Zero Lag)
             if (dotRef.current) {
-                dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`
+                dotRef.current.style.transform = `translate3d(${clientX}px, ${clientY}px, 0)`
             }
-            updateCursorType(e)
         }
 
         const render = () => {
-            // 外部リングの柔らかな追従 (Lerp 0.15)
-            ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.15
-            ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.15
+            // Smooth Ring Follow (Lerp 0.12 for more "Liquid" feel)
+            ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.12
+            ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.12
 
             if (ringRef.current) {
                 ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`
@@ -83,70 +103,69 @@ export function CustomCursor() {
         }
     }, [isSafe, isVisible, updateCursorType])
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setCursorType('default')
-        }, 0)
-        return () => clearTimeout(timer)
-    }, [pathname])
-
     if (isSafe) return null
 
-    const renderCursorContent = () => {
-        switch (cursorType) {
-            case 'view': return <Eye className="w-6 h-6 text-black" />
-            case 'play': return <Play className="w-6 h-6 text-black fill-current" />
-            case 'link': return null // Default ring expands
-            default: return null
-        }
-    }
-
     return (
-        <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]">
-            {/* 外部リング: 状態に応じて形状変化 (案8) */}
+        <div ref={containerRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]">
+            {/* 外部リング: 背景反転レンズ + 物理ストレッチ (案1, 3) */}
             <div 
                 ref={ringRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform flex items-center justify-center"
                 style={{ opacity: isVisible ? 1 : 0 }}
             >
                 <motion.div
-                    className="rounded-full mix-blend-difference border border-white/40 flex items-center justify-center overflow-hidden"
+                    className="flex items-center justify-center transition-colors duration-500"
                     animate={{
-                        width: cursorType === 'default' ? 40 : (cursorType === 'text' ? 4 : 80),
-                        height: cursorType === 'default' ? 40 : (cursorType === 'text' ? 24 : 80),
-                        backgroundColor: (cursorType === 'view' || cursorType === 'play') ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0)',
-                        borderRadius: cursorType === 'text' ? '2px' : '50%',
-                        mixBlendMode: (cursorType === 'view' || cursorType === 'play') ? 'normal' : 'difference'
+                        width: cursorType === 'default' ? 40 : (cursorType === 'text' ? 2 : 90),
+                        height: cursorType === 'default' ? 40 : (cursorType === 'text' ? 30 : 90),
+                        scaleX: cursorType === 'text' ? 1 : scaleX,
+                        rotate: skew,
+                        backgroundColor: (cursorType === 'view' || cursorType === 'play' || cursorType === 'plus') 
+                            ? (theme === 'dark' ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)') 
+                            : 'rgba(255,255,255,0)',
+                        borderWidth: cursorType === 'text' ? 0 : 1.5,
+                        borderColor: theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
+                        backdropFilter: (cursorType === 'link' || cursorType === 'default') ? 'invert(1)' : 'none',
+                        borderRadius: cursorType === 'text' ? '0px' : '50%',
                     }}
-                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.5 }}
                 >
-                    {renderCursorContent()}
+                    <AnimatePresence mode="wait">
+                        {cursorType === 'view' && (
+                            <motion.div key="view" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                                <Eye className={theme === 'dark' ? 'text-black' : 'text-white'} size={24} />
+                            </motion.div>
+                        )}
+                        {cursorType === 'play' && (
+                            <motion.div key="play" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                                <Play className={`${theme === 'dark' ? 'text-black' : 'text-white'} fill-current`} size={24} />
+                            </motion.div>
+                        )}
+                        {cursorType === 'plus' && (
+                            <motion.div key="plus" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                                <Plus className={theme === 'dark' ? 'text-black' : 'text-white'} size={32} />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
-                
-                {/* 案8: ラベル表示 (VIEW / EXPLORE 等) */}
-                <AnimatePresence>
-                    {(cursorType === 'view' || cursorType === 'play') && (
-                        <motion.span
-                            initial={{ opacity: 0, scale: 0.5 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.5 }}
-                            className="absolute mt-24 text-[10px] font-bold tracking-[0.2em] text-white uppercase whitespace-nowrap bg-black/20 px-2 py-0.5 rounded backdrop-blur-sm"
-                        >
-                            {cursorType === 'view' ? 'View Project' : 'Play Video'}
-                        </motion.span>
-                    )}
-                </AnimatePresence>
             </div>
 
-            {/* 内部ドット: 加速同期 */}
+            {/* 内部ドット: 最小限の存在感 */}
             <div 
                 ref={dotRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
                 style={{ opacity: isVisible ? 1 : 0 }}
             >
                 <motion.div 
-                    className="w-1.5 h-1.5 bg-white rounded-full mix-blend-difference"
-                    animate={{ scale: cursorType === 'default' ? 1 : 0 }}
+                    className="w-1 h-1 bg-current rounded-full"
+                    style={{ 
+                        backgroundColor: theme === 'dark' ? 'white' : 'black',
+                        mixBlendMode: 'difference' 
+                    }}
+                    animate={{ 
+                        scale: (cursorType === 'default' || cursorType === 'link') ? 1 : 0,
+                        opacity: (cursorType === 'view' || cursorType === 'play' || cursorType === 'text') ? 0 : 1
+                    }}
                 />
             </div>
         </div>
