@@ -59,6 +59,15 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
                 <motion.div
                     variants={{
                         ...MOTION.page,
+                        // Immediate entry for details (No waiting for curtain)
+                        initial: MOTION.page.initial,
+                        animate: { 
+                            ...MOTION.page.animate, 
+                            transition: { 
+                                ...MOTION.page.animate.transition, 
+                                delay: isWorkDetail ? 0 : MOTION.page.animate.transition.delay 
+                            } 
+                        },
                         // If deep diving, we don't want the page to blur/scale out
                         // We want it to stay steady while the image expands
                         exit: isWorkDetail 
