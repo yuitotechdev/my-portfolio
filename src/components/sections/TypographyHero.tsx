@@ -9,7 +9,7 @@ import { type Profile, type LinkItem as SocialLink } from '@/lib/repositories/pr
 import { useMotion as useMotionContext } from '@/components/providers/MotionProvider'
 import { HOME_TEXT } from '@/config/i18n'
 import { Magnetic } from '@/components/ui/Magnetic'
-import { useSoundStore } from '@/stores/useSoundStore'
+import { useSoundEffect } from '@/hooks/useSoundEffect'
 
 interface TypographyHeroProps {
     profile: Profile | null
@@ -18,16 +18,9 @@ interface TypographyHeroProps {
 
 export function TypographyHero({ profile, links }: TypographyHeroProps) {
     const { preference } = useMotionContext()
-    const { isEnabled: soundEnabled } = useSoundStore()
+    const { playHover, playClick } = useSoundEffect()
     const isMinimal = preference === 'minimal'
     const isSafe = preference === 'safe' || isMinimal
-
-    // Audio triggers (Idea 1)
-    const playHover = () => {
-        if (!soundEnabled) return
-        // In a real app, use useSound hook here.
-        // For now, we structure the trigger.
-    }
 
     // Parallax & Mouse Interaction (High only)
     const mouseX = useMotionValue(0)
@@ -145,6 +138,8 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                             <Button
                                 asChild
                                 size="lg"
+                                onMouseEnter={playHover}
+                                onClick={playClick}
                                 className="rounded-full px-10 text-lg h-14 bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-xl hover:shadow-primary/20 hover:scale-105 active:scale-95 duration-200"
                             >
                                 <Link href="/works">
@@ -160,6 +155,8 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
                                         href={link.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        onMouseEnter={playHover}
+                                        onClick={playClick}
                                         className="block px-4 py-2 text-muted-foreground hover:text-foreground transition-colors bg-muted/20 border border-border rounded-full text-sm font-medium hover:bg-muted/40 backdrop-blur-sm"
                                         whileHover={{ y: -2 }}
                                         whileTap={{ scale: 0.95 }}
