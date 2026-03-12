@@ -101,7 +101,12 @@ export function WorkCard({ work }: { work: Work }) {
                         className="relative aspect-video bg-muted overflow-hidden"
                         style={{ transform: isSafe ? "none" : "translateZ(30px)" }}
                     >
-                        <motion.div className="w-full h-full" style={{ y: isSafe ? 0 : imageY }}>
+                        <motion.div 
+                            className="w-full h-full" 
+                            style={{ y: isSafe ? 0 : imageY }}
+                            layoutId={`work-thumb-${work.id}`}
+                            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+                        >
                             {work.thumbnail_url ? (
                                     <Image
                                         src={work.thumbnail_url}

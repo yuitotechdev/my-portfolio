@@ -1,11 +1,23 @@
 'use client'
 
-import { ReactLenis } from 'lenis/react'
-import { ReactNode } from 'react'
+import { ReactLenis, useLenis } from 'lenis/react'
+import { ReactNode, useRef } from 'react'
 import { useMotion } from '@/components/providers/MotionProvider'
+import { useSoundEffect } from '@/hooks/useSoundEffect'
 
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const { preference } = useMotion()
+  const { playTick } = useSoundEffect()
+  const lastScrollPos = useRef(0)
+  const tickThreshold = 80 // Play tick every 80px
+
+  useLenis(({ scroll }) => {
+    const distance = Math.abs(scroll - lastScrollPos.current)
+    if (distance >= tickThreshold) {
+      playTick()
+      lastScrollPos.current = scroll
+    }
+  })
   
   // Disable smooth scroll if user prefers minimal motion
   const isDisabled = preference === 'minimal'

@@ -1,9 +1,9 @@
 import { WorksRepository } from '@/lib/repositories/works'
 import { Reveal, MotionButton } from '@/components/ui/motion'
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ExternalLink, Github } from 'lucide-react'
+import { WorkHero } from './_components/WorkHero'
 
 // Spec: /works/[slug] Works詳細
 
@@ -52,21 +52,11 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
                     </div>
                 </Reveal>
 
-                <Reveal delay={0.2} className="relative aspect-video bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden mb-12 shadow-sm border border-zinc-200/50 dark:border-zinc-800/50">
-                    {work.thumbnail_url ? (
-                        <Image
-                            src={work.thumbnail_url}
-                            alt={work.title}
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-300">
-                            <span className="text-6xl">●</span>
-                        </div>
-                    )}
-                </Reveal>
+                <WorkHero 
+                    id={work.id} 
+                    title={work.title} 
+                    thumbnailUrl={work.thumbnail_url} 
+                />
 
                 <div className="grid md:grid-cols-4 gap-12">
                     <div className="md:col-span-3">

@@ -15,7 +15,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     const isHigh = preference === 'high' && !isAdmin
 
     return (
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
             <motion.div
                 key={pathname}
                 className="w-full min-h-screen relative"
