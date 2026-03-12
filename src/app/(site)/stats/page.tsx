@@ -4,6 +4,8 @@ import { NewsRepository } from '@/lib/repositories/news'
 import { Reveal, StaggerList } from '@/components/ui/motion'
 import { BarChart3, FileText, Newspaper, FolderGit2 } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     title: 'Stats - Portfolio',
     description: 'Site statistics.',

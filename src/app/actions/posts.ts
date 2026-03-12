@@ -48,7 +48,8 @@ export async function createPost(formData: FormData) {
             return { error: 'Failed to create post' }
         }
 
-        revalidatePath('/posts')
+        revalidatePath('/blog')
+        revalidatePath('/blog/posts')
         revalidatePath('/admin/posts')
     } catch (err: unknown) {
         console.error('Action Error:', err)
@@ -70,10 +71,20 @@ export async function updatePost(id: string, formData: FormData) {
             return { error: errorMessage }
         }
 
+        // Get existing record to check current published_at
+        const { data: existing } = await supabaseAdmin
+            .from('posts')
+            .select('published_at')
+            .eq('id', id)
+            .single()
+
         const { error } = await supabaseAdmin
             .from('posts')
             .update({
                 ...result.data,
+                published_at: result.data.is_public 
+                    ? (existing?.published_at || new Date().toISOString()) 
+                    : null,
                 updated_at: new Date().toISOString()
             })
             .eq('id', id)
@@ -86,7 +97,8 @@ export async function updatePost(id: string, formData: FormData) {
             return { error: 'Failed to update post' }
         }
 
-        revalidatePath('/posts')
+        revalidatePath('/blog')
+        revalidatePath('/blog/posts')
         revalidatePath('/admin/posts')
     } catch (err: unknown) {
         console.error('Action Error:', err)
@@ -109,7 +121,8 @@ export async function deletePost(id: string) {
             return { error: 'Failed to delete post' }
         }
 
-        revalidatePath('/posts')
+        revalidatePath('/blog')
+        revalidatePath('/blog/posts')
         revalidatePath('/admin/posts')
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'An unexpected error occurred'

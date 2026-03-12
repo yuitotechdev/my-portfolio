@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 // Force dynamic if needed, or ISR. Using ISR for posts usually.
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export default async function PostPage({ params }: PageProps) {
     const { slug } = await params

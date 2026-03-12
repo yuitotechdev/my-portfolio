@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, ExternalLink, Github } from 'lucide-react'
 import { WorkHero } from './_components/WorkHero'
 
+export const dynamic = 'force-dynamic'
+
 // Spec: /works/[slug] Works詳細
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {

@@ -3,6 +3,8 @@ import { StaggerList, Reveal } from '@/components/ui/motion'
 import { WorkCard } from './_components/WorkCard'
 import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     title: 'Works - Portfolio',
     description: 'Selected works and projects.',

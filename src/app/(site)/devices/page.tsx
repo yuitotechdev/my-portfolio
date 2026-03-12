@@ -3,6 +3,8 @@ import { Reveal, StaggerList } from '@/components/ui/motion'
 import { ExternalLink, Monitor } from 'lucide-react'
 import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     title: 'Gear - Portfolio',
     description: 'My gear and setup.',

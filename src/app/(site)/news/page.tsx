@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     title: 'News - Portfolio',
     description: 'Latest announcements and updates.',

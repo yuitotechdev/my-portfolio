@@ -3,6 +3,8 @@ import { Reveal } from '@/components/ui/motion'
 import Image from 'next/image'
 import { PAGE_TITLES } from '@/config/i18n'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     title: 'About - Portfolio',
     description: 'About the creator.',

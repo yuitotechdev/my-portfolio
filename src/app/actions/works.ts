@@ -79,10 +79,20 @@ export async function updateWork(id: string, formData: FormData) {
             return { error: errorMessage }
         }
 
+        // Get existing record to preserve published_at
+        const { data: existing } = await supabaseAdmin
+            .from('works')
+            .select('published_at')
+            .eq('id', id)
+            .single()
+
         const { error } = await supabaseAdmin
             .from('works')
             .update({
                 ...result.data,
+                published_at: result.data.is_public 
+                    ? (existing?.published_at || new Date().toISOString()) 
+                    : null,
                 updated_at: new Date().toISOString()
             })
             .eq('id', id)

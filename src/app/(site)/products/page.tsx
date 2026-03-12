@@ -4,6 +4,8 @@ import { ExternalLink, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
 import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     title: 'Products - Portfolio',
     description: 'Digital products and resources.',

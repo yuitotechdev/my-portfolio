@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { format } from 'date-fns'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
     const news = await NewsRepository.getBySlug(slug)
