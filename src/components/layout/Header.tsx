@@ -41,7 +41,7 @@ export function Header() {
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
                 {/* Logo */}
                 <Magnetic intensity={0.1}>
-                    <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group">
+                    <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group text-zinc-900 dark:text-white">
                         <span className="group-hover:text-indigo-600 transition-colors">Port</span><ScrambleText text="folio." scrambleOnMount={false} scrambleOnHover={true} />
                     </Link>
                 </Magnetic>
@@ -55,8 +55,8 @@ export function Header() {
                                 <Link
                                     href={item.href}
                                     className={cn(
-                                        "px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-gray-100/50 dark:hover:bg-gray-800/50",
-                                        isActive ? "text-indigo-600 bg-gray-50 dark:bg-gray-900" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                                        "px-4 py-2 rounded-full text-sm font-semibold transition-all hover:bg-zinc-200/50 dark:hover:bg-zinc-800/80",
+                                        isActive ? "text-indigo-600 bg-white dark:bg-zinc-800 shadow-sm" : "text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
                                     )}
                                 >
                                     <ScrambleText text={item.name} scrambleOnMount={true} scrambleOnHover={true} />

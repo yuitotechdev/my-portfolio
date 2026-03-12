@@ -6,7 +6,6 @@ import { CustomCursor } from "@/components/ui/CustomCursor"
 import { ProjectWiper } from "@/components/layout/ProjectWiper"
 import { GrainOverlay } from "@/components/ui/GrainOverlay"
 import { ScrollProgress } from "@/components/ui/ScrollProgress"
-import { SoundToggle } from "@/components/ui/SoundToggle"
 import { Preloader } from "@/components/ui/Preloader"
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +18,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                 <AmbientGlow />
                 <GrainOverlay />
                 <ScrollProgress />
-                <SoundToggle />
 
                 <div className="relative z-10">
                     <PageTransition>

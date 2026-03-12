@@ -7,7 +7,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Analytics } from "@/components/analytics";
 import { MotionProvider } from "@/components/providers/MotionProvider";
-import { MotionToggle } from "@/components/ui/motion-toggle";
+import { ExperienceControls } from "@/components/ui/ExperienceControls";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +41,7 @@ export default function RootLayout({
             {children}
           </div>
           <Footer />
-          <MotionToggle />
+          <ExperienceControls />
           <Toaster />
           <Suspense fallback={null}>
             <Analytics />
