@@ -7,8 +7,8 @@ import { useSoundStore } from '@/stores/useSoundStore'
 const SOUNDS = {
   hover: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3', // Subtle "click/pop"
   click: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3', // Solid click
-  // "The Deep Bloom" - Ambient bassy transition with a touch of magic
-  transition: 'https://assets.mixkit.co/active_storage/sfx/2556/2556-preview.mp3', // Deep, spacious digital bloom
+  // "The Silk Page Flip" - Silky, high-quality paper flip sound
+  transition: 'https://assets.mixkit.co/active_storage/sfx/1103/1103-preview.mp3', // Rapid paper flip / rustle
   // Metallic mechanical tick for fidget effect
   tick: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3', 
 }
@@ -19,9 +19,9 @@ export function useSoundEffect() {
   const [playHover] = useSound(SOUNDS.hover, { volume: 0.15, soundEnabled: isEnabled })
   const [playClick] = useSound(SOUNDS.click, { volume: 0.3, soundEnabled: isEnabled })
   const [playTransition] = useSound(SOUNDS.transition, { 
-    volume: 0.4, 
+    volume: 0.5, 
     soundEnabled: isEnabled,
-    playbackRate: 0.8 // Lower pitch for deeper, heavier bass feel
+    playbackRate: 1.2 // Slightly faster for that "zip" feel
   })
   
   // Scroller Tick: High precision mechanical sound
