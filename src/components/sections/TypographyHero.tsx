@@ -131,7 +131,7 @@ export function TypographyHero({ profile, links }: TypographyHeroProps) {
 
                 {/* Subtitle & Socials */}
                 <motion.div variants={child} transition={MOTION.spring.smooth}>
-                    <p className="text-xl md:text-3xl text-zinc-600 dark:text-zinc-300 font-medium max-w-2xl mb-12 leading-relaxed tracking-tight">
+                    <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl mb-12 leading-relaxed tracking-tight">
                         {profile?.bio_short || 'Building digital experiences that feel alive.'}
                     </p>
 

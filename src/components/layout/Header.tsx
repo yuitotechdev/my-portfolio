@@ -41,7 +41,7 @@ export function Header() {
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
                 {/* Logo */}
                 <Magnetic intensity={0.1}>
-                    <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group text-zinc-900 dark:text-white">
+                    <Link href="/" className="text-xl font-bold tracking-tight z-50 relative group text-foreground">
                         <span className="group-hover:text-indigo-600 transition-colors">Port</span><ScrambleText text="folio." scrambleOnMount={false} scrambleOnHover={true} />
                     </Link>
                 </Magnetic>
@@ -55,8 +55,8 @@ export function Header() {
                                 <Link
                                     href={item.href}
                                     className={cn(
-                                        "px-4 py-2 rounded-full text-sm font-semibold transition-all hover:bg-zinc-200/50 dark:hover:bg-zinc-800/80",
-                                        isActive ? "text-indigo-600 bg-white dark:bg-zinc-800 shadow-sm" : "text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
+                                        "px-4 py-2 rounded-full text-sm font-bold transition-all hover:bg-muted/50",
+                                        isActive ? "text-indigo-600 bg-card shadow-sm ring-1 ring-border" : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
                                     <ScrambleText text={item.name} scrambleOnMount={true} scrambleOnHover={true} />
@@ -68,7 +68,7 @@ export function Header() {
                         onClick={toggleTheme}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9, rotate: 15 }}
-                        className="ml-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
+                        className="ml-2 p-2 rounded-full hover:bg-muted/50 transition-colors text-foreground"
                         title="テーマを切り替え"
                     >
                         <motion.div

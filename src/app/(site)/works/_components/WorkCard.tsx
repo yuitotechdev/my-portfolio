@@ -129,7 +129,7 @@ export function WorkCard({ work }: { work: Work }) {
                         className="p-6 flex-1 flex flex-col bg-card"
                         style={{ transform: isSafe ? "none" : "translateZ(40px)", y: isSafe ? 0 : textY }}
                     >
-                        <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                        <h2 className="text-xl font-bold mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors text-foreground">
                             {work.title}
                         </h2>
                         {work.description && (
@@ -140,7 +140,7 @@ export function WorkCard({ work }: { work: Work }) {
 
                         <div className="flex flex-wrap gap-2 mt-auto">
                             {work.tech_stack?.slice(0, 3).map(tech => (
-                                <span key={tech} className="text-xs bg-zinc-700/80 dark:bg-zinc-800 text-white px-2 py-1 rounded">
+                                <span key={tech} className="text-[10px] font-black tracking-widest uppercase bg-muted/40 text-muted-foreground px-2 py-1 rounded-full border border-border/50">
                                     {tech}
                                 </span>
                             ))}
