@@ -19,7 +19,8 @@ export const WorksRepository = {
             .from('works')
             .select('*')
             .eq('is_public', true)
-            .order('created_at', { ascending: false }) // Or custom order if column exists
+            .order('published_at', { ascending: false, nullsFirst: false })
+            .order('created_at', { ascending: false })
 
         if (error) {
             console.error('Error fetching works:', error)

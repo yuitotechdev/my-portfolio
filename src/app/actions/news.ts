@@ -48,6 +48,7 @@ export async function createNews(formData: FormData) {
             return { error: 'Failed to create news' }
         }
 
+        revalidatePath('/')
         revalidatePath('/news')
         revalidatePath('/admin/news')
     } catch (err: unknown) {
@@ -96,6 +97,7 @@ export async function updateNews(id: string, formData: FormData) {
             return { error: 'Failed to update news' }
         }
 
+        revalidatePath('/')
         revalidatePath('/news')
         revalidatePath('/admin/news')
     } catch (err: unknown) {
@@ -119,6 +121,7 @@ export async function deleteNews(id: string) {
             return { error: 'Failed to delete news' }
         }
 
+        revalidatePath('/')
         revalidatePath('/news')
         revalidatePath('/admin/news')
     } catch (err: unknown) {
@@ -140,6 +143,7 @@ export async function deleteMultipleNews(ids: string[]) {
             return { error: 'Failed to delete multiple news' }
         }
 
+        revalidatePath('/')
         revalidatePath('/news')
         revalidatePath('/admin/news')
     } catch (err: unknown) {

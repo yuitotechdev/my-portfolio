@@ -51,6 +51,7 @@ export async function createWork(formData: FormData) {
             return { error: 'Failed to create work' }
         }
 
+        revalidatePath('/')
         revalidatePath('/works')
         revalidatePath('/admin/works')
     } catch (err: unknown) {
@@ -105,6 +106,7 @@ export async function updateWork(id: string, formData: FormData) {
             return { error: 'Failed to update work' }
         }
 
+        revalidatePath('/')
         revalidatePath('/works')
         revalidatePath('/admin/works')
     } catch (err: unknown) {
@@ -133,6 +135,7 @@ export async function deleteWork(id: string) {
             return { error: 'Failed to delete work' }
         }
 
+        revalidatePath('/')
         revalidatePath('/works')
         revalidatePath('/admin/works')
     } catch (err: unknown) {

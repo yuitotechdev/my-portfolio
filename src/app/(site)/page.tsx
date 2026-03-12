@@ -5,6 +5,8 @@ import { TechMarquee } from '@/components/ui/TechMarquee'
 import { LatestNews, LatestNewsSkeleton } from './_components/LatestNews'
 import { Suspense } from 'react'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Portfolio - Home',
   description: 'Personal portfolio and works.',
