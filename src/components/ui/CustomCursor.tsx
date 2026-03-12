@@ -18,9 +18,11 @@ export function CustomCursor() {
     const containerRef = useRef<HTMLDivElement>(null)
     const ringRef = useRef<HTMLDivElement>(null)
     const dotRef = useRef<HTMLDivElement>(null)
+    const auraRef = useRef<HTMLDivElement>(null)
     
     const mousePos = useRef({ x: -100, y: -100 })
     const ringPos = useRef({ x: -100, y: -100 })
+    const auraPos = useRef({ x: -100, y: -100 })
     const requestRef = useRef<number | null>(null)
 
     // Stretch effect state
@@ -30,7 +32,7 @@ export function CustomCursor() {
     const updateCursorType = useCallback((e: MouseEvent) => {
         const target = e.target as HTMLElement
         const clickable = target.closest('a, button, [role="button"]')
-        const textInput = target.closest('p, h1, h2, h3, span, input, textarea')
+        const textInput = target.closest('p, h1, h2, h3, span, input, textarea, blockquote')
         const viewArea = target.closest('[data-cursor="view"]')
         const playArea = target.closest('[data-cursor="play"]')
         const plusArea = target.closest('[data-cursor="plus"]')
@@ -49,7 +51,7 @@ export function CustomCursor() {
         const updateMousePosition = (e: MouseEvent) => {
             const { clientX, clientY } = e
             
-            // Calculate velocity for stretch effect (Idea 3)
+            // Calculate velocity for stretch effect
             const dx = clientX - mousePos.current.x
             const dy = clientY - mousePos.current.y
             const velocity = Math.sqrt(dx * dx + dy * dy)
@@ -69,12 +71,19 @@ export function CustomCursor() {
         }
 
         const render = () => {
-            // Smooth Ring Follow (Lerp 0.12 for more "Liquid" feel)
+            // Smooth Ring Follow (Lerp 0.12)
             ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.12
             ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.12
 
+            // Liquid Aura Follow (Lerp 0.08 - slower for "drifting" feel)
+            auraPos.current.x += (mousePos.current.x - auraPos.current.x) * 0.08
+            auraPos.current.y += (mousePos.current.y - auraPos.current.y) * 0.08
+
             if (ringRef.current) {
                 ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`
+            }
+            if (auraRef.current) {
+                auraRef.current.style.transform = `translate3d(${auraPos.current.x}px, ${auraPos.current.y}px, 0)`
             }
 
             requestRef.current = requestAnimationFrame(render)
@@ -105,7 +114,29 @@ export function CustomCursor() {
 
     return (
         <div ref={containerRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]">
-            {/* 外部リング: 背景反転レンズ + 物理ストレッチ (案1, 3) */}
+            {/* Ambient Aura: The "Magic Presence" */}
+            <div 
+                ref={auraRef}
+                className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
+                style={{ 
+                    opacity: isVisible ? 1 : 0,
+                    transition: 'opacity 0.5s ease'
+                }}
+            >
+                <div 
+                    className="w-[150px] h-[150px] rounded-full blur-[40px]"
+                    style={{
+                        background: theme === 'dark' 
+                            ? 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%)'
+                            : 'radial-gradient(circle, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 70%)',
+                        transform: `scale(${scaleX * 1.2})`,
+                        mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
+                        opacity: cursorType === 'text' ? 0.4 : 1
+                    }}
+                />
+            </div>
+
+            {/* 外部リング: 背景反転レンズ + 物理ストレッチ */}
             <div 
                 ref={ringRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform flex items-center justify-center"
