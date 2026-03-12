@@ -2,10 +2,15 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { parseNewsFormData, newsSchema } from '@/lib/validators'
 import { validateServerConfig } from '@/lib/env-check'
+import {
+    type AdminFormState,
+    errorFormState,
+    successFormState,
+    zodIssuesToFieldErrors
+} from '@/lib/admin-form-state'
 
 async function requireAdmin() {
     const session = await auth()
@@ -17,11 +22,11 @@ async function requireAdmin() {
 }
 
 
-export async function createNews(formData: FormData) {
+export async function createNews(_prevState: AdminFormState, formData: FormData) {
     try {
         const config = validateServerConfig()
         if (!config.valid) {
-            return { error: config.message }
+            return errorFormState(config.message || 'Server configuration incomplete')
         }
         await requireAdmin()
 
@@ -29,8 +34,10 @@ export async function createNews(formData: FormData) {
         const result = newsSchema.safeParse(rawData)
 
         if (!result.success) {
-            const errorMessage = result.error.issues.map(e => e.message).join(', ')
-            return { error: errorMessage }
+            return errorFormState(
+                'Please check the form fields',
+                zodIssuesToFieldErrors(result.error.issues)
+            )
         }
 
         const { error } = await supabaseAdmin
@@ -43,32 +50,41 @@ export async function createNews(formData: FormData) {
         if (error) {
             console.error('Create News Error:', error)
             if (error.code === '23505') {
-                return { error: 'Slug already exists' }
+                return errorFormState('Slug already exists', {
+                    slug: ['Slug already exists']
+                })
             }
-            return { error: 'Failed to create news' }
+            return errorFormState('Failed to create news')
         }
 
         revalidatePath('/')
         revalidatePath('/news')
         revalidatePath('/admin/news')
+
+        return successFormState('News created successfully', '/admin/news')
     } catch (err: unknown) {
         console.error('Action Error:', err)
         const message = err instanceof Error ? err.message : 'An unexpected error occurred'
-        return { error: message }
+        return errorFormState(message)
     }
-    redirect('/admin/news')
 }
 
-export async function updateNews(id: string, formData: FormData) {
+export async function updateNews(id: string, _prevState: AdminFormState, formData: FormData) {
     try {
+        const config = validateServerConfig()
+        if (!config.valid) {
+            return errorFormState(config.message || 'Server configuration incomplete')
+        }
         await requireAdmin()
 
         const rawData = parseNewsFormData(formData)
         const result = newsSchema.safeParse(rawData)
 
         if (!result.success) {
-            const errorMessage = result.error.issues.map(e => e.message).join(', ')
-            return { error: errorMessage }
+            return errorFormState(
+                'Please check the form fields',
+                zodIssuesToFieldErrors(result.error.issues)
+            )
         }
 
         // Get existing record to preserve published_at
@@ -92,20 +108,23 @@ export async function updateNews(id: string, formData: FormData) {
         if (error) {
             console.error('Update News Error:', error)
             if (error.code === '23505') {
-                return { error: 'Slug already exists' }
+                return errorFormState('Slug already exists', {
+                    slug: ['Slug already exists']
+                })
             }
-            return { error: 'Failed to update news' }
+            return errorFormState('Failed to update news')
         }
 
         revalidatePath('/')
         revalidatePath('/news')
         revalidatePath('/admin/news')
+
+        return successFormState('News updated successfully', '/admin/news')
     } catch (err: unknown) {
         console.error('Action Error:', err)
         const message = err instanceof Error ? err.message : 'An unexpected error occurred'
-        return { error: message }
+        return errorFormState(message)
     }
-    redirect('/admin/news')
 }
 
 export async function deleteNews(id: string) {

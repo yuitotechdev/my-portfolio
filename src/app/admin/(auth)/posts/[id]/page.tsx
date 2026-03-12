@@ -1,3 +1,4 @@
+import { updatePost } from '@/app/actions/posts'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { notFound } from 'next/navigation'
 import EditPostForm from './EditPostForm'
@@ -15,10 +16,12 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         notFound()
     }
 
+    const updateAction = updatePost.bind(null, post.id)
+
     return (
         <div className="space-y-6">
             {/* Pass minimal data to client component */}
-            <EditPostForm post={post} />
+            <EditPostForm post={post} action={updateAction} />
         </div>
     )
 }

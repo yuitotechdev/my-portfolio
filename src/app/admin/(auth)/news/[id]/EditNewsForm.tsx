@@ -1,6 +1,7 @@
 'use client'
 
-import { updateNews } from '@/app/actions/news'
+import { type AdminFormAction } from '@/lib/admin-form-state'
+import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,8 +11,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
-import { toast } from 'sonner'
 
 type News = {
     id: string
@@ -21,20 +20,23 @@ type News = {
     published_at: string | null
 }
 
-export default function EditNewsForm({ news }: { news: News }) {
+export default function EditNewsForm({
+    news,
+    action
+}: {
+    news: News
+    action: AdminFormAction
+}) {
     const router = useRouter()
-    const [isPending, startTransition] = useTransition()
+    const { state, formAction, isPending } = useAdminFormAction(action)
 
-    async function handleSubmit(formData: FormData) {
-        startTransition(async () => {
-            try {
-                await updateNews(news.id, formData)
-                toast.success('News updated successfully')
-            } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'Failed to update news')
-            }
-        })
+    function handleSubmit(formData: FormData) {
+        formAction(formData)
     }
+
+    const titleError = state.fieldErrors?.title?.[0]
+    const slugError = state.fieldErrors?.slug?.[0]
+    const contentError = state.fieldErrors?.content?.[0]
 
     return (
         <div className="space-y-6">
@@ -51,6 +53,10 @@ export default function EditNewsForm({ news }: { news: News }) {
                 </CardHeader>
                 <CardContent>
                     <form action={handleSubmit} className="space-y-6">
+                        {state.status === 'error' && state.message && (
+                            <p className="text-sm text-red-600">{state.message}</p>
+                        )}
+
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="title">Title *</Label>
@@ -59,7 +65,9 @@ export default function EditNewsForm({ news }: { news: News }) {
                                     name="title"
                                     defaultValue={news.title}
                                     required
+                                    aria-invalid={!!titleError}
                                 />
+                                {titleError && <p className="text-sm text-red-600">{titleError}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="slug">Slug *</Label>
@@ -68,7 +76,9 @@ export default function EditNewsForm({ news }: { news: News }) {
                                     name="slug"
                                     defaultValue={news.slug}
                                     required
+                                    aria-invalid={!!slugError}
                                 />
+                                {slugError && <p className="text-sm text-red-600">{slugError}</p>}
                             </div>
                         </div>
 
@@ -81,6 +91,7 @@ export default function EditNewsForm({ news }: { news: News }) {
                                 placeholder="Short content or description"
                                 className="min-h-[150px]"
                             />
+                            {contentError && <p className="text-sm text-red-600">{contentError}</p>}
                         </div>
 
                         <div className="flex items-center space-x-2">

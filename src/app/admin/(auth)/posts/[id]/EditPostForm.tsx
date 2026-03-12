@@ -1,6 +1,7 @@
 'use client'
 
-import { updatePost } from '@/app/actions/posts'
+import { type AdminFormAction } from '@/lib/admin-form-state'
+import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { MarkdownEditor } from '@/components/admin/MarkdownEditor'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,8 +11,7 @@ import { Switch } from '@/components/ui/switch'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
-import { toast } from 'sonner'
+import { useState } from 'react'
 
 type Post = {
     id: string
@@ -22,23 +22,25 @@ type Post = {
     is_public: boolean
 }
 
-export default function EditPostForm({ post }: { post: Post }) {
+export default function EditPostForm({
+    post,
+    action
+}: {
+    post: Post
+    action: AdminFormAction
+}) {
     const router = useRouter()
-    const [isPending, startTransition] = useTransition()
     const [content, setContent] = useState(post.content || '')
+    const { state, formAction, isPending } = useAdminFormAction(action)
 
-    async function handleSubmit(formData: FormData) {
+    function handleSubmit(formData: FormData) {
         formData.set('content', content)
-
-        startTransition(async () => {
-            try {
-                await updatePost(post.id, formData)
-                toast.success('Post updated successfully')
-            } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'Failed to update post')
-            }
-        })
+        formAction(formData)
     }
+
+    const titleError = state.fieldErrors?.title?.[0]
+    const slugError = state.fieldErrors?.slug?.[0]
+    const contentError = state.fieldErrors?.content?.[0]
 
     return (
         <div className="space-y-6">
@@ -55,6 +57,10 @@ export default function EditPostForm({ post }: { post: Post }) {
                 </CardHeader>
                 <CardContent>
                     <form action={handleSubmit} className="space-y-6">
+                        {state.status === 'error' && state.message && (
+                            <p className="text-sm text-red-600">{state.message}</p>
+                        )}
+
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="title">Title *</Label>
@@ -63,7 +69,9 @@ export default function EditPostForm({ post }: { post: Post }) {
                                     name="title"
                                     defaultValue={post.title}
                                     required
+                                    aria-invalid={!!titleError}
                                 />
+                                {titleError && <p className="text-sm text-red-600">{titleError}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="slug">Slug *</Label>
@@ -72,7 +80,9 @@ export default function EditPostForm({ post }: { post: Post }) {
                                     name="slug"
                                     defaultValue={post.slug}
                                     required
+                                    aria-invalid={!!slugError}
                                 />
+                                {slugError && <p className="text-sm text-red-600">{slugError}</p>}
                             </div>
                         </div>
 
@@ -81,6 +91,7 @@ export default function EditPostForm({ post }: { post: Post }) {
                             onChange={setContent}
                             required
                         />
+                        {contentError && <p className="text-sm text-red-600">{contentError}</p>}
 
                         <div className="flex items-center space-x-2">
                             <Switch

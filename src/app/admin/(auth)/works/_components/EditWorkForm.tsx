@@ -1,62 +1,47 @@
 'use client'
 
-import { createWork, updateWork } from '@/app/actions/works'
+import ImageUpload from '@/components/ImageUpload'
+import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { type AdminFormAction } from '@/lib/admin-form-state'
 import { Work } from '@/lib/repositories/works'
-import { Loader2, Eye, Globe, Github, Tag, ArrowLeft, Sparkles } from 'lucide-react'
-import Link from 'next/link'
-import { useTransition, useState } from 'react'
-import { toast } from 'sonner'
-import ImageUpload from '@/components/ImageUpload'
+import { ArrowLeft, Eye, Github, Globe, Loader2, Sparkles, Tag } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useState } from 'react'
 
 interface WorkWithPublic extends Work {
     is_public?: boolean
 }
 
-export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, action?: (formData: FormData) => Promise<{ error?: string } | void | undefined> }) {
+export default function EditWorkForm({
+    work,
+    action
+}: {
+    work?: WorkWithPublic
+    action: AdminFormAction
+}) {
     const isEdit = !!work
-    const [isPending, startTransition] = useTransition()
     const [thumbnailUrl, setThumbnailUrl] = useState(work?.thumbnail_url || '')
     const [isPreviewMode, setIsPreviewMode] = useState(false)
-
-    // Form states for live preview
     const [title, setTitle] = useState(work?.title || '')
     const [description, setDescription] = useState(work?.description || '')
     const [techStack, setTechStack] = useState(work?.tech_stack?.join(', ') || '')
+    const { state, formAction, isPending } = useAdminFormAction(action)
 
-    async function handleSubmit(formData: FormData) {
+    function handleSubmit(formData: FormData) {
         formData.set('thumbnail_url', thumbnailUrl)
-        startTransition(async () => {
-            try {
-                if (action) {
-                    const result = await action(formData)
-                    if (result?.error) toast.error(result.error)
-                    else toast.success(isEdit ? '実績を更新しました' : '実績を作成しました')
-                } else {
-                    if (isEdit && work) {
-                        await updateWork(work.id, formData)
-                        toast.success('実績を更新しました')
-                    } else {
-                        await createWork(formData)
-                        toast.success('実績を作成しました')
-                    }
-                }
-            } catch {
-                toast.error('保存に失敗しました')
-            }
-        })
+        formAction(formData)
     }
 
     return (
         <div className="max-w-[1600px] mx-auto">
             <div className="flex flex-col md:flex-row gap-8">
-                {/* Editor Section */}
                 <div className={`flex-1 transition-all duration-500 ${isPreviewMode ? 'md:w-1/2' : 'w-full'}`}>
                     <form action={handleSubmit} className="space-y-8">
                         <header className="flex items-center justify-between sticky top-0 z-20 bg-gray-100 dark:bg-zinc-950/80 backdrop-blur-md py-4">
@@ -64,25 +49,36 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                                 <Button variant="ghost" size="icon" asChild className="rounded-full">
                                     <Link href="/admin/works"><ArrowLeft size={20} /></Link>
                                 </Button>
-                                <h1 className="text-xl font-black tracking-tighter uppercase">{isEdit ? 'Edit Work' : 'New Project'}</h1>
+                                <h1 className="text-xl font-black tracking-tighter uppercase">
+                                    {isEdit ? 'Edit Work' : 'New Project'}
+                                </h1>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Button 
-                                    type="button" 
-                                    variant="outline" 
-                                    size="sm" 
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
                                     onClick={() => setIsPreviewMode(!isPreviewMode)}
                                     className="rounded-full font-bold px-4 border-zinc-300 dark:border-zinc-700"
                                 >
                                     <Eye className="w-4 h-4 mr-2" />
                                     {isPreviewMode ? 'Hide Preview' : 'Show Preview'}
                                 </Button>
-                                <Button type="submit" size="sm" disabled={isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-bold px-6 shadow-lg shadow-indigo-500/20">
+                                <Button
+                                    type="submit"
+                                    size="sm"
+                                    disabled={isPending}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-bold px-6 shadow-lg shadow-indigo-500/20"
+                                >
                                     {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                                    Deploy Changes
+                                    Save Work
                                 </Button>
                             </div>
                         </header>
+
+                        {state.status === 'error' && state.message && (
+                            <p className="text-sm text-red-600">{state.message}</p>
+                        )}
 
                         <div className="grid grid-cols-1 gap-6">
                             <Card className="rounded-[2rem] border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden bg-white dark:bg-zinc-900">
@@ -106,24 +102,24 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
 
                                     <div className="space-y-3">
                                         <Label htmlFor="title" className="text-sm font-black uppercase tracking-widest text-zinc-500">Project Title</Label>
-                                        <Input 
-                                            id="title" 
-                                            name="title" 
-                                            value={title} 
+                                        <Input
+                                            id="title"
+                                            name="title"
+                                            value={title}
                                             onChange={(e) => setTitle(e.target.value)}
-                                            required 
-                                            className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 border-none h-14 text-lg font-bold" 
+                                            required
+                                            className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 border-none h-14 text-lg font-bold"
                                         />
                                     </div>
 
                                     <div className="space-y-3">
                                         <Label htmlFor="description" className="text-sm font-black uppercase tracking-widest text-zinc-500">Narrative Description</Label>
-                                        <Textarea 
-                                            id="description" 
-                                            name="description" 
-                                            value={description} 
+                                        <Textarea
+                                            id="description"
+                                            name="description"
+                                            value={description}
                                             onChange={(e) => setDescription(e.target.value)}
-                                            className="rounded-3xl bg-zinc-50 dark:bg-zinc-950 border-none min-h-[160px] leading-relaxed p-6" 
+                                            className="rounded-3xl bg-zinc-50 dark:bg-zinc-950 border-none min-h-[160px] leading-relaxed p-6"
                                         />
                                     </div>
 
@@ -140,12 +136,12 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
 
                                     <div className="space-y-3">
                                         <Label htmlFor="tech_stack" className="text-sm font-black uppercase tracking-widest text-zinc-500 flex items-center gap-2"><Tag size={14} /> Technology Stack</Label>
-                                        <Input 
-                                            id="tech_stack" 
-                                            name="tech_stack" 
-                                            value={techStack} 
+                                        <Input
+                                            id="tech_stack"
+                                            name="tech_stack"
+                                            value={techStack}
                                             onChange={(e) => setTechStack(e.target.value)}
-                                            className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 border-none h-14" 
+                                            className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 border-none h-14"
                                         />
                                     </div>
 
@@ -157,12 +153,12 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                                             </div>
                                         </div>
                                         <ImageUpload bucket="works" initialUrl={thumbnailUrl} onUpload={(url) => setThumbnailUrl(url)} />
-                                        <Input 
-                                            id="thumbnail_url" 
-                                            name="thumbnail_url" 
-                                            value={thumbnailUrl} 
+                                        <Input
+                                            id="thumbnail_url"
+                                            name="thumbnail_url"
+                                            value={thumbnailUrl}
                                             onChange={(e) => setThumbnailUrl(e.target.value)}
-                                            className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 border-none h-12 text-xs" 
+                                            className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 border-none h-12 text-xs"
                                         />
                                     </div>
                                 </CardContent>
@@ -171,7 +167,6 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                     </form>
                 </div>
 
-                {/* Preview Section (Idea 3) */}
                 {isPreviewMode && (
                     <div className="hidden md:block flex-1 sticky top-4 self-start">
                         <div className="bg-zinc-950 rounded-[2.5rem] overflow-hidden shadow-2xl border border-zinc-800 h-[calc(100vh-2rem)]">
@@ -185,7 +180,6 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                                 <div />
                             </div>
                             <div className="p-8 h-full overflow-y-auto custom-scrollbar">
-                                {/* Simulated Work Detail Page */}
                                 <div className="space-y-12 pb-20">
                                     <div className="relative aspect-video rounded-3xl overflow-hidden bg-zinc-900 ring-1 ring-white/10">
                                         {thumbnailUrl ? (
@@ -197,8 +191,8 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                                     <div className="space-y-6">
                                         <h1 className="text-5xl font-black tracking-tighter text-white uppercase">{title || 'Project Title'}</h1>
                                         <div className="flex flex-wrap gap-2">
-                                            {techStack.split(',').map((tech, i) => tech.trim() && (
-                                                <span key={i} className="text-[10px] font-black tracking-[0.2em] uppercase bg-white/5 text-white/40 px-3 py-1 rounded-full border border-white/5">
+                                            {techStack.split(',').map((tech, index) => tech.trim() && (
+                                                <span key={`${tech}-${index}`} className="text-[10px] font-black tracking-[0.2em] uppercase bg-white/5 text-white/40 px-3 py-1 rounded-full border border-white/5">
                                                     {tech.trim()}
                                                 </span>
                                             ))}

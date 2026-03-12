@@ -1,6 +1,7 @@
 'use client'
 
 import { createNews } from '@/app/actions/news'
+import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,23 +11,18 @@ import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
-import { toast } from 'sonner'
 
 export default function NewNewsPage() {
     const router = useRouter()
-    const [isPending, startTransition] = useTransition()
+    const { state, formAction, isPending } = useAdminFormAction(createNews)
 
-    async function handleSubmit(formData: FormData) {
-        startTransition(async () => {
-            try {
-                await createNews(formData)
-                toast.success('News created successfully')
-            } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'Failed to create news')
-            }
-        })
+    function handleSubmit(formData: FormData) {
+        formAction(formData)
     }
+
+    const titleError = state.fieldErrors?.title?.[0]
+    const slugError = state.fieldErrors?.slug?.[0]
+    const contentError = state.fieldErrors?.content?.[0]
 
     return (
         <div className="space-y-6">
@@ -43,14 +39,32 @@ export default function NewNewsPage() {
                 </CardHeader>
                 <CardContent>
                     <form action={handleSubmit} className="space-y-6">
+                        {state.status === 'error' && state.message && (
+                            <p className="text-sm text-red-600">{state.message}</p>
+                        )}
+
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="title">Title *</Label>
-                                <Input id="title" name="title" placeholder="News title" required />
+                                <Input
+                                    id="title"
+                                    name="title"
+                                    placeholder="News title"
+                                    required
+                                    aria-invalid={!!titleError}
+                                />
+                                {titleError && <p className="text-sm text-red-600">{titleError}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="slug">Slug *</Label>
-                                <Input id="slug" name="slug" placeholder="news-slug" required />
+                                <Input
+                                    id="slug"
+                                    name="slug"
+                                    placeholder="news-slug"
+                                    required
+                                    aria-invalid={!!slugError}
+                                />
+                                {slugError && <p className="text-sm text-red-600">{slugError}</p>}
                             </div>
                         </div>
 
@@ -62,6 +76,7 @@ export default function NewNewsPage() {
                                 placeholder="Short content or description"
                                 className="min-h-[150px]"
                             />
+                            {contentError && <p className="text-sm text-red-600">{contentError}</p>}
                             <p className="text-xs text-gray-500">Simple text for announcements.</p>
                         </div>
 

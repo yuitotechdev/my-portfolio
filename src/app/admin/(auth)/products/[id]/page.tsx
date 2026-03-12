@@ -1,3 +1,4 @@
+import { updateProduct } from '@/app/actions/products'
 import { ProductsRepository } from '@/lib/repositories/products'
 import { ProductForm } from '../_components/ProductForm'
 import { notFound } from 'next/navigation'
@@ -10,10 +11,12 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         notFound()
     }
 
+    const updateAction = updateProduct.bind(null, product.id)
+
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold tracking-tight">Edit Product</h1>
-            <ProductForm product={product} />
+            <ProductForm product={product} action={updateAction} />
         </div>
     )
 }

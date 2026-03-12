@@ -1,76 +1,82 @@
 'use client'
 
-import { createDevice, updateDevice } from '@/app/actions/devices'
+import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { type AdminFormAction } from '@/lib/admin-form-state'
 import { Device } from '@/lib/repositories/devices'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { useTransition } from 'react'
-import { toast } from 'sonner'
 
-export function DeviceForm({ device }: { device?: Device }) {
+export function DeviceForm({
+    device,
+    action
+}: {
+    device?: Device
+    action: AdminFormAction
+}) {
     const isEdit = !!device
-    const [isPending, startTransition] = useTransition()
+    const { state, formAction, isPending } = useAdminFormAction(action)
 
-    async function handleSubmit(formData: FormData) {
-        startTransition(async () => {
-            try {
-                if (isEdit && device) {
-                    await updateDevice(device.id, formData)
-                    toast.success('機材情報を更新しました')
-                } else {
-                    await createDevice(formData)
-                    toast.success('機材情報を追加しました')
-                }
-            } catch (error) {
-                toast.error('保存に失敗しました')
-                console.error(error)
-            }
-        })
+    function handleSubmit(formData: FormData) {
+        formAction(formData)
     }
 
     return (
         <form action={handleSubmit} className="space-y-8 max-w-2xl">
             <Card>
                 <CardContent className="pt-6 space-y-6">
+                    {state.status === 'error' && state.message && (
+                        <p className="text-sm text-red-600">{state.message}</p>
+                    )}
+
                     <div className="flex items-center justify-between border-b pb-4">
-                        <Label htmlFor="is_public" className="text-base">公開状態</Label>
+                        <Label htmlFor="is_public" className="text-base">Public</Label>
                         <Switch id="is_public" name="is_public" defaultChecked={device?.is_public ?? true} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="category">カテゴリー <span className="text-red-500">*</span></Label>
-                            <Input id="category" name="category" defaultValue={device?.category || ''} required placeholder="PC / オーディオ / デスク" />
+                            <Label htmlFor="category">Category <span className="text-red-500">*</span></Label>
+                            <Input id="category" name="category" defaultValue={device?.category || ''} required placeholder="PC / Audio / Desk" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="name">機材名称 <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="name">Name <span className="text-red-500">*</span></Label>
                             <Input id="name" name="name" defaultValue={device?.name} required placeholder="MacBook Pro M3" />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="purchase_reason">導入理由</Label>
-                        <Textarea id="purchase_reason" name="purchase_reason" defaultValue={device?.purchase_reason || ''} placeholder="購入した理由など..." />
+                        <Label htmlFor="purchase_reason">Reason</Label>
+                        <Textarea
+                            id="purchase_reason"
+                            name="purchase_reason"
+                            defaultValue={device?.purchase_reason || ''}
+                            placeholder="Why you use this device"
+                        />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="description">スペック / 詳細</Label>
-                        <Textarea id="description" name="description" defaultValue={device?.description || ''} placeholder="M3 Max, 64GB RAM..." />
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                            id="description"
+                            name="description"
+                            defaultValue={device?.description || ''}
+                            placeholder="Specs or notes"
+                        />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="link_url">製品リンク</Label>
-                            <Input id="link_url" name="link_url" defaultValue={device?.link_url || ''} placeholder="https://amazon..." />
+                            <Label htmlFor="link_url">Link</Label>
+                            <Input id="link_url" name="link_url" defaultValue={device?.link_url || ''} placeholder="https://..." />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="order">表示順序</Label>
+                            <Label htmlFor="order">Order</Label>
                             <Input id="order" name="order" type="number" defaultValue={device?.order ?? 0} />
                         </div>
                     </div>
@@ -80,10 +86,10 @@ export function DeviceForm({ device }: { device?: Device }) {
             <div className="flex items-center gap-4">
                 <Button type="submit" disabled={isPending}>
                     {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    {isEdit ? '更新する' : '追加する'}
+                    {isEdit ? 'Update Device' : 'Create Device'}
                 </Button>
                 <Button type="button" variant="outline" asChild>
-                    <Link href="/admin/devices">キャンセル</Link>
+                    <Link href="/admin/devices">Cancel</Link>
                 </Button>
             </div>
         </form>

@@ -1,3 +1,4 @@
+import { updateNews } from '@/app/actions/news'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { notFound } from 'next/navigation'
 import EditNewsForm from './EditNewsForm'
@@ -15,9 +16,11 @@ export default async function EditNewsPage({ params }: { params: Promise<{ id: s
         notFound()
     }
 
+    const updateAction = updateNews.bind(null, news.id)
+
     return (
         <div className="space-y-6">
-            <EditNewsForm news={news} />
+            <EditNewsForm news={news} action={updateAction} />
         </div>
     )
 }

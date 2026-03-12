@@ -1,6 +1,7 @@
 'use client'
 
 import { createPost } from '@/app/actions/posts'
+import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { MarkdownEditor } from '@/components/admin/MarkdownEditor'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,27 +11,21 @@ import { Switch } from '@/components/ui/switch'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
-import { toast } from 'sonner'
+import { useState } from 'react'
 
 export default function NewPostPage() {
     const router = useRouter()
-    const [isPending, startTransition] = useTransition()
     const [content, setContent] = useState('')
+    const { state, formAction, isPending } = useAdminFormAction(createPost)
 
-    async function handleSubmit(formData: FormData) {
-        formData.set('content', content) // Explicitly set content from state
-
-        startTransition(async () => {
-            try {
-                await createPost(formData)
-                toast.success('Post created successfully')
-                // Redirect is handled by server action, but just in case
-            } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'Failed to create post')
-            }
-        })
+    function handleSubmit(formData: FormData) {
+        formData.set('content', content)
+        formAction(formData)
     }
+
+    const titleError = state.fieldErrors?.title?.[0]
+    const slugError = state.fieldErrors?.slug?.[0]
+    const contentError = state.fieldErrors?.content?.[0]
 
     return (
         <div className="space-y-6">
@@ -47,14 +42,32 @@ export default function NewPostPage() {
                 </CardHeader>
                 <CardContent>
                     <form action={handleSubmit} className="space-y-6">
+                        {state.status === 'error' && state.message && (
+                            <p className="text-sm text-red-600">{state.message}</p>
+                        )}
+
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="title">Title *</Label>
-                                <Input id="title" name="title" placeholder="Enter post title" required />
+                                <Input
+                                    id="title"
+                                    name="title"
+                                    placeholder="Enter post title"
+                                    required
+                                    aria-invalid={!!titleError}
+                                />
+                                {titleError && <p className="text-sm text-red-600">{titleError}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="slug">Slug *</Label>
-                                <Input id="slug" name="slug" placeholder="post-url-slug" required />
+                                <Input
+                                    id="slug"
+                                    name="slug"
+                                    placeholder="post-url-slug"
+                                    required
+                                    aria-invalid={!!slugError}
+                                />
+                                {slugError && <p className="text-sm text-red-600">{slugError}</p>}
                             </div>
                         </div>
 
@@ -63,6 +76,7 @@ export default function NewPostPage() {
                             onChange={setContent}
                             required
                         />
+                        {contentError && <p className="text-sm text-red-600">{contentError}</p>}
 
                         <div className="flex items-center space-x-2">
                             <Switch id="is_public" name="is_public" />

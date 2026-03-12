@@ -1,13 +1,9 @@
-import { ProfileRepository } from '@/lib/repositories/profile'
-import { ProfileForm } from './ProfileForm'
-import { LinksManager } from './LinksManager'
-import { BackupManager } from './BackupManager' // I will create this next from the old page code
+import { createLink, updateProfile } from '@/app/actions/profile'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-// Assuming shadcn tabs or I will implement basic HTML tabs if missing? 
-// Checking task.md Scaffold step "Scaffold & Startup" - did we install shadcn components? "npm run dev" verified startup.
-// Usually shadcn is installed component by component. I don't recall installing tabs.
-// I'll stick to simple HTML/Button tabs within the client component or just stack them in the server component.
-// Stacking is safest and easiest for now.
+import { ProfileRepository } from '@/lib/repositories/profile'
+import { BackupManager } from './BackupManager'
+import { LinksManager } from './LinksManager'
+import { ProfileForm } from './ProfileForm'
 
 export default async function SettingsPage() {
     const profile = await ProfileRepository.getProfile()
@@ -15,36 +11,33 @@ export default async function SettingsPage() {
 
     return (
         <div className="space-y-8 max-w-4xl">
-            <h1 className="text-3xl font-bold tracking-tight">設定</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
 
             <div className="grid gap-8">
-                {/* Profile Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>プロフィール情報</CardTitle>
-                        <CardDescription>公開プロフィールの詳細を管理します。</CardDescription>
+                        <CardTitle>Profile</CardTitle>
+                        <CardDescription>Update the public profile shown on the site.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ProfileForm profile={profile} />
+                        <ProfileForm profile={profile} action={updateProfile} />
                     </CardContent>
                 </Card>
 
-                {/* Links Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>ソーシャルリンク</CardTitle>
-                        <CardDescription>サイトに表示されるリンクを管理します。</CardDescription>
+                        <CardTitle>Social Links</CardTitle>
+                        <CardDescription>Manage the links shown on the site.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <LinksManager links={links} />
+                        <LinksManager links={links} action={createLink} />
                     </CardContent>
                 </Card>
 
-                {/* Backup Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>データ管理</CardTitle>
-                        <CardDescription>データベースの内容をエクスポートまたはインポートします。</CardDescription>
+                        <CardTitle>Backup</CardTitle>
+                        <CardDescription>Export or import your content data.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <BackupManager />

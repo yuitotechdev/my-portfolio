@@ -1,37 +1,39 @@
 'use client'
 
-import { createLink, deleteLink } from '@/app/actions/profile'
+import { deleteLink } from '@/app/actions/profile'
 import { DeleteButton } from '@/components/admin/DeleteButton'
+import { useAdminFormAction } from '@/components/admin/useAdminFormAction'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { type AdminFormAction } from '@/lib/admin-form-state'
 import { LinkItem } from '@/lib/repositories/profile'
 import { Loader2, Plus } from 'lucide-react'
-import { useTransition, useRef } from 'react'
-import { toast } from 'sonner'
+import { useRef } from 'react'
 
-export function LinksManager({ links }: { links: LinkItem[] }) {
-    const [isPending, startTransition] = useTransition()
+export function LinksManager({
+    links,
+    action
+}: {
+    links: LinkItem[]
+    action: AdminFormAction
+}) {
     const formRef = useRef<HTMLFormElement>(null)
+    const { state, formAction, isPending } = useAdminFormAction(action, {
+        onSuccess: () => {
+            formRef.current?.reset()
+        }
+    })
 
-    async function handleAdd(formData: FormData) {
-        startTransition(async () => {
-            try {
-                await createLink(formData)
-                toast.success('リンクを追加しました')
-                formRef.current?.reset()
-            } catch {
-                toast.error('リンクの追加に失敗しました')
-            }
-        })
+    function handleAdd(formData: FormData) {
+        formAction(formData)
     }
 
     return (
         <div className="space-y-8">
-            {/* List */}
             <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">現在のリンク</h3>
-                {links.length === 0 && <p className="text-sm text-gray-400">現在リンクはありません。</p>}
+                <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Current Links</h3>
+                {links.length === 0 && <p className="text-sm text-gray-400">No links yet.</p>}
 
                 <div className="space-y-2">
                     {links.map((link) => (
@@ -46,7 +48,7 @@ export function LinksManager({ links }: { links: LinkItem[] }) {
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-400">順序: {link.order}</span>
+                                <span className="text-xs text-gray-400">Order {link.order}</span>
                                 <DeleteButton id={link.id} title={link.title} deleteAction={deleteLink} />
                             </div>
                         </div>
@@ -54,14 +56,17 @@ export function LinksManager({ links }: { links: LinkItem[] }) {
                 </div>
             </div>
 
-            {/* Add Form */}
             <div className="p-4 border rounded-lg bg-gray-50/50">
                 <h3 className="font-medium mb-4 flex items-center gap-2">
-                    <Plus className="w-4 h-4" /> 新しいリンクを追加
+                    <Plus className="w-4 h-4" /> Add New Link
                 </h3>
                 <form ref={formRef} action={handleAdd} className="grid gap-4 md:grid-cols-2 items-end">
+                    {state.status === 'error' && state.message && (
+                        <p className="text-sm text-red-600 md:col-span-2">{state.message}</p>
+                    )}
+
                     <div className="space-y-2">
-                        <Label htmlFor="title">タイトル</Label>
+                        <Label htmlFor="title">Title</Label>
                         <Input id="title" name="title" placeholder="GitHub" required />
                     </div>
                     <div className="space-y-2">
@@ -69,17 +74,17 @@ export function LinksManager({ links }: { links: LinkItem[] }) {
                         <Input id="url" name="url" placeholder="https://github.com/..." required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="icon_name">アイコン名 (Lucide)</Label>
+                        <Label htmlFor="icon_name">Icon Name</Label>
                         <Input id="icon_name" name="icon_name" placeholder="github" />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="order">順序</Label>
+                        <Label htmlFor="order">Order</Label>
                         <Input id="order" name="order" type="number" defaultValue="0" />
                     </div>
                     <div className="md:col-span-2">
                         <Button type="submit" disabled={isPending} className="w-full">
                             {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                            リンクを追加
+                            Add Link
                         </Button>
                     </div>
                 </form>

@@ -2,10 +2,15 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { parseWorkFormData, workSchema } from '@/lib/validators'
 import { validateServerConfig } from '@/lib/env-check'
+import {
+    type AdminFormState,
+    errorFormState,
+    successFormState,
+    zodIssuesToFieldErrors
+} from '@/lib/admin-form-state'
 
 // Helper to ensure admin (Double check in action level is good practice)
 async function requireAdmin() {
@@ -19,11 +24,11 @@ async function requireAdmin() {
 
 // ZodError removed
 
-export async function createWork(formData: FormData) {
+export async function createWork(_prevState: AdminFormState, formData: FormData) {
     try {
         const config = validateServerConfig()
         if (!config.valid) {
-            return { error: config.message }
+            return errorFormState(config.message || 'Server configuration incomplete')
         }
 
         await requireAdmin()
@@ -32,8 +37,10 @@ export async function createWork(formData: FormData) {
         const result = workSchema.safeParse(rawData)
 
         if (!result.success) {
-            const errorMessage = result.error.issues.map(e => e.message).join(', ')
-            return { error: errorMessage }
+            return errorFormState(
+                'Please check the form fields',
+                zodIssuesToFieldErrors(result.error.issues)
+            )
         }
 
         const { error } = await supabaseAdmin
@@ -46,28 +53,30 @@ export async function createWork(formData: FormData) {
         if (error) {
             console.error('Create Work Error:', error)
             if (error.code === '23505') {
-                return { error: 'Slug already exists' }
+                return errorFormState('Slug already exists', {
+                    slug: ['Slug already exists']
+                })
             }
-            return { error: 'Failed to create work' }
+            return errorFormState('Failed to create work')
         }
 
         revalidatePath('/')
         revalidatePath('/works')
         revalidatePath('/admin/works')
+
+        return successFormState('Work created successfully', '/admin/works')
     } catch (err: unknown) {
         console.error('Action Error:', err)
         const message = err instanceof Error ? err.message : 'An unexpected error occurred'
-        return { error: message }
+        return errorFormState(message)
     }
-    // redirect must be outside try-catch to work correctly in Next.js Server Actions
-    redirect('/admin/works')
 }
 
-export async function updateWork(id: string, formData: FormData) {
+export async function updateWork(id: string, _prevState: AdminFormState, formData: FormData) {
     try {
         const config = validateServerConfig()
         if (!config.valid) {
-            return { error: config.message }
+            return errorFormState(config.message || 'Server configuration incomplete')
         }
 
         await requireAdmin()
@@ -76,8 +85,10 @@ export async function updateWork(id: string, formData: FormData) {
         const result = workSchema.safeParse(rawData)
 
         if (!result.success) {
-            const errorMessage = result.error.issues.map(e => e.message).join(', ')
-            return { error: errorMessage }
+            return errorFormState(
+                'Please check the form fields',
+                zodIssuesToFieldErrors(result.error.issues)
+            )
         }
 
         // Get existing record to preserve published_at
@@ -101,27 +112,30 @@ export async function updateWork(id: string, formData: FormData) {
         if (error) {
             console.error('Update Work Error:', error)
             if (error.code === '23505') {
-                return { error: 'Slug already exists' }
+                return errorFormState('Slug already exists', {
+                    slug: ['Slug already exists']
+                })
             }
-            return { error: 'Failed to update work' }
+            return errorFormState('Failed to update work')
         }
 
         revalidatePath('/')
         revalidatePath('/works')
         revalidatePath('/admin/works')
+
+        return successFormState('Work updated successfully', '/admin/works')
     } catch (err: unknown) {
         console.error('Action Error:', err)
         const message = err instanceof Error ? err.message : 'An unexpected error occurred'
-        return { error: message }
+        return errorFormState(message)
     }
-    redirect('/admin/works')
 }
 
 export async function deleteWork(id: string) {
     try {
         const config = validateServerConfig()
         if (!config.valid) {
-            return { error: config.message }
+            return { error: config.message || 'Server configuration incomplete' }
         }
 
         await requireAdmin()

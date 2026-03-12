@@ -2,9 +2,14 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { parseProductFormData, productSchema } from '@/lib/validators'
+import {
+    type AdminFormState,
+    errorFormState,
+    successFormState,
+    zodIssuesToFieldErrors
+} from '@/lib/admin-form-state'
 
 async function requireAdmin() {
     const session = await auth()
@@ -15,7 +20,7 @@ async function requireAdmin() {
     }
 }
 
-export async function createProduct(formData: FormData) {
+export async function createProduct(_prevState: AdminFormState, formData: FormData) {
     try {
         await requireAdmin()
 
@@ -23,23 +28,27 @@ export async function createProduct(formData: FormData) {
         const result = productSchema.safeParse(rawData)
 
         if (!result.success) {
-            return { error: result.error.issues.map(e => e.message).join(', ') }
+            return errorFormState(
+                'Please check the form fields',
+                zodIssuesToFieldErrors(result.error.issues)
+            )
         }
 
         const { error } = await supabaseAdmin.from('products').insert(result.data)
 
-        if (error) return { error: 'Failed to create product' }
+        if (error) return errorFormState('Failed to create product')
 
         revalidatePath('/admin/products')
         revalidatePath('/products')
+
+        return successFormState('Product created successfully', '/admin/products')
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'An unexpected error occurred'
-        return { error: message }
+        return errorFormState(message)
     }
-    redirect('/admin/products')
 }
 
-export async function updateProduct(id: string, formData: FormData) {
+export async function updateProduct(id: string, _prevState: AdminFormState, formData: FormData) {
     try {
         await requireAdmin()
 
@@ -47,7 +56,10 @@ export async function updateProduct(id: string, formData: FormData) {
         const result = productSchema.safeParse(rawData)
 
         if (!result.success) {
-            return { error: result.error.issues.map(e => e.message).join(', ') }
+            return errorFormState(
+                'Please check the form fields',
+                zodIssuesToFieldErrors(result.error.issues)
+            )
         }
 
         const { error } = await supabaseAdmin
@@ -55,15 +67,16 @@ export async function updateProduct(id: string, formData: FormData) {
             .update({ ...result.data, updated_at: new Date().toISOString() })
             .eq('id', id)
 
-        if (error) return { error: 'Failed to update product' }
+        if (error) return errorFormState('Failed to update product')
 
         revalidatePath('/admin/products')
         revalidatePath('/products')
+
+        return successFormState('Product updated successfully', '/admin/products')
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'An unexpected error occurred'
-        return { error: message }
+        return errorFormState(message)
     }
-    redirect('/admin/products')
 }
 
 export async function deleteProduct(id: string) {
