@@ -69,10 +69,10 @@ export function WorkCard({ work }: { work: Work }) {
         e.preventDefault()
         setProjectTitle(work.title)
         
-        // Wipe animation takes 0.8s
+        // Navigate while wiper is covering the screen (no visible gap)
         setTimeout(() => {
             router.push(`/works/${work.slug}`)
-        }, 800)
+        }, 300)
     }
 
     // Scroll Parallax Effect
