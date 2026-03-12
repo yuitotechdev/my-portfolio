@@ -1,7 +1,6 @@
 import { WorksRepository } from '@/lib/repositories/works'
 import { StaggerList, Reveal } from '@/components/ui/motion'
 import { WorkCard } from './_components/WorkCard'
-import { SoundTester } from './_components/SoundTester'
 import { PAGE_TITLES, COMMON_TEXT } from '@/config/i18n'
 
 export const metadata = {
@@ -14,7 +13,6 @@ export default async function WorksPage() {
 
     return (
         <main className="min-h-screen py-24 px-6 md:px-12 max-w-7xl mx-auto">
-            <SoundTester />
             <Reveal>
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">{PAGE_TITLES.works}</h1>
                 <p className="text-xl text-muted-foreground mb-16 max-w-2xl">
