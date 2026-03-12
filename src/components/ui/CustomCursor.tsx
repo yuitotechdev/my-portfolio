@@ -13,6 +13,8 @@ export function CustomCursor() {
     
     const [cursorType, setCursorType] = useState<CursorType>('default')
     const [isVisible, setIsVisible] = useState(false)
+    const [isMoving, setIsMoving] = useState(false)
+    const movingTimer = useRef<NodeJS.Timeout | null>(null)
     
     // Refs for direct DOM manipulation (Zero lag)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -51,6 +53,11 @@ export function CustomCursor() {
         const updateMousePosition = (e: MouseEvent) => {
             const { clientX, clientY } = e
             
+            // Handle Movement State
+            setIsMoving(true)
+            if (movingTimer.current) clearTimeout(movingTimer.current)
+            movingTimer.current = setTimeout(() => setIsMoving(false), 200)
+
             // Calculate velocity for stretch effect
             const dx = clientX - mousePos.current.x
             const dy = clientY - mousePos.current.y
@@ -105,6 +112,7 @@ export function CustomCursor() {
             window.removeEventListener('mouseover', updateCursorType)
             document.body.removeEventListener('mouseleave', handleMouseLeave)
             document.body.removeEventListener('mouseenter', handleMouseEnter)
+            if (movingTimer.current) clearTimeout(movingTimer.current)
             if (requestRef.current) cancelAnimationFrame(requestRef.current)
             document.body.classList.remove('cursor-none-global')
         }
@@ -114,24 +122,23 @@ export function CustomCursor() {
 
     return (
         <div ref={containerRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]">
-            {/* Ambient Aura: The "Magic Presence" */}
+            {/* Ambient Aura: Only shows when hidden (text) and moving */}
             <div 
                 ref={auraRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
                 style={{ 
-                    opacity: isVisible ? 1 : 0,
+                    opacity: (isVisible && cursorType === 'text' && isMoving) ? 1 : 0,
                     transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
                 <div 
-                    className="w-[200px] h-[200px] rounded-full blur-[35px]"
+                    className="w-[220px] h-[220px] rounded-full blur-[40px]"
                     style={{
                         background: theme === 'dark' 
-                            ? 'radial-gradient(circle, rgba(200,220,255,0.4) 0%, rgba(200,220,255,0) 70%)'
-                            : 'radial-gradient(circle, rgba(0,0,10,0.3) 0%, rgba(0,0,10,0) 70%)',
-                        transform: `scale(${scaleX * 1.4})`,
-                        mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
-                        opacity: cursorType === 'text' ? 1 : 0.8
+                            ? 'radial-gradient(circle, rgba(200,220,255,0.45) 0%, rgba(200,220,255,0) 70%)'
+                            : 'radial-gradient(circle, rgba(0,10,30,0.35) 0%, rgba(0,10,30,0) 70%)',
+                        transform: `scale(${scaleX * 1.5})`,
+                        mixBlendMode: theme === 'dark' ? 'screen' : 'multiply'
                     }}
                 />
             </div>
