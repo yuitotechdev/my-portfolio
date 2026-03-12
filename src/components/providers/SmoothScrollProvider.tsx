@@ -9,9 +9,12 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const { preference } = useMotion()
   const { playTick } = useSoundEffect()
   const lastScrollPos = useRef(0)
-  const tickThreshold = 120 // Seamless friction texture (Frosted Silk feel)
+  const tickThreshold = 110 // Precision balance
 
-  useLenis(({ scroll }) => {
+  useLenis(({ scroll, velocity }) => {
+    // Only play if moving faster than a tiny creep (prevent ghost ticks)
+    if (Math.abs(velocity) < 0.2) return;
+
     const distance = Math.abs(scroll - lastScrollPos.current)
     if (distance >= tickThreshold) {
       playTick()
