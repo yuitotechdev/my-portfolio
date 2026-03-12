@@ -9,7 +9,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const { preference } = useMotion()
   const { playTick } = useSoundEffect()
   const lastScrollPos = useRef(0)
-  const tickThreshold = 80 // Play tick every 80px
+  const tickThreshold = 180 // Play tick every 180px (Less frequent, more premium)
 
   useLenis(({ scroll }) => {
     const distance = Math.abs(scroll - lastScrollPos.current)
