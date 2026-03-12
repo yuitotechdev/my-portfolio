@@ -240,15 +240,11 @@ export default function EditWorkForm({
                             </div>
                             <div className="custom-scrollbar h-full overflow-y-auto p-8">
                                 <div className="space-y-12 pb-20">
-                                    <div className="relative aspect-video overflow-hidden rounded-3xl bg-zinc-900 ring-1 ring-white/10">
-                                        {thumbnailUrl ? (
+                                    {thumbnailUrl && (
+                                        <div className="relative aspect-video overflow-hidden rounded-3xl bg-zinc-900 ring-1 ring-white/10">
                                             <Image src={thumbnailUrl} alt="作品プレビュー" fill className="object-cover" />
-                                        ) : (
-                                            <div className="flex h-full w-full items-center justify-center font-bold tracking-widest text-zinc-600">
-                                                メイン画像なし
-                                            </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                     <div className="space-y-6">
                                         <h1 className="text-5xl font-black tracking-tighter text-white">
                                             {title || '制作実績タイトル'}

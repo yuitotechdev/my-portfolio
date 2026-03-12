@@ -24,12 +24,12 @@ export default async function DevicesPage() {
     const categories = Object.keys(grouped)
 
     return (
-        <main className="min-h-screen py-24 px-6 md:px-12 bg-background">
-            <div className="max-w-4xl mx-auto">
+        <main className="min-h-screen bg-background px-6 py-24 md:px-12">
+            <div className="mx-auto max-w-4xl">
                 <Reveal>
                     <header className="mb-16">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">{PAGE_TITLES.devices}</h1>
-                        <p className="text-xl text-muted-foreground max-w-2xl">
+                        <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">{PAGE_TITLES.devices}</h1>
+                        <p className="max-w-2xl text-xl text-muted-foreground">
                             The equipment I use to create.
                         </p>
                     </header>
@@ -40,8 +40,8 @@ export default async function DevicesPage() {
                         {categories.map((category, index) => (
                             <section key={category}>
                                 <Reveal delay={index * 0.1}>
-                                    <h2 className="text-2xl font-bold mb-8 flex items-center gap-2 border-b pb-2 border-border">
-                                        <Monitor className="w-5 h-5 text-muted-foreground" />
+                                    <h2 className="mb-8 flex items-center gap-2 border-b border-border pb-2 text-2xl font-bold">
+                                        <Monitor className="h-5 w-5 text-muted-foreground" />
                                         {category}
                                     </h2>
                                 </Reveal>
@@ -50,25 +50,21 @@ export default async function DevicesPage() {
                                     {grouped[category].map((device) => (
                                         <div
                                             key={device.id}
-                                            className="bg-muted/20 rounded-xl p-6 shadow-sm border border-border flex flex-col md:flex-row gap-6 md:items-start"
+                                            className="flex flex-col gap-6 rounded-xl border border-border bg-muted/20 p-6 shadow-sm md:flex-row md:items-start"
                                         >
-                                            <div className="relative w-full md:w-48 aspect-[4/3] overflow-hidden rounded-xl bg-muted/40 border border-border">
-                                                {device.thumbnail_url ? (
+                                            {device.thumbnail_url && (
+                                                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-border bg-muted/40 md:w-48">
                                                     <Image
                                                         src={device.thumbnail_url}
                                                         alt={device.name}
                                                         fill
                                                         className="object-cover"
                                                     />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
-                                                        No Image
-                                                    </div>
-                                                )}
-                                            </div>
+                                                </div>
+                                            )}
 
                                             <div className="flex-1">
-                                                <div className="flex items-start justify-between mb-2">
+                                                <div className="mb-2 flex items-start justify-between">
                                                     <h3 className="text-xl font-bold text-foreground">{device.name}</h3>
                                                     {device.link_url && (
                                                         <a
@@ -77,18 +73,19 @@ export default async function DevicesPage() {
                                                             rel="noopener noreferrer"
                                                             className="text-gray-400 hover:text-indigo-600"
                                                         >
-                                                            <ExternalLink className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
+                                                            <ExternalLink className="h-5 w-5 text-muted-foreground transition-colors hover:text-primary" />
                                                         </a>
                                                     )}
                                                 </div>
 
                                                 {device.purchase_reason && (
-                                                    <div className="mb-3 text-sm text-primary bg-primary/10 px-3 py-1.5 rounded-lg inline-block border border-primary/20">
-                                                        <span className="font-bold mr-1">Why:</span> {device.purchase_reason}
+                                                    <div className="mb-3 inline-block rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5 text-sm text-primary">
+                                                        <span className="mr-1 font-bold">Why:</span>
+                                                        {device.purchase_reason}
                                                     </div>
                                                 )}
 
-                                                <p className="text-muted-foreground whitespace-pre-wrap">{device.description}</p>
+                                                <p className="whitespace-pre-wrap text-muted-foreground">{device.description}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -99,7 +96,7 @@ export default async function DevicesPage() {
                 ) : (
                     <Reveal delay={0.2}>
                         <div className="py-24 text-center text-gray-400">
-                            <Monitor className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                            <Monitor className="mx-auto mb-4 h-12 w-12 opacity-20" />
                             <p>{COMMON_TEXT.no_data}</p>
                         </div>
                     </Reveal>

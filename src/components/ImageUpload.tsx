@@ -40,7 +40,7 @@ export default function ImageUpload({ bucket, onUpload, initialUrl }: ImageUploa
     return (
         <div className="space-y-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                {preview ? (
+                {preview && (
                     <div className="relative h-32 w-32 overflow-hidden rounded border bg-gray-100">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -48,10 +48,6 @@ export default function ImageUpload({ bucket, onUpload, initialUrl }: ImageUploa
                             alt="アップロード画像のプレビュー"
                             className="h-full w-full object-cover"
                         />
-                    </div>
-                ) : (
-                    <div className="flex h-32 w-32 items-center justify-center rounded border bg-gray-100 text-sm text-gray-400">
-                        画像なし
                     </div>
                 )}
 
