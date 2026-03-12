@@ -32,8 +32,10 @@ export function Header() {
     return (
         <header
             className={cn(
-                "fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent",
-                scrolled ? "glass py-3" : "bg-transparent py-5"
+                "fixed left-0 right-0 top-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
+                scrolled 
+                    ? "top-4 mx-auto max-w-[90%] md:max-w-[800px] glass rounded-full py-2 shadow-2xl border border-white/10" 
+                    : "top-0 py-6 bg-transparent"
             )}
         >
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">

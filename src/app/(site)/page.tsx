@@ -1,6 +1,7 @@
 import { ProfileRepository } from '@/lib/repositories/profile'
 import { TypographyHero } from '@/components/sections/TypographyHero'
 import { FeaturedWorks, FeaturedWorksSkeleton } from './_components/FeaturedWorks'
+import { TechMarquee } from '@/components/ui/TechMarquee'
 import { LatestNews, LatestNewsSkeleton } from './_components/LatestNews'
 import { Suspense } from 'react'
 
@@ -25,6 +26,8 @@ export default async function HomePage() {
       <Suspense fallback={<FeaturedWorksSkeleton />}>
         <FeaturedWorks />
       </Suspense>
+
+      <TechMarquee />
 
       {/* News & Updates with Skeleton */}
       <Suspense fallback={<LatestNewsSkeleton />}>

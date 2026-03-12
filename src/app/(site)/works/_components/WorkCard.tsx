@@ -99,13 +99,13 @@ export function WorkCard({ work }: { work: Work }) {
                     >
                         <motion.div className="w-full h-full" style={{ y: isSafe ? 0 : imageY }}>
                             {work.thumbnail_url ? (
-                                <Image
-                                    src={work.thumbnail_url}
-                                    alt={work.title}
-                                    fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-[1.15]"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                />
+                                    <Image
+                                        src={work.thumbnail_url}
+                                        alt={work.title}
+                                        fill
+                                        className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.15] group-hover:rotate-1 group-hover:brightness-110 group-hover:saturate-125 [transform-style:preserve-3d]"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    />
                             ) : (
                                 <div 
                                     className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"

@@ -22,23 +22,53 @@ export function ProjectWiper() {
     return (
         <AnimatePresence>
             {projectTitle && (
-                <motion.div
-                    className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-zinc-950 text-white overflow-hidden pointer-events-none"
-                    initial={{ y: "100%" }}
-                    animate={{ y: "0%" }}
-                    exit={{ y: "-100%" }}
-                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                >
-                    <motion.h2 
-                        className="text-4xl md:text-7xl lg:text-9xl font-black tracking-tighter"
-                        initial={{ opacity: 0, scale: 0.9, y: 50 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 1.1, y: -50 }}
-                        transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" }}
+                <>
+                    {/* Secondary background layer for depth */}
+                    <motion.div
+                        className="fixed inset-0 z-[99998] bg-indigo-600"
+                        initial={{ y: "100%" }}
+                        animate={{ y: "0%" }}
+                        exit={{ y: "-100%" }}
+                        transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.05 }}
+                    />
+                    
+                    <motion.div
+                        className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-zinc-950 text-white overflow-hidden pointer-events-none"
+                        initial={{ y: "100%" }}
+                        animate={{ y: "0%" }}
+                        exit={{ y: "-100%" }}
+                        transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
                     >
-                        {projectTitle}
-                    </motion.h2>
-                </motion.div>
+                        {/* Progress Bar in Transition */}
+                        <motion.div 
+                            className="absolute bottom-0 left-0 h-1 bg-indigo-500"
+                            initial={{ width: 0 }}
+                            animate={{ width: "100%" }}
+                            transition={{ duration: 1.2, ease: "easeInOut" }}
+                        />
+
+                        <div className="overflow-hidden py-4">
+                            <motion.h2 
+                                className="text-4xl md:text-7xl lg:text-9xl font-black tracking-tighter uppercase"
+                                initial={{ y: "100%", rotate: 5 }}
+                                animate={{ y: "0%", rotate: 0 }}
+                                exit={{ y: "-100%", rotate: -5 }}
+                                transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                            >
+                                {projectTitle}
+                            </motion.h2>
+                        </div>
+                        
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.4 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-[10px] font-bold tracking-[1em] uppercase mt-8"
+                        >
+                            Loading Experience
+                        </motion.div>
+                    </motion.div>
+                </>
             )}
         </AnimatePresence>
     )
