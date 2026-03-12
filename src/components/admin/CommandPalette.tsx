@@ -4,8 +4,8 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
 import { 
-    Search, FolderGit2, FileText, Newspaper, Settings, 
-    Monitor, LayoutGrid, LogOut, Home, ArrowRight 
+    Search, FileText, Newspaper, Settings, 
+    Monitor, LayoutGrid, LogOut, Home, ArrowRight, type LucideIcon 
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -100,7 +100,7 @@ export function AdminCommandPalette() {
     )
 }
 
-function CommandItem({ icon: Icon, label, onSelect }: { icon: any, label: string, onSelect: () => void }) {
+function CommandItem({ icon: Icon, label, onSelect }: { icon: LucideIcon, label: string, onSelect: () => void }) {
     return (
         <Command.Item
             onSelect={onSelect}

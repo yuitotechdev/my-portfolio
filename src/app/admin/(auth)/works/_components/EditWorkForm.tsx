@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Work } from '@/lib/repositories/works'
-import { Loader2, Eye, Layout, Globe, Github, Tag, ArrowLeft, Sparkles } from 'lucide-react'
+import { Loader2, Eye, Globe, Github, Tag, ArrowLeft, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useTransition, useState } from 'react'
 import { toast } from 'sonner'
@@ -47,7 +47,7 @@ export default function EditWorkForm({ work, action }: { work?: WorkWithPublic, 
                         toast.success('実績を作成しました')
                     }
                 }
-            } catch (error) {
+            } catch (_) {
                 toast.error('保存に失敗しました')
             }
         })

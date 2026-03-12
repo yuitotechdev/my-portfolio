@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { motion, AnimatePresence, useSpring } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useMotion } from '@/components/providers/MotionProvider'
 import { usePathname } from 'next/navigation'
 import { Eye, Play, Plus } from 'lucide-react'
@@ -14,7 +14,6 @@ export function CustomCursor() {
     
     const [cursorType, setCursorType] = useState<CursorType>('default')
     const [isVisible, setIsVisible] = useState(false)
-    const pathname = usePathname()
     
     // Refs for direct DOM manipulation (Zero lag)
     const containerRef = useRef<HTMLDivElement>(null)

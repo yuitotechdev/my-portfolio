@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { 
-    BookOpen, Settings, BarChart3, FileText, LayoutGrid, 
+    BookOpen, Settings, FileText, LayoutGrid, 
     Monitor, Newspaper, Activity, Zap, ShieldCheck, 
-    AlertCircle, ArrowUpRight 
+    ArrowUpRight 
 } from "lucide-react"
 
 export default function AdminDashboard() {

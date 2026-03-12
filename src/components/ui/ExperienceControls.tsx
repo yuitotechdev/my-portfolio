@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { useState } from "react"
 
 export function ExperienceControls() {
-    const { preference, setPreference, theme } = useMotion()
+    const { preference, setPreference } = useMotion()
     const { isEnabled: soundEnabled, toggleSound } = useSoundStore()
     const [isHovered, setIsHovered] = useState(false)
 

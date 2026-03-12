@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
-import { GripVertical, Edit, Trash2, Eye, EyeOff, Save } from 'lucide-react'
+import { GripVertical, Edit, Eye, EyeOff, Save } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -46,7 +46,7 @@ export function WorkReorderList({ initialWorks }: Props) {
                 // For now, let's toast success
                 toast.success('並び順を保存しました（モック）')
                 setHasChanges(false)
-            } catch (error) {
+            } catch (_) {
                 toast.error('保存に失敗しました')
             }
         })
