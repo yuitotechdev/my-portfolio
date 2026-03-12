@@ -10,6 +10,9 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const { preference } = useMotion()
 
+    // Pure path-based detection for detail pages
+    const isWorkDetail = pathname?.startsWith('/works/') && pathname !== '/works'
+
     // Admin routes are always Safe (Minimal transition)
     const isAdmin = pathname?.startsWith('/admin')
     const isHigh = preference === 'high' && !isAdmin
@@ -25,26 +28,26 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
             >
                 {/* 
                   Frosted Hydraulic Layers 
-                  Only render in High/Safe modes (Minimal gets no curtain)
-                  Safe mode: No Blur, just Opacity/Color
+                  Skip these if we are doing a Shared Element Transition (Work Deep Dive)
+                  to prevent flickering and overlapping with the expanding image.
                 */}
-                {!isAdmin && preference !== 'minimal' && (
+                {!isAdmin && preference !== 'minimal' && !isWorkDetail && (
                     <>
                         {/* Layer 2: Secondary Damping (Slightly darker/blue tint) */}
                         <motion.div
                             className={cn(
                                 "fixed inset-0 z-[60] pointer-events-none bg-muted/30", 
-                                isHigh && "backdrop-blur-[2px]" // Minimal blur on secondary
+                                isHigh && "backdrop-blur-[2px]"
                             )}
                             variants={MOTION.frosted.secondary}
-                            style={{ originX: 0 }} // Starts from left
+                            style={{ originX: 0 }}
                         />
 
                         {/* Layer 1: Primary Water Surface (White/Frosted) */}
                         <motion.div
                             className={cn(
                                 "fixed inset-0 z-[61] pointer-events-none bg-background/90", 
-                                isHigh && "backdrop-blur-xl supports-[backdrop-filter]:backdrop-blur-xl" // Heavy frost
+                                isHigh && "backdrop-blur-xl supports-[backdrop-filter]:backdrop-blur-xl"
                             )}
                             variants={MOTION.frosted.primary}
                             style={{ originX: 0 }}
@@ -54,7 +57,14 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
 
                 {/* Page Content */}
                 <motion.div
-                    variants={MOTION.page}
+                    variants={{
+                        ...MOTION.page,
+                        // If deep diving, we don't want the page to blur/scale out
+                        // We want it to stay steady while the image expands
+                        exit: isWorkDetail 
+                            ? { opacity: 0, transition: { duration: 0.3 } } 
+                            : MOTION.page.exit
+                    }}
                     className="w-full"
                 >
                     {children}
