@@ -27,7 +27,7 @@ export default async function NewsPage() {
                 {newsList.map((news) => (
                     <div key={news.id} className="relative pl-8 md:pl-12 group">
                         {/* Timeline dot */}
-                        <div className="absolute left-[-5px] top-2 w-2.5 h-2.5 rounded-full bg-border group-hover:bg-primary transition-colors" />
+                        <div className="absolute left-[-5px] top-2 w-2.5 h-2.5 rounded-full bg-muted-foreground/30 group-hover:bg-primary transition-colors" />
 
                         <Link href={`/news/${news.slug}`} className="block">
                             <div className="flex items-center mb-1">

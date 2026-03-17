@@ -27,19 +27,19 @@ export default async function PostPage({ params }: PageProps) {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            <article className="max-w-3xl mx-auto bg-white min-h-screen shadow-sm">
+        <div className="min-h-screen bg-background pb-20">
+            <article className="max-w-3xl mx-auto bg-card min-h-screen shadow-sm border-x border-border">
                 {/* Header */}
-                <header className="px-8 py-12 border-b">
-                    <Link href="/posts" className="text-gray-500 hover:text-gray-900 text-sm mb-4 inline-block">&larr; Back to posts</Link>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">{post.title}</h1>
-                    <time className="text-gray-500 text-sm">
+                <header className="px-8 py-12 border-b border-border">
+                    <Link href="/blog" className="text-muted-foreground hover:text-foreground text-sm mb-4 inline-block transition-colors">&larr; Back to posts</Link>
+                    <h1 className="text-4xl font-bold text-foreground mb-4">{post.title}</h1>
+                    <time className="text-muted-foreground text-sm">
                         {post.published_at ? new Date(post.published_at).toLocaleDateString() : 'Draft'}
                     </time>
                 </header>
 
                 {/* Content */}
-                <div className="px-8 py-12 prose prose-lg max-w-none prose-indigo">
+                <div className="px-8 py-12 prose prose-lg max-w-none dark:prose-invert prose-indigo">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {post.content}
                     </ReactMarkdown>

@@ -30,7 +30,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
             <Reveal>
                 <Link
                     href="/news"
-                    className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900 mb-12 transition-colors"
+                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-12 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to News
@@ -39,20 +39,20 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
 
             <article>
                 <Reveal delay={0.1}>
-                    <header className="mb-8 border-b border-gray-100 pb-8">
+                    <header className="mb-8 border-b border-border pb-8">
                         {news.published_at && (
-                            <time className="text-gray-400 font-mono text-sm mb-2 block">
+                            <time className="text-muted-foreground font-mono text-sm mb-2 block">
                                 {format(new Date(news.published_at), 'yyyy.MM.dd')}
                             </time>
                         )}
-                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                             {news.title}
                         </h1>
                     </header>
                 </Reveal>
 
                 <Reveal delay={0.2}>
-                    <div className="prose prose-gray max-w-none whitespace-pre-wrap">
+                    <div className="prose prose-gray dark:prose-invert max-w-none whitespace-pre-wrap">
                         {news.content}
                     </div>
                 </Reveal>
