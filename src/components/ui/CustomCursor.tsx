@@ -116,23 +116,28 @@ export function CustomCursor() {
             {/* 外部リング: 背景反転レンズ + 物理ストレッチ */}
             <div 
                 ref={ringRef}
-                className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform flex items-center justify-center"
-                style={{ opacity: (isVisible && isMoving) ? 1 : 0 }}
+                className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform flex items-center justify-center pointer-events-none"
+                style={{ 
+                    opacity: isVisible 
+                        ? (cursorType === 'text' ? (isMoving ? 1 : 0) : 1) 
+                        : 0,
+                    transition: 'opacity 0.3s ease-out'
+                }}
             >
                 <motion.div
                     className="flex items-center justify-center transition-colors duration-500"
                     animate={{
-                        width: cursorType === 'default' ? 40 : (cursorType === 'text' ? 2 : 90),
-                        height: cursorType === 'default' ? 40 : (cursorType === 'text' ? 30 : 90),
+                        width: (cursorType === 'default' || cursorType === 'text') ? 40 : 90,
+                        height: (cursorType === 'default' || cursorType === 'text') ? 40 : 90,
                         scaleX: cursorType === 'text' ? 1 : scaleX,
                         rotate: skew,
                         backgroundColor: (cursorType === 'view' || cursorType === 'play' || cursorType === 'plus') 
                             ? (theme === 'dark' ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)') 
                             : 'rgba(255,255,255,0)',
-                        borderWidth: cursorType === 'text' ? 0 : 1.5,
+                        borderWidth: 1.5,
                         borderColor: theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
-                        backdropFilter: (cursorType === 'link' || cursorType === 'default') ? 'invert(1)' : 'none',
-                        borderRadius: cursorType === 'text' ? '0px' : '50%',
+                        backdropFilter: (cursorType === 'link' || cursorType === 'default' || cursorType === 'text') ? 'invert(1)' : 'none',
+                        borderRadius: '50%',
                     }}
                     transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.5 }}
                 >
@@ -149,7 +154,7 @@ export function CustomCursor() {
                         )}
                         {cursorType === 'plus' && (
                             <motion.div key="plus" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
-                                <Plus className={theme === 'dark' ? 'text-black' : 'text-white'} size={32} />
+                                <Plus className={theme === 'dark' ? 'text-black' : 'text-white'} size= {32} />
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -160,7 +165,12 @@ export function CustomCursor() {
             <div 
                 ref={dotRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
-                style={{ opacity: (isVisible && isMoving) ? 1 : 0 }}
+                style={{ 
+                    opacity: isVisible 
+                        ? (cursorType === 'text' ? (isMoving ? 1 : 0) : 1) 
+                        : 0,
+                    transition: 'opacity 0.3s ease-out'
+                }}
             >
                 <motion.div 
                     className="w-1 h-1 bg-current rounded-full"
