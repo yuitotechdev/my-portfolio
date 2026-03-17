@@ -20,11 +20,9 @@ export function CustomCursor() {
     const containerRef = useRef<HTMLDivElement>(null)
     const ringRef = useRef<HTMLDivElement>(null)
     const dotRef = useRef<HTMLDivElement>(null)
-    const auraRef = useRef<HTMLDivElement>(null)
     
     const mousePos = useRef({ x: -100, y: -100 })
     const ringPos = useRef({ x: -100, y: -100 })
-    const auraPos = useRef({ x: -100, y: -100 })
     const requestRef = useRef<number | null>(null)
 
     // Stretch effect state
@@ -82,15 +80,8 @@ export function CustomCursor() {
             ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.12
             ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.12
 
-            // Liquid Aura Follow (Lerp 0.08 - slower for "drifting" feel)
-            auraPos.current.x += (mousePos.current.x - auraPos.current.x) * 0.08
-            auraPos.current.y += (mousePos.current.y - auraPos.current.y) * 0.08
-
             if (ringRef.current) {
                 ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`
-            }
-            if (auraRef.current) {
-                auraRef.current.style.transform = `translate3d(${auraPos.current.x}px, ${auraPos.current.y}px, 0)`
             }
 
             requestRef.current = requestAnimationFrame(render)
@@ -122,32 +113,11 @@ export function CustomCursor() {
 
     return (
         <div ref={containerRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]">
-            {/* Ambient Aura: Only shows when hidden (text) and moving */}
-            <div 
-                ref={auraRef}
-                className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
-                style={{ 
-                    opacity: (isVisible && cursorType === 'text' && isMoving) ? 1 : 0,
-                    transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
-                }}
-            >
-                <div 
-                    className="w-[220px] h-[220px] rounded-full blur-[40px]"
-                    style={{
-                        background: theme === 'dark' 
-                            ? 'radial-gradient(circle, rgba(200,220,255,0.45) 0%, rgba(200,220,255,0) 70%)'
-                            : 'radial-gradient(circle, rgba(0,10,30,0.35) 0%, rgba(0,10,30,0) 70%)',
-                        transform: `scale(${scaleX * 1.5})`,
-                        mixBlendMode: theme === 'dark' ? 'screen' : 'multiply'
-                    }}
-                />
-            </div>
-
             {/* 外部リング: 背景反転レンズ + 物理ストレッチ */}
             <div 
                 ref={ringRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform flex items-center justify-center"
-                style={{ opacity: isVisible ? 1 : 0 }}
+                style={{ opacity: (isVisible && isMoving) ? 1 : 0 }}
             >
                 <motion.div
                     className="flex items-center justify-center transition-colors duration-500"
@@ -190,7 +160,7 @@ export function CustomCursor() {
             <div 
                 ref={dotRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
-                style={{ opacity: isVisible ? 1 : 0 }}
+                style={{ opacity: (isVisible && isMoving) ? 1 : 0 }}
             >
                 <motion.div 
                     className="w-1 h-1 bg-current rounded-full"
