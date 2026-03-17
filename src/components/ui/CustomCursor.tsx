@@ -54,7 +54,7 @@ export function CustomCursor() {
             // Handle Movement State
             setIsMoving(true)
             if (movingTimer.current) clearTimeout(movingTimer.current)
-            movingTimer.current = setTimeout(() => setIsMoving(false), 200)
+            movingTimer.current = setTimeout(() => setIsMoving(false), 600)
 
             // Calculate velocity for stretch effect
             const dx = clientX - mousePos.current.x
@@ -121,7 +121,7 @@ export function CustomCursor() {
                     opacity: isVisible 
                         ? (cursorType === 'text' ? (isMoving ? 1 : 0) : 1) 
                         : 0,
-                    transition: 'opacity 0.3s ease-out'
+                    transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
                 <motion.div
@@ -138,8 +138,15 @@ export function CustomCursor() {
                         borderColor: theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
                         backdropFilter: (cursorType === 'link' || cursorType === 'default' || cursorType === 'text') ? 'invert(1)' : 'none',
                         borderRadius: '50%',
+                        scale: (cursorType === 'text' && !isMoving) ? 0.8 : 1
                     }}
-                    transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.5 }}
+                    transition={{ 
+                        type: 'spring', 
+                        damping: 25, 
+                        stiffness: 350, 
+                        mass: 0.5,
+                        scale: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+                    }}
                 >
                     <AnimatePresence mode="wait">
                         {cursorType === 'view' && (
@@ -169,7 +176,7 @@ export function CustomCursor() {
                     opacity: isVisible 
                         ? (cursorType === 'text' ? (isMoving ? 1 : 0) : 1) 
                         : 0,
-                    transition: 'opacity 0.3s ease-out'
+                    transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
                 <motion.div 
