@@ -13,6 +13,8 @@ export function CustomCursor() {
     
     const [cursorType, setCursorType] = useState<CursorType>('default')
     const [isVisible, setIsVisible] = useState(false)
+    const [isMoving, setIsMoving] = useState(false)
+    const movingTimer = useRef<NodeJS.Timeout | null>(null)
     
     // Refs for direct DOM manipulation (Zero lag)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -51,6 +53,11 @@ export function CustomCursor() {
         const updateMousePosition = (e: MouseEvent) => {
             const { clientX, clientY } = e
             
+            // Handle Movement State
+            setIsMoving(true)
+            if (movingTimer.current) clearTimeout(movingTimer.current)
+            movingTimer.current = setTimeout(() => setIsMoving(false), 200)
+
             // Calculate velocity for stretch effect
             const dx = clientX - mousePos.current.x
             const dy = clientY - mousePos.current.y
@@ -103,7 +110,9 @@ export function CustomCursor() {
         return () => {
             window.removeEventListener('mousemove', updateMousePosition)
             window.removeEventListener('mouseover', updateCursorType)
+            document.body.removeEventListener('mouseleave', handleMouseLeave)
             document.body.removeEventListener('mouseenter', handleMouseEnter)
+            if (movingTimer.current) clearTimeout(movingTimer.current)
             if (requestRef.current) cancelAnimationFrame(requestRef.current)
             document.body.classList.remove('cursor-none-global')
         }
@@ -113,90 +122,80 @@ export function CustomCursor() {
 
     return (
         <div ref={containerRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]">
-            {/* Ambient Aura: Only shows when cursor is visible */}
+            {/* Ambient Aura: Only shows when hidden (text) and moving */}
             <div 
                 ref={auraRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
                 style={{ 
-                    opacity: isVisible ? (cursorType === 'text' ? 0.3 : 1) : 0,
-                    transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+                    opacity: (isVisible && cursorType === 'text' && isMoving) ? 1 : 0,
+                    transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
                 <div 
                     className="w-[220px] h-[220px] rounded-full blur-[40px]"
                     style={{
                         background: theme === 'dark' 
-                            ? 'radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0) 70%)'
-                            : 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0) 70%)',
-                        transform: `scale(${cursorType === 'text' ? 0.4 : scaleX * 1.5})`,
-                        mixBlendMode: 'screen'
+                            ? 'radial-gradient(circle, rgba(200,220,255,0.45) 0%, rgba(200,220,255,0) 70%)'
+                            : 'radial-gradient(circle, rgba(0,10,30,0.35) 0%, rgba(0,10,30,0) 70%)',
+                        transform: `scale(${scaleX * 1.5})`,
+                        mixBlendMode: theme === 'dark' ? 'screen' : 'multiply'
                     }}
                 />
             </div>
 
-            {/* Main Ring/I-Beam: backgrounds-inverted lens + physical stretch */}
+            {/* 外部リング: 背景反転レンズ + 物理ストレッチ */}
             <div 
                 ref={ringRef}
-                className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform flex items-center justify-center pointer-events-none"
-                style={{ 
-                    opacity: isVisible ? 1 : 0,
-                    mixBlendMode: 'difference' 
-                }}
+                className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform flex items-center justify-center"
+                style={{ opacity: isVisible ? 1 : 0 }}
             >
                 <motion.div
                     className="flex items-center justify-center transition-colors duration-500"
                     animate={{
                         width: cursorType === 'default' ? 40 : (cursorType === 'text' ? 2 : 90),
-                        height: cursorType === 'default' ? 40 : (cursorType === 'text' ? 24 : 90),
+                        height: cursorType === 'default' ? 40 : (cursorType === 'text' ? 30 : 90),
                         scaleX: cursorType === 'text' ? 1 : scaleX,
                         rotate: skew,
                         backgroundColor: (cursorType === 'view' || cursorType === 'play' || cursorType === 'plus') 
-                            ? 'rgba(255,255,255,1)' 
+                            ? (theme === 'dark' ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)') 
                             : 'rgba(255,255,255,0)',
                         borderWidth: cursorType === 'text' ? 0 : 1.5,
-                        borderColor: 'rgba(255,255,255,1)',
-                        borderRadius: cursorType === 'text' ? '1px' : '50%',
+                        borderColor: theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
+                        backdropFilter: (cursorType === 'link' || cursorType === 'default') ? 'invert(1)' : 'none',
+                        borderRadius: cursorType === 'text' ? '0px' : '50%',
                     }}
                     transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.5 }}
                 >
-                    {/* Horizontal caps for I-Beam (optional visual polish) */}
-                    {cursorType === 'text' && (
-                        <>
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-[1.5px] bg-white opacity-80" />
-                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-[1.5px] bg-white opacity-80" />
-                        </>
-                    )}
-                    
                     <AnimatePresence mode="wait">
                         {cursorType === 'view' && (
                             <motion.div key="view" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
-                                <Eye className="text-black" size={24} />
+                                <Eye className={theme === 'dark' ? 'text-black' : 'text-white'} size={24} />
                             </motion.div>
                         )}
                         {cursorType === 'play' && (
                             <motion.div key="play" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
-                                <Play className="text-black fill-current" size={24} />
+                                <Play className={`${theme === 'dark' ? 'text-black' : 'text-white'} fill-current`} size={24} />
                             </motion.div>
                         )}
                         {cursorType === 'plus' && (
                             <motion.div key="plus" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
-                                <Plus className="text-black" size={32} />
+                                <Plus className={theme === 'dark' ? 'text-black' : 'text-white'} size={32} />
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </motion.div>
             </div>
 
-            {/* Inner Dot: minimal presence */}
+            {/* 内部ドット: 最小限の存在感 */}
             <div 
                 ref={dotRef}
                 className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 will-change-transform"
                 style={{ opacity: isVisible ? 1 : 0 }}
             >
                 <motion.div 
-                    className="w-1 h-1 rounded-full"
+                    className="w-1 h-1 bg-current rounded-full"
                     style={{ 
-                        backgroundColor: 'white',
+                        backgroundColor: theme === 'dark' ? 'white' : 'black',
                         mixBlendMode: 'difference' 
                     }}
                     animate={{ 
@@ -205,7 +204,6 @@ export function CustomCursor() {
                     }}
                 />
             </div>
-
         </div>
     )
 }
