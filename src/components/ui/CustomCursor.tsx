@@ -121,7 +121,7 @@ export function CustomCursor() {
                     opacity: isVisible 
                         ? (cursorType === 'text' ? (isMoving ? 1 : 0) : 1) 
                         : 0,
-                    transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+                    transition: `opacity ${isMoving ? '0.15s' : '0.8s'} cubic-bezier(0.16, 1, 0.3, 1)`
                 }}
             >
                 <motion.div
@@ -129,7 +129,7 @@ export function CustomCursor() {
                     animate={{
                         width: (cursorType === 'default' || cursorType === 'text') ? 40 : 90,
                         height: (cursorType === 'default' || cursorType === 'text') ? 40 : 90,
-                        scaleX: cursorType === 'text' ? 1 : scaleX,
+                        scaleX: (cursorType === 'text') ? 1 : scaleX,
                         rotate: skew,
                         backgroundColor: (cursorType === 'view' || cursorType === 'play' || cursorType === 'plus') 
                             ? (theme === 'dark' ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)') 
@@ -145,7 +145,7 @@ export function CustomCursor() {
                         damping: 25, 
                         stiffness: 350, 
                         mass: 0.5,
-                        scale: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+                        scale: { duration: isMoving ? 0.2 : 0.8, ease: [0.16, 1, 0.3, 1] }
                     }}
                 >
                     <AnimatePresence mode="wait">
@@ -176,7 +176,7 @@ export function CustomCursor() {
                     opacity: isVisible 
                         ? (cursorType === 'text' ? (isMoving ? 1 : 0) : 1) 
                         : 0,
-                    transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+                    transition: `opacity ${isMoving ? '0.15s' : '0.8s'} cubic-bezier(0.16, 1, 0.3, 1)`
                 }}
             >
                 <motion.div 
@@ -186,8 +186,8 @@ export function CustomCursor() {
                         mixBlendMode: 'difference' 
                     }}
                     animate={{ 
-                        scale: (cursorType === 'default' || cursorType === 'link') ? 1 : 0,
-                        opacity: (cursorType === 'view' || cursorType === 'play' || cursorType === 'text') ? 0 : 1
+                        scale: (cursorType === 'default' || cursorType === 'link' || cursorType === 'text') ? 1 : 0,
+                        opacity: (cursorType === 'view' || cursorType === 'play') ? 0 : 1
                     }}
                 />
             </div>
